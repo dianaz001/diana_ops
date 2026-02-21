@@ -1,7 +1,112 @@
 import { pdfjsLib } from './pdf-worker-setup';
 import type { LabReport, LabCategory, LabResult, LabStatus, Person } from '../types/health';
 
-/** Extract all text from a PDF file, using position data to reconstruct layout */
+interface TextItem {
+  str: string;
+  x: number;
+  y: number;
+  width: number;
+}
+
+/** Position-aware text extraction from a page's text content layer */
+function extractPositionAwareText(items: TextItem[]): string {
+  if (items.length === 0) return '';
+
+  // Sort by y descending (top of page first), then x ascending (left to right)
+  items.sort((a, b) => {
+    const yDiff = b.y - a.y;
+    if (Math.abs(yDiff) > 3) return yDiff;
+    return a.x - b.x;
+  });
+
+  // Group items into lines based on y-position
+  const lines: TextItem[][] = [];
+  let currentLine: TextItem[] = [items[0]];
+  let currentY = items[0].y;
+
+  for (let j = 1; j < items.length; j++) {
+    if (Math.abs(items[j].y - currentY) > 3) {
+      lines.push(currentLine);
+      currentLine = [items[j]];
+      currentY = items[j].y;
+    } else {
+      currentLine.push(items[j]);
+    }
+  }
+  lines.push(currentLine);
+
+  // Convert lines to text, using spacing to separate columns
+  const pageLines: string[] = [];
+  for (const line of lines) {
+    line.sort((a, b) => a.x - b.x);
+    let lineText = '';
+    for (let j = 0; j < line.length; j++) {
+      if (j > 0) {
+        const gap = line[j].x - (line[j - 1].x + line[j - 1].width);
+        lineText += gap > 10 ? '\t' : (gap > 2 ? ' ' : '');
+      }
+      lineText += line[j].str;
+    }
+    pageLines.push(lineText);
+  }
+  return pageLines.join('\n');
+}
+
+/** Extract text from annotations (form fields, widget annotations) */
+async function extractAnnotationText(page: ReturnType<Awaited<ReturnType<typeof pdfjsLib.getDocument>>['getPage']> extends Promise<infer P> ? P : never): Promise<string[]> {
+  try {
+    const annotations = await page.getAnnotations();
+    const texts: string[] = [];
+    for (const annot of annotations) {
+      // Widget annotations (form fields) may contain values
+      if (annot.fieldValue) {
+        texts.push(String(annot.fieldValue));
+      }
+      // Some annotations have contents
+      if (annot.contents) {
+        texts.push(String(annot.contents));
+      }
+      // Rich text content
+      if (annot.alternativeText) {
+        texts.push(String(annot.alternativeText));
+      }
+    }
+    return texts;
+  } catch {
+    return [];
+  }
+}
+
+/** Try to extract text from the operator list (for text rendered via canvas operations) */
+async function extractOperatorListText(page: ReturnType<Awaited<ReturnType<typeof pdfjsLib.getDocument>>['getPage']> extends Promise<infer P> ? P : never): Promise<string[]> {
+  try {
+    const opList = await page.getOperatorList();
+    const texts: string[] = [];
+    // OPS.showText = 35, OPS.showSpacedText = 36, OPS.nextLineShowText = 37
+    const textOps = new Set([35, 36, 37]);
+    for (let i = 0; i < opList.fnArray.length; i++) {
+      if (textOps.has(opList.fnArray[i])) {
+        const args = opList.argsArray[i];
+        if (Array.isArray(args)) {
+          for (const arg of args) {
+            if (typeof arg === 'string') {
+              texts.push(arg);
+            } else if (Array.isArray(arg)) {
+              // showSpacedText has array of [string, number, string, number, ...]
+              const parts = arg.filter((a: unknown) => typeof a === 'string');
+              if (parts.length > 0) texts.push(parts.join(''));
+            }
+          }
+        }
+      }
+    }
+    return texts;
+  } catch {
+    return [];
+  }
+}
+
+/** Extract all text from a PDF file, trying multiple extraction methods */
 export async function extractTextFromPDF(file: File): Promise<string> {
   const arrayBuffer = await file.arrayBuffer();
   const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
@@ -9,16 +114,9 @@ export async function extractTextFromPDF(file: File): Promise<string> {
 
   for (let i = 1; i <= pdf.numPages; i++) {
     const page = await pdf.getPage(i);
-    const content = await page.getTextContent();
 
-    // Extract items with their positions
-    interface TextItem {
-      str: string;
-      x: number;
-      y: number;
-      width: number;
-    }
-
+    // Method 1: Standard text content with position awareness
+    const content = await page.getTextContent({ includeMarkedContent: true } as Parameters<typeof page.getTextContent>[0]);
     const items: TextItem[] = [];
     for (const item of content.items) {
       if (!('str' in item) || !('transform' in item)) continue;
@@ -26,63 +124,36 @@ export async function extractTextFromPDF(file: File): Promise<string> {
       if (!typedItem.str.trim()) continue;
       items.push({
         str: typedItem.str,
-        x: typedItem.transform[4],     // x position
-        y: typedItem.transform[5],     // y position (PDF coords: bottom = 0)
+        x: typedItem.transform[4],
+        y: typedItem.transform[5],
         width: typedItem.width,
       });
     }
+    let pageText = extractPositionAwareText(items);
 
-    if (items.length === 0) {
-      pages.push('');
-      continue;
+    // Method 2: Try annotations if text content yielded very little
+    const annotTexts = await extractAnnotationText(page);
+    if (annotTexts.length > 0) {
+      pageText += '\n---ANNOTATIONS---\n' + annotTexts.join('\n');
     }
 
-    // Sort by y descending (top of page first), then x ascending (left to right)
-    items.sort((a, b) => {
-      const yDiff = b.y - a.y;
-      if (Math.abs(yDiff) > 3) return yDiff; // different row (3pt tolerance)
-      return a.x - b.x; // same row, sort left to right
-    });
-
-    // Group items into lines based on y-position
-    const lines: TextItem[][] = [];
-    let currentLine: TextItem[] = [items[0]];
-    let currentY = items[0].y;
-
-    for (let j = 1; j < items.length; j++) {
-      if (Math.abs(items[j].y - currentY) > 3) {
-        // New line
-        lines.push(currentLine);
-        currentLine = [items[j]];
-        currentY = items[j].y;
-      } else {
-        currentLine.push(items[j]);
+    // Method 3: Try operator list if still very little text
+    if (items.length < 10) {
+      const opTexts = await extractOperatorListText(page);
+      if (opTexts.length > 0) {
+        pageText += '\n---OPLIST---\n' + opTexts.join('\n');
       }
     }
-    lines.push(currentLine);
 
-    // Convert lines to text, using spacing to separate columns
-    const pageLines: string[] = [];
-    for (const line of lines) {
-      // Sort items in this line by x position
-      line.sort((a, b) => a.x - b.x);
-
-      let lineText = '';
-      for (let j = 0; j < line.length; j++) {
-        if (j > 0) {
-          const gap = line[j].x - (line[j - 1].x + line[j - 1].width);
-          // If gap is large, use tab separator (column boundary)
-          lineText += gap > 10 ? '\t' : (gap > 2 ? ' ' : '');
-        }
-        lineText += line[j].str;
-      }
-      pageLines.push(lineText);
-    }
-
-    pages.push(pageLines.join('\n'));
+    pages.push(pageText);
   }
 
   return pages.join('\n---PAGE---\n');
+}
+
+/** Parse text that user pasted manually (from their PDF viewer's copy-paste) */
+export function parseFromPastedText(text: string, fileName: string): LabReport | null {
+  return parseLifeLabsReport(text, fileName);
 }
 
 // Common test name normalization map
