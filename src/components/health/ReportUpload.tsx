@@ -29,6 +29,8 @@ export function ReportUpload({ onClose }: ReportUploadProps) {
   const [parsedReports, setParsedReports] = useState<LabReport[]>([]);
   const [parseErrors, setParseErrors] = useState<{ fileName: string; error: string }[]>([]);
   const [expandedReport, setExpandedReport] = useState<string | null>(null);
+  const [rawTexts, setRawTexts] = useState<{ fileName: string; text: string }[]>([]);
+  const [showRawText, setShowRawText] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { addReports } = useHealthStore();
 
@@ -37,9 +39,10 @@ export function ReportUpload({ onClose }: ReportUploadProps) {
     if (pdfFiles.length === 0) return;
 
     setStep('parsing');
-    const { reports, errors } = await parseMultiplePDFs(pdfFiles);
+    const { reports, errors, rawTexts: texts } = await parseMultiplePDFs(pdfFiles);
     setParsedReports(reports);
     setParseErrors(errors);
+    setRawTexts(texts);
     setStep('preview');
     if (reports.length > 0) {
       setExpandedReport(reports[0].id);
@@ -300,6 +303,30 @@ export function ReportUpload({ onClose }: ReportUploadProps) {
                   </div>
                 );
               })}
+            </div>
+          )}
+
+          {/* Raw text debug viewer */}
+          {step === 'preview' && rawTexts.length > 0 && (
+            <div className="mt-4">
+              <button
+                onClick={() => setShowRawText(!showRawText)}
+                className="text-xs text-gray-400 hover:text-gray-600 font-medium"
+              >
+                {showRawText ? 'Hide' : 'Show'} raw extracted text
+              </button>
+              {showRawText && (
+                <div className="mt-2 space-y-3">
+                  {rawTexts.map((rt) => (
+                    <div key={rt.fileName} className="bg-gray-900 rounded-lg p-4 overflow-auto max-h-64">
+                      <p className="text-xs text-gray-400 mb-2 font-medium">{rt.fileName}</p>
+                      <pre className="text-xs text-green-400 whitespace-pre-wrap break-all font-mono leading-relaxed">
+                        {rt.text}
+                      </pre>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </div>

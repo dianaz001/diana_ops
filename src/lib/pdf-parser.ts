@@ -385,16 +385,18 @@ export function parseLifeLabsReport(text: string, fileName: string): LabReport |
   };
 }
 
-/** Parse multiple PDF files, returning results and errors */
+/** Parse multiple PDF files, returning results, errors, and raw text for debugging */
 export async function parseMultiplePDFs(
   files: File[]
-): Promise<{ reports: LabReport[]; errors: { fileName: string; error: string }[] }> {
+): Promise<{ reports: LabReport[]; errors: { fileName: string; error: string }[]; rawTexts: { fileName: string; text: string }[] }> {
   const reports: LabReport[] = [];
   const errors: { fileName: string; error: string }[] = [];
+  const rawTexts: { fileName: string; text: string }[] = [];
 
   for (const file of files) {
     try {
       const text = await extractTextFromPDF(file);
+      rawTexts.push({ fileName: file.name, text });
       const report = parseLifeLabsReport(text, file.name);
       if (report) {
         reports.push(report);
@@ -412,5 +414,5 @@ export async function parseMultiplePDFs(
     }
   }
 
-  return { reports, errors };
+  return { reports, errors, rawTexts };
 }
