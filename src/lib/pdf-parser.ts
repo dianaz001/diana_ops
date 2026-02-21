@@ -1,7 +1,7 @@
 import { pdfjsLib } from './pdf-worker-setup';
 import type { LabReport, LabCategory, LabResult, LabStatus, Person } from '../types/health';
 
-/** Extract all text from a PDF file */
+/** Extract all text from a PDF file, using position data to reconstruct layout */
 export async function extractTextFromPDF(file: File): Promise<string> {
   const arrayBuffer = await file.arrayBuffer();
   const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
@@ -10,13 +10,79 @@ export async function extractTextFromPDF(file: File): Promise<string> {
   for (let i = 1; i <= pdf.numPages; i++) {
     const page = await pdf.getPage(i);
     const content = await page.getTextContent();
-    const text = content.items
-      .map((item) => ('str' in item ? (item as { str: string }).str : ''))
-      .join(' ');
-    pages.push(text);
+
+    // Extract items with their positions
+    interface TextItem {
+      str: string;
+      x: number;
+      y: number;
+      width: number;
+    }
+
+    const items: TextItem[] = [];
+    for (const item of content.items) {
+      if (!('str' in item) || !('transform' in item)) continue;
+      const typedItem = item as { str: string; transform: number[]; width: number };
+      if (!typedItem.str.trim()) continue;
+      items.push({
+        str: typedItem.str,
+        x: typedItem.transform[4],     // x position
+        y: typedItem.transform[5],     // y position (PDF coords: bottom = 0)
+        width: typedItem.width,
+      });
+    }
+
+    if (items.length === 0) {
+      pages.push('');
+      continue;
+    }
+
+    // Sort by y descending (top of page first), then x ascending (left to right)
+    items.sort((a, b) => {
+      const yDiff = b.y - a.y;
+      if (Math.abs(yDiff) > 3) return yDiff; // different row (3pt tolerance)
+      return a.x - b.x; // same row, sort left to right
+    });
+
+    // Group items into lines based on y-position
+    const lines: TextItem[][] = [];
+    let currentLine: TextItem[] = [items[0]];
+    let currentY = items[0].y;
+
+    for (let j = 1; j < items.length; j++) {
+      if (Math.abs(items[j].y - currentY) > 3) {
+        // New line
+        lines.push(currentLine);
+        currentLine = [items[j]];
+        currentY = items[j].y;
+      } else {
+        currentLine.push(items[j]);
+      }
+    }
+    lines.push(currentLine);
+
+    // Convert lines to text, using spacing to separate columns
+    const pageLines: string[] = [];
+    for (const line of lines) {
+      // Sort items in this line by x position
+      line.sort((a, b) => a.x - b.x);
+
+      let lineText = '';
+      for (let j = 0; j < line.length; j++) {
+        if (j > 0) {
+          const gap = line[j].x - (line[j - 1].x + line[j - 1].width);
+          // If gap is large, use tab separator (column boundary)
+          lineText += gap > 10 ? '\t' : (gap > 2 ? ' ' : '');
+        }
+        lineText += line[j].str;
+      }
+      pageLines.push(lineText);
+    }
+
+    pages.push(pageLines.join('\n'));
   }
 
-  return pages.join('\n');
+  return pages.join('\n---PAGE---\n');
 }
 
 // Common test name normalization map
@@ -170,7 +236,7 @@ function extractUnit(valueStr: string): string {
 
 function detectPerson(text: string): Person | undefined {
   const upper = text.toUpperCase();
-  if (upper.includes('ELIZABETH') || upper.includes(' LIZ ') || upper.includes('ZARAZA, LIZ') || upper.includes('LIZ ZARAZA')) {
+  if (upper.includes('ELIZABETH') || upper.includes(' LIZ ') || upper.includes('ZARAZA, LIZ') || upper.includes('LIZ ZARAZA') || upper.includes('MIRYAM') || upper.includes('RIVERA')) {
     return 'liz';
   }
   if (upper.includes('JULIAN') || upper.includes('ZARAZA, JULIAN')) {
@@ -180,9 +246,21 @@ function detectPerson(text: string): Person | undefined {
 }
 
 function extractDate(text: string): string | undefined {
-  // Try various date patterns
-  // Pattern: YYYY-MM-DD
-  const isoMatch = text.match(/(\d{4}-\d{2}-\d{2})/);
+  // Try to find a collection/reported date first (not DOB or printed date)
+  const collectedMatch = text.match(/(?:collected|reported|collection date|received)[:\s]*(\d{4}-\d{2}-\d{2})/i);
+  if (collectedMatch) return collectedMatch[1];
+  const collectedMatch2 = text.match(/(?:collected|reported|collection date|received)[:\s]*(\d{1,2}\/\d{1,2}\/\d{4})/i);
+  if (collectedMatch2) {
+    const d = new Date(collectedMatch2[1]);
+    if (!isNaN(d.getTime())) return d.toISOString().slice(0, 10);
+  }
+
+  // "Printed on YYYY-MM-DD" - use as fallback (report print date)
+  const printedMatch = text.match(/Printed on\s+(\d{4}-\d{2}-\d{2})/i);
+  if (printedMatch) return printedMatch[1];
+
+  // Generic ISO date - but skip DOB
+  const isoMatch = text.match(/(?<!DOB:\s*)(\d{4}-\d{2}-\d{2})(?!.*DOB)/);
   if (isoMatch) return isoMatch[1];
 
   // Pattern: DD/MM/YYYY or MM/DD/YYYY
@@ -245,18 +323,33 @@ function extractOrderedBy(text: string): string {
 
 /**
  * Parse a single line that looks like a test result.
- * LifeLabs typically formats results as:
- * TestName   Value   Unit   ReferenceRange   Flag
+ * Handles both tab-separated columns and space-separated formats.
+ * Common formats:
+ *   Tab-separated: "Test Name\tValue\tUnit\tRef Range\tFlag"
+ *   Space-separated: "Test Name  1.23  mmol/L  0.50 - 2.00"
  */
 function parseResultLine(line: string): { testName: string; value: string; unit: string; refRange: string; flag: string } | null {
-  // Clean up extra whitespace
-  const clean = line.replace(/\s+/g, ' ').trim();
-  if (!clean || clean.length < 5) return null;
+  const trimmed = line.trim();
+  if (!trimmed || trimmed.length < 3) return null;
 
-  // Try structured pattern: test name followed by numeric value
-  // Pattern: "Test Name  1.23  mmol/L  0.50 - 2.00  "
+  // Skip header/footer lines
+  const skipPatterns = /^(patient|printed|page|share your|displayed|network|for reference|test name|component|result|reference|status|flag|collected|reported|ordered|requisition|accession|specimen|sex:|age:|dob:)/i;
+  if (skipPatterns.test(trimmed)) return null;
+
+  // Try tab-separated columns first (from position-aware extraction)
+  if (trimmed.includes('\t')) {
+    const cols = trimmed.split('\t').map((c) => c.trim()).filter(Boolean);
+    if (cols.length >= 2) {
+      return parseColumns(cols);
+    }
+  }
+
+  // Try space-separated with clean structure
+  const clean = trimmed.replace(/\s+/g, ' ');
+
+  // Pattern: "Test Name  1.23  mmol/L  0.50 - 2.00  H"
   const structuredMatch = clean.match(
-    /^(.+?)\s+([\d.]+)\s+([a-zA-Z/%]+(?:\/[a-zA-Z]+)?(?:\s*x\s*E\d+\/[a-zA-Z]+)?)\s*([\d.]+ - [\d.]+\s*[a-zA-Z/%]*(?:\/[a-zA-Z]+)?)?\s*([HLAB]*)?$/i
+    /^(.+?)\s+([\d.<>]+)\s+([a-zA-Z/%]+(?:\/[a-zA-Z]+)?(?:\s*x\s*E\d+\/[a-zA-Z]+)?)\s*([\d.]+ ?- ?[\d.]+\s*[a-zA-Z/%]*(?:\/[a-zA-Z]+)?)?\s*([HLA]{0,2})?$/i
   );
   if (structuredMatch) {
     return {
@@ -268,9 +361,9 @@ function parseResultLine(line: string): { testName: string; value: string; unit:
     };
   }
 
-  // Simpler pattern: Test Name  Value Unit
+  // Pattern: "Test Name  1.23  mmol/L"
   const simpleMatch = clean.match(
-    /^(.+?)\s+([\d.]+)\s+([a-zA-Z/%]+(?:\/[a-zA-Z]+)?)/
+    /^(.+?)\s+([\d.<>]+)\s+([a-zA-Z/%]+(?:\/[a-zA-Z]+)?)/
   );
   if (simpleMatch) {
     return {
@@ -282,9 +375,9 @@ function parseResultLine(line: string): { testName: string; value: string; unit:
     };
   }
 
-  // Pattern for qualitative results: Test Name  NEGATIVE/POSITIVE/etc
+  // Pattern for qualitative results: "Test Name  NEGATIVE"
   const qualMatch = clean.match(
-    /^(.+?)\s+(NEGATIVE|POSITIVE|NO GROWTH|NORMAL|ABNORMAL|REACTIVE|NON-REACTIVE|DETECTED|NOT DETECTED)/i
+    /^(.+?)\s+(NEGATIVE|POSITIVE|NO GROWTH|NORMAL|ABNORMAL|REACTIVE|NON-REACTIVE|DETECTED|NOT DETECTED|ABSENT|PRESENT|TRACE|CLEAR|YELLOW|STRAW)/i
   );
   if (qualMatch) {
     return {
@@ -299,6 +392,71 @@ function parseResultLine(line: string): { testName: string; value: string; unit:
   return null;
 }
 
+/** Parse columns from a tab-separated line */
+function parseColumns(cols: string[]): { testName: string; value: string; unit: string; refRange: string; flag: string } | null {
+  // Try to identify which column is what
+  // Common layouts:
+  // [TestName, Value, Unit, RefRange, Flag]
+  // [TestName, Value+Unit, RefRange, Flag]
+  // [TestName, Value, RefRange]
+  // [TestName, Value]
+  const testName = cols[0];
+  if (!testName || testName.length < 2) return null;
+
+  // Skip if first column looks like a date or number only
+  if (/^\d{4}-\d{2}-\d{2}$/.test(testName)) return null;
+  if (/^\d+$/.test(testName)) return null;
+
+  let value = '';
+  let unit = '';
+  let refRange = '';
+  let flag = '';
+
+  // Second column is typically the value (possibly with unit)
+  if (cols.length >= 2) {
+    const valCol = cols[1];
+    const valMatch = valCol.match(/^([<>]?\s*[\d.]+)\s*(.*)$/);
+    if (valMatch) {
+      value = valCol;
+      unit = valMatch[2]?.trim() || '';
+    } else {
+      // Might be qualitative
+      value = valCol;
+    }
+  }
+
+  // Look through remaining columns for unit, reference range, and flag
+  for (let i = 2; i < cols.length; i++) {
+    const col = cols[i].trim();
+    if (!col) continue;
+
+    // Flag pattern (H, L, HH, LL, A, etc.)
+    if (/^[HLA]{1,2}$/.test(col)) {
+      flag = col;
+      continue;
+    }
+
+    // Reference range pattern: "0.50 - 2.00" or "< 1.70" or "> 60"
+    if (/[\d.]+\s*-\s*[\d.]/.test(col) || /^[<>]\s*[\d.]+/.test(col)) {
+      refRange = col;
+      continue;
+    }
+
+    // Unit pattern (letters, /, %)
+    if (/^[a-zA-Z/%]+(?:\/[a-zA-Z]+)?$/.test(col) || /x\s*E\d+\//.test(col) || /^\d*\.?\d*\s*[a-zA-Z/%]+(?:\/[a-zA-Z]+)?$/.test(col)) {
+      if (!unit) {
+        unit = col;
+        if (!value.includes(unit)) value = `${value} ${unit}`.trim();
+      }
+      continue;
+    }
+  }
+
+  if (!value) return null;
+
+  return { testName, value, unit, refRange, flag };
+}
+
 /** Parse extracted PDF text into a LabReport structure */
 export function parseLifeLabsReport(text: string, fileName: string): LabReport | null {
   if (!text || text.trim().length < 20) return null;
@@ -309,8 +467,8 @@ export function parseLifeLabsReport(text: string, fileName: string): LabReport |
   const provider = extractProvider(text);
   const orderedBy = extractOrderedBy(text);
 
-  // Split into lines and try to parse each as a result
-  const lines = text.split(/[\n\r]+/);
+  // Split into lines (remove page markers) and try to parse each as a result
+  const lines = text.replace(/---PAGE---/g, '\n').split(/[\n\r]+/);
   const parsedResults: { result: LabResult; categoryId: string }[] = [];
 
   for (const line of lines) {
