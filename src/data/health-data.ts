@@ -324,19 +324,3 @@ export const healthReports: LabReport[] = [
   },
 ];
 
-/** Get all reports for a given person */
-export function getReportsForPerson(person: 'liz' | 'julian'): LabReport[] {
-  return healthReports
-    .filter((r) => r.person === person)
-    .sort((a, b) => b.date.localeCompare(a.date));
-}
-
-/** Get all unique test dates for a person */
-export function getTestDates(person: 'liz' | 'julian'): string[] {
-  return getReportsForPerson(person).map((r) => r.date);
-}
-
-/** Get a specific report by person and date */
-export function getReport(person: 'liz' | 'julian', date: string): LabReport | undefined {
-  return healthReports.find((r) => r.person === person && r.date === date);
-}

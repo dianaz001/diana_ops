@@ -30,6 +30,9 @@ export interface LabReport {
   orderedBy: string;
   specimen: string;
   categories: LabCategory[];
+  source?: 'seed' | 'uploaded';
+  uploadedAt?: string; // ISO date when the report was imported
+  rawFileName?: string; // original PDF filename for reference
 }
 
 /** Summary metric for the top-level dashboard cards */

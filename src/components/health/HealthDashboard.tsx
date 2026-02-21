@@ -1,26 +1,37 @@
 import { useState } from 'react';
-import { Calendar, User, FileText, ArrowLeft } from 'lucide-react';
+import { Calendar, User, FileText, ArrowLeft, Upload } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
-import { getReportsForPerson, getTestDates, getReport } from '../../data/health-data';
+import {
+  useHealthStore,
+  getReportsForPerson,
+  getTestDates,
+  getReport,
+  buildTrendData,
+} from '../../stores/healthStore';
 import type { Person } from '../../types/health';
 import { SummaryCards } from './SummaryCards';
 import { LabCategoryCard } from './LabCategoryCard';
+import { ReportUpload } from './ReportUpload';
 
 interface HealthDashboardProps {
   onBack: () => void;
 }
 
 export function HealthDashboard({ onBack }: HealthDashboardProps) {
+  const { uploadedReports } = useHealthStore();
   const [selectedPerson, setSelectedPerson] = useState<Person>('liz');
-  const dates = getTestDates(selectedPerson);
+  const [showUpload, setShowUpload] = useState(false);
+
+  const dates = getTestDates(uploadedReports, selectedPerson);
   const [selectedDate, setSelectedDate] = useState<string>(dates[0] || '');
 
-  const report = getReport(selectedPerson, selectedDate);
-  const reports = getReportsForPerson(selectedPerson);
+  const report = getReport(uploadedReports, selectedPerson, selectedDate);
+  const reports = getReportsForPerson(uploadedReports, selectedPerson);
+  const trendData = buildTrendData(reports);
 
   const handlePersonSwitch = (person: Person) => {
     setSelectedPerson(person);
-    const personDates = getTestDates(person);
+    const personDates = getTestDates(uploadedReports, person);
     setSelectedDate(personDates[0] || '');
   };
 
@@ -61,30 +72,41 @@ export function HealthDashboard({ onBack }: HealthDashboardProps) {
           </p>
         </div>
 
-        {/* Person toggle */}
-        <div className="flex bg-gray-100 rounded-lg p-1 self-start sm:self-auto">
+        <div className="flex items-center gap-3 self-start sm:self-auto">
+          {/* Upload button */}
           <button
-            onClick={() => handlePersonSwitch('liz')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
-              selectedPerson === 'liz'
-                ? 'bg-white shadow-sm text-gray-900'
-                : 'text-gray-500 hover:text-gray-700'
-            }`}
+            onClick={() => setShowUpload(true)}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors shadow-sm"
           >
-            <User className="w-4 h-4" />
-            Liz
+            <Upload className="w-4 h-4" />
+            Upload Reports
           </button>
-          <button
-            onClick={() => handlePersonSwitch('julian')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
-              selectedPerson === 'julian'
-                ? 'bg-white shadow-sm text-gray-900'
-                : 'text-gray-500 hover:text-gray-700'
-            }`}
-          >
-            <User className="w-4 h-4" />
-            Julian
-          </button>
+
+          {/* Person toggle */}
+          <div className="flex bg-gray-100 rounded-lg p-1">
+            <button
+              onClick={() => handlePersonSwitch('liz')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                selectedPerson === 'liz'
+                  ? 'bg-white shadow-sm text-gray-900'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              <User className="w-4 h-4" />
+              Liz
+            </button>
+            <button
+              onClick={() => handlePersonSwitch('julian')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                selectedPerson === 'julian'
+                  ? 'bg-white shadow-sm text-gray-900'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              <User className="w-4 h-4" />
+              Julian
+            </button>
+          </div>
         </div>
       </div>
 
@@ -126,6 +148,11 @@ export function HealthDashboard({ onBack }: HealthDashboardProps) {
             </div>
             <div>Provider: {report.provider}</div>
             <div>Ordered by: {report.orderedBy}</div>
+            {report.source === 'uploaded' && (
+              <span className="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full font-medium">
+                Uploaded
+              </span>
+            )}
             <div className="ml-auto font-semibold text-emerald-600">
               {normalTests}/{totalTests} in range
             </div>
@@ -139,7 +166,11 @@ export function HealthDashboard({ onBack }: HealthDashboardProps) {
           {/* Category cards */}
           <div className="space-y-4">
             {report.categories.map((category) => (
-              <LabCategoryCard key={category.id} category={category} />
+              <LabCategoryCard
+                key={category.id}
+                category={category}
+                trendData={trendData}
+              />
             ))}
           </div>
         </>
@@ -152,6 +183,13 @@ export function HealthDashboard({ onBack }: HealthDashboardProps) {
               ? "Julian's results will appear here once added."
               : "No results found for this date."}
           </p>
+          <button
+            onClick={() => setShowUpload(true)}
+            className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+          >
+            <Upload className="w-4 h-4" />
+            Upload your first report
+          </button>
         </div>
       )}
 
@@ -162,6 +200,9 @@ export function HealthDashboard({ onBack }: HealthDashboardProps) {
           {selectedPerson === 'liz' ? 'Liz' : 'Julian'}
         </div>
       )}
+
+      {/* Upload modal */}
+      {showUpload && <ReportUpload onClose={() => setShowUpload(false)} />}
     </div>
   );
 }

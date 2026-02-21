@@ -2,13 +2,15 @@ import { useState } from 'react';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import type { LabCategory } from '../../types/health';
 import { StatusBadge } from './StatusBadge';
+import { TrendCell } from './TrendCell';
 
 interface LabCategoryCardProps {
   category: LabCategory;
   defaultOpen?: boolean;
+  trendData?: Map<string, { date: string; value: number }[]>;
 }
 
-export function LabCategoryCard({ category, defaultOpen = true }: LabCategoryCardProps) {
+export function LabCategoryCard({ category, defaultOpen = true, trendData }: LabCategoryCardProps) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
   const optimalCount = category.results.filter(
@@ -55,6 +57,9 @@ export function LabCategoryCard({ category, defaultOpen = true }: LabCategoryCar
                 <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                   Status
                 </th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider hidden md:table-cell">
+                  Trend
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -77,6 +82,11 @@ export function LabCategoryCard({ category, defaultOpen = true }: LabCategoryCar
                       <span className="text-xs text-gray-500">{result.referenceRange}</span>
                     ) : (
                       <StatusBadge status={result.status} label={result.statusLabel} />
+                    )}
+                  </td>
+                  <td className="px-5 py-3 hidden md:table-cell">
+                    {trendData?.get(result.testName) && (
+                      <TrendCell history={trendData.get(result.testName)!} />
                     )}
                   </td>
                 </tr>
