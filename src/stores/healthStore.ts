@@ -5,6 +5,7 @@ import type { LabReport, Person } from '../types/health';
 
 interface HealthState {
   uploadedReports: LabReport[];
+  hiddenReportIds: string[];
   addReports: (reports: LabReport[]) => void;
   removeReport: (id: string) => void;
 }
@@ -13,6 +14,7 @@ export const useHealthStore = create<HealthState>()(
   persist(
     (set) => ({
       uploadedReports: [],
+      hiddenReportIds: [],
 
       addReports: (reports) =>
         set((state) => ({
@@ -27,41 +29,51 @@ export const useHealthStore = create<HealthState>()(
       removeReport: (id) =>
         set((state) => ({
           uploadedReports: state.uploadedReports.filter((r) => r.id !== id),
+          hiddenReportIds: state.hiddenReportIds.includes(id)
+            ? state.hiddenReportIds
+            : [...state.hiddenReportIds, id],
         })),
     }),
     {
       name: 'juliz-portal-health',
-      partialize: (state) => ({ uploadedReports: state.uploadedReports }),
+      partialize: (state) => ({
+        uploadedReports: state.uploadedReports,
+        hiddenReportIds: state.hiddenReportIds,
+      }),
     }
   )
 );
 
-/** Get all reports (seed + uploaded) merged and sorted */
-export function getAllReports(uploadedReports: LabReport[]): LabReport[] {
+/** Get all reports (seed + uploaded) merged and sorted, excluding hidden */
+export function getAllReports(uploadedReports: LabReport[], hiddenReportIds: string[] = []): LabReport[] {
   const seed = healthReports.map((r) => ({ ...r, source: 'seed' as const }));
-  return [...seed, ...uploadedReports].sort((a, b) => b.date.localeCompare(a.date));
+  return [...seed, ...uploadedReports]
+    .filter((r) => !hiddenReportIds.includes(r.id))
+    .sort((a, b) => b.date.localeCompare(a.date));
 }
 
 /** Get reports for a specific person */
 export function getReportsForPerson(
   uploadedReports: LabReport[],
-  person: Person
+  person: Person,
+  hiddenReportIds: string[] = []
 ): LabReport[] {
-  return getAllReports(uploadedReports).filter((r) => r.person === person);
+  return getAllReports(uploadedReports, hiddenReportIds).filter((r) => r.person === person);
 }
 
 /** Get all unique test dates for a person */
-export function getTestDates(uploadedReports: LabReport[], person: Person): string[] {
-  return getReportsForPerson(uploadedReports, person).map((r) => r.date);
+export function getTestDates(uploadedReports: LabReport[], person: Person, hiddenReportIds: string[] = []): string[] {
+  return getReportsForPerson(uploadedReports, person, hiddenReportIds).map((r) => r.date);
 }
 
 /** Get a specific report by person and date */
 export function getReport(
   uploadedReports: LabReport[],
   person: Person,
-  date: string
+  date: string,
+  hiddenReportIds: string[] = []
 ): LabReport | undefined {
-  return getAllReports(uploadedReports).find(
+  return getAllReports(uploadedReports, hiddenReportIds).find(
     (r) => r.person === person && r.date === date
   );
 }

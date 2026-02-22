@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Calendar, User, FileText, ArrowLeft, Upload } from 'lucide-react';
+import { Calendar, User, FileText, ArrowLeft, Upload, Trash2 } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import {
   useHealthStore,
@@ -18,21 +18,31 @@ interface HealthDashboardProps {
 }
 
 export function HealthDashboard({ onBack }: HealthDashboardProps) {
-  const { uploadedReports } = useHealthStore();
+  const { uploadedReports, hiddenReportIds, removeReport } = useHealthStore();
   const [selectedPerson, setSelectedPerson] = useState<Person>('liz');
   const [showUpload, setShowUpload] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-  const dates = getTestDates(uploadedReports, selectedPerson);
+  const dates = getTestDates(uploadedReports, selectedPerson, hiddenReportIds);
   const [selectedDate, setSelectedDate] = useState<string>(dates[0] || '');
 
-  const report = getReport(uploadedReports, selectedPerson, selectedDate);
-  const reports = getReportsForPerson(uploadedReports, selectedPerson);
+  const report = getReport(uploadedReports, selectedPerson, selectedDate, hiddenReportIds);
+  const reports = getReportsForPerson(uploadedReports, selectedPerson, hiddenReportIds);
   const trendData = buildTrendData(reports);
 
   const handlePersonSwitch = (person: Person) => {
     setSelectedPerson(person);
-    const personDates = getTestDates(uploadedReports, person);
+    const personDates = getTestDates(uploadedReports, person, hiddenReportIds);
     setSelectedDate(personDates[0] || '');
+  };
+
+  const handleDeleteReport = () => {
+    if (!report) return;
+    removeReport(report.id);
+    setShowDeleteConfirm(false);
+    // Move to the next available date
+    const remainingDates = dates.filter((d) => d !== selectedDate);
+    setSelectedDate(remainingDates[0] || '');
   };
 
   // Count all results across all categories
@@ -162,8 +172,17 @@ export function HealthDashboard({ onBack }: HealthDashboardProps) {
                 Uploaded
               </span>
             )}
-            <div className="ml-auto text-[#195de6] font-medium">
-              {normalTests}/{totalTests} in range
+            <div className="ml-auto flex items-center gap-4">
+              <span className="text-[#195de6] font-medium">
+                {normalTests}/{totalTests} in range
+              </span>
+              <button
+                onClick={() => setShowDeleteConfirm(true)}
+                className="p-2 rounded-xl text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all"
+                title="Delete this report"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
             </div>
           </div>
 
@@ -209,6 +228,37 @@ export function HealthDashboard({ onBack }: HealthDashboardProps) {
         <div className="mt-10 pt-6 border-t border-[#195de6]/5 text-center text-[10px] tracking-widest uppercase text-slate-400">
           {reports.length} report{reports.length !== 1 ? 's' : ''} on file for{' '}
           {selectedPerson === 'liz' ? 'Liz' : 'Julian'}
+        </div>
+      )}
+
+      {/* Delete confirmation */}
+      {showDeleteConfirm && report && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-xl p-8 max-w-sm mx-4 text-center">
+            <div className="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Trash2 className="w-5 h-5 text-red-500" />
+            </div>
+            <h3 className="text-lg font-light text-slate-700 mb-1">Delete this report?</h3>
+            <p className="text-sm font-light text-slate-400 mb-6">
+              {report.provider} — {format(parseISO(report.date), 'MMM d, yyyy')}
+              <br />
+              This can't be undone.
+            </p>
+            <div className="flex gap-3 justify-center">
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                className="px-5 py-2.5 rounded-xl text-sm font-light text-slate-500 hover:bg-slate-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteReport}
+                className="px-5 py-2.5 rounded-xl text-sm font-medium text-white bg-red-500 hover:bg-red-600 transition-colors"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
