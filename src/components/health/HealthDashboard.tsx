@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Calendar, User, FileText, ArrowLeft, Upload, Trash2, Archive, RotateCcw } from 'lucide-react';
+import { Calendar, User, FileText, ArrowLeft, Upload, Trash2, Archive, RotateCcw, ClipboardList, TrendingUp } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import {
   useHealthStore,
@@ -12,6 +12,9 @@ import type { Person } from '../../types/health';
 import { SummaryCards } from './SummaryCards';
 import { LabCategoryCard } from './LabCategoryCard';
 import { ReportUpload } from './ReportUpload';
+import { TrendView } from './TrendView';
+
+type ViewMode = 'results' | 'trends';
 
 interface HealthDashboardProps {
   onBack: () => void;
@@ -23,6 +26,7 @@ export function HealthDashboard({ onBack }: HealthDashboardProps) {
   const [showUpload, setShowUpload] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [viewingArchive, setViewingArchive] = useState(false);
+  const [viewMode, setViewMode] = useState<ViewMode>('results');
 
   const dates = getTestDates(uploadedReports, selectedPerson, hiddenReportIds, archivedReportIds, viewingArchive);
   const [selectedDate, setSelectedDate] = useState<string>(dates[0] || '');
@@ -271,21 +275,53 @@ export function HealthDashboard({ onBack }: HealthDashboardProps) {
             </div>
           </div>
 
-          {/* Summary cards */}
-          <div className="mb-10">
-            <SummaryCards report={report} />
+          {/* Results / Trends toggle */}
+          <div className="flex bg-[#195de6]/5 rounded-lg p-1 mb-8">
+            <button
+              onClick={() => setViewMode('results')}
+              className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-md text-[10px] tracking-widest uppercase transition-all ${
+                viewMode === 'results'
+                  ? 'bg-white shadow-sm text-[#195de6] font-medium'
+                  : 'text-slate-400 hover:text-slate-600'
+              }`}
+            >
+              <ClipboardList className="w-3.5 h-3.5" />
+              Results
+            </button>
+            <button
+              onClick={() => setViewMode('trends')}
+              className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-md text-[10px] tracking-widest uppercase transition-all ${
+                viewMode === 'trends'
+                  ? 'bg-white shadow-sm text-[#195de6] font-medium'
+                  : 'text-slate-400 hover:text-slate-600'
+              }`}
+            >
+              <TrendingUp className="w-3.5 h-3.5" />
+              Trends
+            </button>
           </div>
 
-          {/* Category cards */}
-          <div className="space-y-5">
-            {report.categories.map((category) => (
-              <LabCategoryCard
-                key={category.id}
-                category={category}
-                trendData={trendData}
-              />
-            ))}
-          </div>
+          {viewMode === 'results' ? (
+            <>
+              {/* Summary cards */}
+              <div className="mb-10">
+                <SummaryCards report={report} />
+              </div>
+
+              {/* Category cards */}
+              <div className="space-y-5">
+                {report.categories.map((category) => (
+                  <LabCategoryCard
+                    key={category.id}
+                    category={category}
+                    trendData={trendData}
+                  />
+                ))}
+              </div>
+            </>
+          ) : (
+            <TrendView reports={reports} trendData={trendData} />
+          )}
         </>
       ) : (
         <div className="text-center py-20">
