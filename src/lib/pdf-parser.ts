@@ -53,7 +53,7 @@ function extractPositionAwareText(items: TextItem[]): string {
 }
 
 /** Extract text from annotations (form fields, widget annotations) */
-async function extractAnnotationText(page: ReturnType<Awaited<ReturnType<typeof pdfjsLib.getDocument>>['getPage']> extends Promise<infer P> ? P : never): Promise<string[]> {
+async function extractAnnotationText(page: { getAnnotations: () => Promise<any[]> }): Promise<string[]> {
   try {
     const annotations = await page.getAnnotations();
     const texts: string[] = [];
@@ -78,7 +78,7 @@ async function extractAnnotationText(page: ReturnType<Awaited<ReturnType<typeof 
 }
 
 /** Try to extract text from the operator list (for text rendered via canvas operations) */
-async function extractOperatorListText(page: ReturnType<Awaited<ReturnType<typeof pdfjsLib.getDocument>>['getPage']> extends Promise<infer P> ? P : never): Promise<string[]> {
+async function extractOperatorListText(page: { getOperatorList: () => Promise<{ fnArray: number[]; argsArray: any[] }> }): Promise<string[]> {
   try {
     const opList = await page.getOperatorList();
     const texts: string[] = [];
