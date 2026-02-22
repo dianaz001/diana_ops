@@ -23,7 +23,12 @@ export function HomePage() {
     searchEntries,
   } = useEntriesStore();
 
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
+    () => {
+      const saved = localStorage.getItem('juliz-portal-nav');
+      return saved ? (JSON.parse(saved) as Category) : null;
+    }
+  );
   const [selectedEntry, setSelectedEntry] = useState<Entry | null>(null);
   const [showQuickCapture, setShowQuickCapture] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
@@ -33,6 +38,9 @@ export function HomePage() {
 
   useEffect(() => {
     fetchEntries();
+    if (selectedCategory && selectedCategory !== 'health') {
+      setFilters({ category: selectedCategory });
+    }
   }, [fetchEntries]);
 
   const handleCategorySelect = (category: Category | null) => {
@@ -40,8 +48,10 @@ export function HomePage() {
     setSearchQuery('');
     setSearchResults([]);
     if (category) {
+      localStorage.setItem('juliz-portal-nav', JSON.stringify(category));
       setFilters({ category });
     } else {
+      localStorage.removeItem('juliz-portal-nav');
       clearFilters();
     }
   };
