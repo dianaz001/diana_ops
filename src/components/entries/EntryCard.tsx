@@ -42,25 +42,25 @@ export function EntryCard({ entry, onClick }: EntryCardProps) {
   return (
     <div
       onClick={onClick}
-      className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md hover:border-gray-300 cursor-pointer transition-all"
+      className="bg-white/60 backdrop-blur-sm rounded-2xl one-pixel-border p-5 hover:shadow-lg hover:shadow-[#195de6]/5 cursor-pointer transition-all"
     >
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <span className={`text-xs px-2 py-0.5 rounded-full ${categoryInfo.color}`}>
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className={`text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full ${categoryInfo.color}`}>
               {categoryInfo.icon} {categoryInfo.label}
             </span>
             {entry.subcategory && (
-              <span className="text-xs text-gray-500">
+              <span className="text-[10px] uppercase tracking-wider text-slate-400">
                 / {entry.subcategory}
               </span>
             )}
           </div>
 
-          <h3 className="font-semibold text-gray-900 truncate">{entry.title}</h3>
+          <h3 className="font-medium text-slate-900 truncate">{entry.title}</h3>
 
           {contentSnippet && (
-            <p className="text-sm text-gray-500 mt-1 line-clamp-2">
+            <p className="text-sm font-light text-slate-500 mt-1 line-clamp-2">
               {contentSnippet}
               {entry.content.length > 150 && '...'}
             </p>
@@ -68,17 +68,17 @@ export function EntryCard({ entry, onClick }: EntryCardProps) {
 
           {/* Tags */}
           {entry.tags && entry.tags.length > 0 && (
-            <div className="flex flex-wrap gap-1 mt-2">
+            <div className="flex flex-wrap gap-1.5 mt-2.5">
               {entry.tags.slice(0, 3).map((tag) => (
                 <span
                   key={tag}
-                  className="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded"
+                  className="bg-[#195de6]/5 text-[#195de6]/70 text-[10px] uppercase tracking-wider px-2.5 py-0.5 rounded-full"
                 >
                   {tag}
                 </span>
               ))}
               {entry.tags.length > 3 && (
-                <span className="text-xs text-gray-400">
+                <span className="text-[10px] tracking-wider text-slate-400">
                   +{entry.tags.length - 3} more
                 </span>
               )}
@@ -90,12 +90,12 @@ export function EntryCard({ entry, onClick }: EntryCardProps) {
         <div className="flex-shrink-0 text-right">
           {entry.category === 'goals' && entry.progress_percent !== undefined && (
             <div className="mb-2">
-              <div className="text-sm font-medium text-gray-700">
+              <div className="text-sm font-light text-slate-700">
                 {entry.progress_percent}%
               </div>
-              <div className="w-16 h-1.5 bg-gray-200 rounded-full mt-1">
+              <div className="w-16 h-1 bg-[#195de6]/10 rounded-full mt-1">
                 <div
-                  className="h-full bg-green-500 rounded-full"
+                  className="h-full bg-[#195de6] rounded-full"
                   style={{ width: `${entry.progress_percent}%` }}
                 />
               </div>
@@ -103,7 +103,7 @@ export function EntryCard({ entry, onClick }: EntryCardProps) {
           )}
 
           {entry.category === 'finance' && entry.amount !== undefined && (
-            <div className="text-sm font-medium text-green-600">
+            <div className="text-lg font-light tracking-tighter text-slate-800">
               ${entry.amount.toLocaleString()}
             </div>
           )}
@@ -111,7 +111,7 @@ export function EntryCard({ entry, onClick }: EntryCardProps) {
       </div>
 
       {/* Footer */}
-      <div className="flex items-center gap-4 mt-3 pt-3 border-t border-gray-100 text-xs text-gray-500">
+      <div className="flex items-center gap-4 mt-4 pt-3 border-t border-[#195de6]/5 text-[10px] tracking-wider uppercase text-slate-400">
         <div className="flex items-center gap-1">
           {getOwnerIcon()}
           <span>{getOwnerLabel()}</span>

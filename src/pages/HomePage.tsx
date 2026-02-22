@@ -107,25 +107,27 @@ export function HomePage() {
   const displayedEntries = searchQuery.trim() ? searchResults : entries;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header
-        onSearch={handleSearch}
-        onQuickCapture={() => setShowQuickCapture(true)}
-        onSync={handleSync}
-        isSyncing={isSyncing}
+    <div className="min-h-screen bg-[#f9f8f6] flex">
+      {/* Sticky sidebar */}
+      <Sidebar
+        selectedCategory={selectedCategory}
+        onCategorySelect={handleCategorySelect}
       />
 
-      <div className="flex">
-        <Sidebar
-          selectedCategory={selectedCategory}
-          onCategorySelect={handleCategorySelect}
+      {/* Main content area */}
+      <div className="flex-1 flex flex-col min-w-0">
+        <Header
+          onSearch={handleSearch}
+          onQuickCapture={() => setShowQuickCapture(true)}
+          onSync={handleSync}
+          isSyncing={isSyncing}
         />
 
-        <main className="flex-1 min-h-[calc(100vh-4rem)] pb-20 lg:pb-8">
+        <main className="flex-1 p-6 lg:p-8 pb-24 lg:pb-8">
           {selectedCategory === 'health' ? (
             <HealthDashboard onBack={() => handleCategorySelect(null)} />
           ) : (
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="max-w-5xl mx-auto">
               {!searchQuery.trim() && (
                 <RecentActivity
                   entries={entries}
@@ -141,13 +143,18 @@ export function HomePage() {
                 />
               ) : (
                 <>
-                  <div className="flex items-center justify-between mb-6">
-                    <h1 className="text-2xl font-bold text-gray-900">
+                  <div className="border-l-2 border-[#195de6]/20 pl-6 mb-8">
+                    <h1 className="text-xs tracking-[0.4em] uppercase font-light text-slate-400 mb-1">
                       {selectedCategory
                         ? selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)
                         : 'All Entries'}
                     </h1>
-                    <span className="text-sm text-gray-500">
+                    <p className="text-2xl font-light text-slate-600">
+                      {selectedCategory
+                        ? selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)
+                        : 'Overview'}
+                    </p>
+                    <span className="text-[10px] tracking-widest uppercase text-slate-400 font-light">
                       {displayedEntries.length} item{displayedEntries.length !== 1 ? 's' : ''}
                     </span>
                   </div>

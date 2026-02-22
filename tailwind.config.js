@@ -7,19 +7,20 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Notion-like colors
-        'notion-bg': '#ffffff',
-        'notion-bg-secondary': '#f7f6f3',
-        'notion-text': '#37352f',
-        'notion-text-secondary': '#787774',
-        'notion-border': '#e3e2de',
-        'notion-hover': '#efefef',
-        'notion-blue': '#2383e2',
-        'notion-red': '#eb5757',
-        'notion-green': '#0f7b6c',
+        primary: '#195de6',
+        'bg-warm': '#f9f8f6',
+        'bg-dark': '#111621',
       },
       fontFamily: {
-        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        display: ['Inter', 'system-ui', 'sans-serif'],
+      },
+      borderRadius: {
+        'DEFAULT': '0.25rem',
+        'lg': '0.5rem',
+        'xl': '0.75rem',
+        '2xl': '1rem',
+        '3xl': '1.5rem',
+        'full': '9999px',
       },
     },
   },

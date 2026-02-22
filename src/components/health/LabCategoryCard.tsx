@@ -19,23 +19,23 @@ export function LabCategoryCard({ category, defaultOpen = true, trendData }: Lab
   const total = category.results.length;
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden transition-shadow hover:shadow-md">
+    <div className="bg-white/50 backdrop-blur rounded-2xl one-pixel-border overflow-hidden hover:shadow-md hover:shadow-[#195de6]/5 transition-all">
       {/* Header */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between px-5 py-4 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
+        className="w-full flex items-center justify-between px-6 py-4 hover:bg-[#195de6]/[0.03] transition-colors cursor-pointer"
       >
         <div className="flex items-center gap-3">
           <span className="text-xl">{category.icon}</span>
-          <span className="font-semibold text-gray-900">{category.name}</span>
-          <span className="text-xs text-gray-400 font-medium">
+          <span className="text-sm font-medium text-slate-800 tracking-wide">{category.name}</span>
+          <span className="text-[10px] text-[#195de6]/60 tracking-widest uppercase">
             {optimalCount}/{total} in range
           </span>
         </div>
         {isOpen ? (
-          <ChevronDown className="w-5 h-5 text-gray-400" />
+          <ChevronDown className="w-4 h-4 text-slate-300" />
         ) : (
-          <ChevronRight className="w-5 h-5 text-gray-400" />
+          <ChevronRight className="w-4 h-4 text-slate-300" />
         )}
       </button>
 
@@ -44,20 +44,20 @@ export function LabCategoryCard({ category, defaultOpen = true, trendData }: Lab
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-100">
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              <tr className="border-b border-[#195de6]/5">
+                <th className="text-left px-6 py-3 text-[9px] tracking-[0.3em] uppercase font-light text-slate-400">
                   Test
                 </th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <th className="text-left px-6 py-3 text-[9px] tracking-[0.3em] uppercase font-light text-slate-400">
                   Result (SI)
                 </th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider hidden sm:table-cell">
+                <th className="text-left px-6 py-3 text-[9px] tracking-[0.3em] uppercase font-light text-slate-400 hidden sm:table-cell">
                   Standard
                 </th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <th className="text-left px-6 py-3 text-[9px] tracking-[0.3em] uppercase font-light text-slate-400">
                   Status
                 </th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider hidden md:table-cell">
+                <th className="text-left px-6 py-3 text-[9px] tracking-[0.3em] uppercase font-light text-slate-400 hidden md:table-cell">
                   Trend
                 </th>
               </tr>
@@ -66,25 +66,25 @@ export function LabCategoryCard({ category, defaultOpen = true, trendData }: Lab
               {category.results.map((result) => (
                 <tr
                   key={result.testName}
-                  className="border-b border-gray-50 hover:bg-blue-50/30 transition-colors"
+                  className="border-b border-[#195de6]/[0.04] hover:bg-[#195de6]/[0.03] transition-colors"
                 >
-                  <td className="px-5 py-3 font-medium text-gray-900">
+                  <td className="px-6 py-3 text-sm font-medium text-slate-800">
                     {result.testName}
                   </td>
-                  <td className="px-5 py-3 text-gray-700 font-mono text-xs">
+                  <td className="px-6 py-3 font-mono text-xs text-slate-600">
                     {result.valueSI}
                   </td>
-                  <td className="px-5 py-3 text-blue-600 font-mono text-xs hidden sm:table-cell">
+                  <td className="px-6 py-3 text-xs text-[#195de6]/50 font-mono hidden sm:table-cell">
                     {result.valueStandard}
                   </td>
-                  <td className="px-5 py-3">
+                  <td className="px-6 py-3">
                     {result.referenceRange && !result.statusLabel.includes('Normal') && !result.statusLabel.includes('Optimal') ? (
-                      <span className="text-xs text-gray-500">{result.referenceRange}</span>
+                      <span className="text-xs text-slate-400">{result.referenceRange}</span>
                     ) : (
                       <StatusBadge status={result.status} label={result.statusLabel} />
                     )}
                   </td>
-                  <td className="px-5 py-3 hidden md:table-cell">
+                  <td className="px-6 py-3 hidden md:table-cell">
                     {trendData?.get(result.testName) && (
                       <TrendCell history={trendData.get(result.testName)!} />
                     )}
@@ -95,7 +95,7 @@ export function LabCategoryCard({ category, defaultOpen = true, trendData }: Lab
           </table>
 
           {category.note && (
-            <div className="px-5 py-3 bg-gray-50 border-t border-dashed border-gray-200 text-xs text-gray-500 italic">
+            <div className="bg-[#195de6]/[0.03] border-t border-[#195de6]/5 px-6 py-3 text-[10px] text-slate-400 italic">
               {category.note}
             </div>
           )}

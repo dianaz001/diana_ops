@@ -9,7 +9,6 @@ interface MetricCard {
   value: string;
   detail: string;
   icon: string;
-  color: string;
 }
 
 function extractSummaryMetrics(report: LabReport): MetricCard[] {
@@ -27,7 +26,6 @@ function extractSummaryMetrics(report: LabReport): MetricCard[] {
       value: cholRatio.valueSI,
       detail: 'Low cardiovascular risk',
       icon: '❤️',
-      color: 'from-rose-50 to-pink-50 border-rose-200',
     });
   }
 
@@ -39,7 +37,6 @@ function extractSummaryMetrics(report: LabReport): MetricCard[] {
       value: a1c.valueSI,
       detail: 'Normal range',
       icon: '🩸',
-      color: 'from-blue-50 to-indigo-50 border-blue-200',
     });
   }
 
@@ -51,7 +48,6 @@ function extractSummaryMetrics(report: LabReport): MetricCard[] {
       value: egfr.valueSI,
       detail: 'Optimal function',
       icon: '🧪',
-      color: 'from-emerald-50 to-teal-50 border-emerald-200',
     });
   }
 
@@ -63,7 +59,6 @@ function extractSummaryMetrics(report: LabReport): MetricCard[] {
       value: tsh.valueSI,
       detail: 'In range',
       icon: '🧬',
-      color: 'from-violet-50 to-purple-50 border-violet-200',
     });
   }
 
@@ -75,7 +70,6 @@ function extractSummaryMetrics(report: LabReport): MetricCard[] {
       value: hb.valueSI,
       detail: 'Healthy level',
       icon: '🔬',
-      color: 'from-amber-50 to-yellow-50 border-amber-200',
     });
   }
 
@@ -90,16 +84,18 @@ export function SummaryCards({ report }: SummaryCardsProps) {
       {metrics.map((metric) => (
         <div
           key={metric.label}
-          className={`bg-gradient-to-br ${metric.color} border rounded-xl p-4 transition-transform hover:scale-[1.02]`}
+          className="bg-white/40 backdrop-blur rounded-2xl one-pixel-border p-5 hover:shadow-lg hover:shadow-[#195de6]/5 transition-all"
         >
-          <div className="flex items-center gap-2 mb-2">
-            <span className="text-lg">{metric.icon}</span>
-            <span className="text-xs font-semibold text-gray-600 leading-tight">
-              {metric.label}
-            </span>
+          <span className="text-lg">{metric.icon}</span>
+          <div className="text-[10px] tracking-[0.3em] uppercase font-medium text-slate-500 mt-2">
+            {metric.label}
           </div>
-          <div className="text-xl font-bold text-gray-900">{metric.value}</div>
-          <div className="text-xs text-gray-500 mt-1">{metric.detail}</div>
+          <div className="text-2xl font-light tracking-tighter text-slate-900 mt-1">
+            {metric.value}
+          </div>
+          <div className="text-[10px] tracking-wider uppercase text-[#195de6] mt-1">
+            {metric.detail}
+          </div>
         </div>
       ))}
     </div>

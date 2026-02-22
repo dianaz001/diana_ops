@@ -1,11 +1,11 @@
 import type { LabStatus } from '../../types/health';
 
 const statusStyles: Record<LabStatus, string> = {
-  optimal: 'bg-emerald-100 text-emerald-800',
-  normal: 'bg-green-50 text-green-700',
-  note: 'bg-gray-100 text-gray-700',
-  warning: 'bg-amber-100 text-amber-800',
-  danger: 'bg-red-100 text-red-800',
+  optimal: 'bg-[#195de6]/10 text-[#195de6]',
+  normal: 'bg-emerald-50 text-emerald-600',
+  note: 'bg-slate-100 text-slate-500',
+  warning: 'bg-amber-50 text-amber-600',
+  danger: 'bg-red-50 text-red-600',
 };
 
 interface StatusBadgeProps {
@@ -16,7 +16,7 @@ interface StatusBadgeProps {
 export function StatusBadge({ status, label }: StatusBadgeProps) {
   return (
     <span
-      className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap ${statusStyles[status]}`}
+      className={`inline-block text-[10px] font-medium tracking-wider uppercase px-2.5 py-0.5 rounded-full whitespace-nowrap ${statusStyles[status]}`}
     >
       {label}
     </span>

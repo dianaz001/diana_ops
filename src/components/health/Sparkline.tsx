@@ -11,7 +11,7 @@ export function Sparkline({
   points,
   width = 80,
   height = 28,
-  color = '#3b82f6',
+  color = '#195de6',
 }: SparklineProps) {
   if (points.length < 2) return null;
 
@@ -49,17 +49,25 @@ export function Sparkline({
         strokeWidth={1.5}
         strokeLinecap="round"
         strokeLinejoin="round"
+        strokeOpacity={0.6}
       />
       {/* Data points */}
       {coords.map((c, i) => (
-        <circle key={i} cx={c.x} cy={c.y} r={i === coords.length - 1 ? 2.5 : 1.5} fill={color}>
+        <circle
+          key={i}
+          cx={c.x}
+          cy={c.y}
+          r={i === coords.length - 1 ? 2.5 : 1}
+          fill={color}
+          opacity={i === coords.length - 1 ? 0.9 : 0.4}
+        >
           <title>
             {format(parseISO(c.date), 'MMM d, yyyy')}: {c.value}
           </title>
         </circle>
       ))}
-      {/* Highlight latest point */}
-      <circle cx={last.x} cy={last.y} r={4} fill={color} opacity={0.2} />
+      {/* Highlight latest point with soft glow */}
+      <circle cx={last.x} cy={last.y} r={5} fill={color} opacity={0.1} />
     </svg>
   );
 }

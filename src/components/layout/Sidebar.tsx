@@ -1,3 +1,14 @@
+import {
+  LayoutDashboard,
+  Wallet,
+  FileText,
+  Heart,
+  Users,
+  Lightbulb,
+  Target,
+  User,
+  UsersRound,
+} from 'lucide-react';
 import { CATEGORIES, type Category, type CategoryInfo } from '../../types';
 
 interface SidebarProps {
@@ -5,26 +16,43 @@ interface SidebarProps {
   onCategorySelect: (category: Category | null) => void;
 }
 
+const CATEGORY_ICONS: Record<string, React.ReactNode> = {
+  finance: <Wallet className="w-[18px] h-[18px]" />,
+  taxes: <FileText className="w-[18px] h-[18px]" />,
+  health: <Heart className="w-[18px] h-[18px]" />,
+  social: <Users className="w-[18px] h-[18px]" />,
+  ideas: <Lightbulb className="w-[18px] h-[18px]" />,
+  goals: <Target className="w-[18px] h-[18px]" />,
+};
+
 export function Sidebar({ selectedCategory, onCategorySelect }: SidebarProps) {
   return (
-    <aside className="hidden lg:block w-64 border-r border-gray-200 bg-gray-50 min-h-[calc(100vh-4rem)]">
-      <nav className="p-4">
-        <div className="mb-6">
-          <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+    <aside className="hidden lg:flex flex-col w-64 h-screen sticky top-0 border-r border-[#195de6]/10 bg-white/50 backdrop-blur-xl z-30">
+      {/* Brand */}
+      <div className="px-8 py-10">
+        <span className="text-xs uppercase tracking-[0.3em] font-light text-[#195de6]">
+          JULIZ
+        </span>
+      </div>
+
+      {/* Categories */}
+      <nav className="flex-1 px-4 overflow-y-auto">
+        <div className="mb-8">
+          <h2 className="text-[10px] uppercase tracking-[0.3em] font-light text-slate-400 px-4 mb-4">
             Categories
           </h2>
           <ul className="space-y-1">
             <li>
               <button
                 onClick={() => onCategorySelect(null)}
-                className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
+                className={`w-full flex items-center space-x-4 px-4 py-3 rounded-xl transition-colors ${
                   selectedCategory === null
-                    ? 'bg-white shadow-sm text-gray-900'
-                    : 'text-gray-600 hover:bg-white hover:text-gray-900'
+                    ? 'sidebar-link-active bg-[#195de6]/5'
+                    : 'text-slate-500 hover:text-[#195de6]'
                 }`}
               >
-                <span className="text-lg">📊</span>
-                <span className="font-medium">All</span>
+                <LayoutDashboard className="w-[18px] h-[18px]" />
+                <span className="text-[11px] uppercase tracking-widest">All</span>
               </button>
             </li>
             {CATEGORIES.map((cat) => (
@@ -38,27 +66,27 @@ export function Sidebar({ selectedCategory, onCategorySelect }: SidebarProps) {
           </ul>
         </div>
 
-        <div className="border-t border-gray-200 pt-6">
-          <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+        <div className="border-t border-[#195de6]/5 pt-6">
+          <h2 className="text-[10px] uppercase tracking-[0.3em] font-light text-slate-400 px-4 mb-4">
             Quick Filters
           </h2>
           <ul className="space-y-1">
             <li>
-              <button className="w-full flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-white hover:text-gray-900 rounded-lg transition-colors">
-                <span className="text-lg">👤</span>
-                <span>Julian's items</span>
+              <button className="w-full flex items-center space-x-4 px-4 py-3 text-slate-500 hover:text-[#195de6] rounded-xl transition-colors">
+                <User className="w-[18px] h-[18px]" />
+                <span className="text-[11px] uppercase tracking-widest">Julian's items</span>
               </button>
             </li>
             <li>
-              <button className="w-full flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-white hover:text-gray-900 rounded-lg transition-colors">
-                <span className="text-lg">👤</span>
-                <span>Liz's items</span>
+              <button className="w-full flex items-center space-x-4 px-4 py-3 text-slate-500 hover:text-[#195de6] rounded-xl transition-colors">
+                <User className="w-[18px] h-[18px]" />
+                <span className="text-[11px] uppercase tracking-widest">Liz's items</span>
               </button>
             </li>
             <li>
-              <button className="w-full flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-white hover:text-gray-900 rounded-lg transition-colors">
-                <span className="text-lg">👥</span>
-                <span>Shared items</span>
+              <button className="w-full flex items-center space-x-4 px-4 py-3 text-slate-500 hover:text-[#195de6] rounded-xl transition-colors">
+                <UsersRound className="w-[18px] h-[18px]" />
+                <span className="text-[11px] uppercase tracking-widest">Shared items</span>
               </button>
             </li>
           </ul>
@@ -81,14 +109,14 @@ function CategoryItem({
     <li>
       <button
         onClick={onSelect}
-        className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
+        className={`w-full flex items-center space-x-4 px-4 py-3 rounded-xl transition-colors ${
           isSelected
-            ? 'bg-white shadow-sm text-gray-900'
-            : 'text-gray-600 hover:bg-white hover:text-gray-900'
+            ? 'sidebar-link-active bg-[#195de6]/5'
+            : 'text-slate-500 hover:text-[#195de6]'
         }`}
       >
-        <span className="text-lg">{category.icon}</span>
-        <span className="font-medium">{category.label}</span>
+        {CATEGORY_ICONS[category.name] || <LayoutDashboard className="w-[18px] h-[18px]" />}
+        <span className="text-[11px] uppercase tracking-widest">{category.label}</span>
       </button>
     </li>
   );

@@ -14,9 +14,9 @@ export function SearchResults({ results, query, onResultClick }: SearchResultsPr
 
   if (results.length === 0) {
     return (
-      <div className="text-center py-8">
-        <p className="text-gray-500">No results found for "{query}"</p>
-        <p className="text-sm text-gray-400 mt-1">Try different keywords or check your spelling</p>
+      <div className="text-center py-12">
+        <p className="text-sm font-light text-slate-500">No results found for "{query}"</p>
+        <p className="text-[10px] tracking-wider uppercase text-slate-400 mt-2">Try different keywords or check your spelling</p>
       </div>
     );
   }
@@ -30,7 +30,7 @@ export function SearchResults({ results, query, onResultClick }: SearchResultsPr
 
     return parts.map((part, i) =>
       regex.test(part) ? (
-        <mark key={i} className="bg-yellow-200 text-gray-900 rounded px-0.5">
+        <mark key={i} className="bg-[#195de6]/15 text-[#195de6] rounded px-0.5">
           {part}
         </mark>
       ) : (
@@ -40,8 +40,8 @@ export function SearchResults({ results, query, onResultClick }: SearchResultsPr
   };
 
   return (
-    <div className="space-y-2">
-      <div className="text-sm text-gray-500 mb-4">
+    <div className="space-y-3">
+      <div className="text-[10px] tracking-widest uppercase text-slate-400 mb-6">
         Found {results.length} result{results.length !== 1 ? 's' : ''} for "{query}"
       </div>
       {results.map((entry) => {
@@ -55,33 +55,33 @@ export function SearchResults({ results, query, onResultClick }: SearchResultsPr
           <button
             key={entry.id}
             onClick={() => onResultClick(entry)}
-            className="w-full text-left p-4 bg-white border border-gray-200 rounded-lg hover:shadow-md hover:border-gray-300 transition-all"
+            className="w-full text-left bg-white/60 one-pixel-border rounded-2xl p-5 hover:shadow-lg hover:shadow-[#195de6]/5 transition-all"
           >
             <div className="flex items-start gap-3">
               <span className="text-xl flex-shrink-0">{categoryInfo.icon}</span>
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className={`text-xs px-2 py-0.5 rounded-full ${categoryInfo.color}`}>
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className={`text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full ${categoryInfo.color}`}>
                     {categoryInfo.label}
                   </span>
-                  <span className="text-xs text-gray-400">
+                  <span className="text-[10px] tracking-wider text-slate-400">
                     {format(new Date(entry.updated_at), 'MMM d, yyyy')}
                   </span>
                 </div>
-                <h3 className="font-semibold text-gray-900">
+                <h3 className="text-sm font-medium text-slate-900">
                   {highlightMatch(entry.title, query)}
                 </h3>
                 {contentSnippet && (
-                  <p className="text-sm text-gray-500 mt-1 line-clamp-2">
+                  <p className="text-sm font-light text-slate-500 mt-1 line-clamp-2">
                     {highlightMatch(contentSnippet, query)}
                   </p>
                 )}
                 {entry.tags && entry.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-1 mt-2">
+                  <div className="flex flex-wrap gap-1.5 mt-2.5">
                     {entry.tags.slice(0, 3).map((tag) => (
                       <span
                         key={tag}
-                        className="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded"
+                        className="bg-[#195de6]/5 text-[#195de6]/70 text-[10px] uppercase tracking-wider px-2.5 py-0.5 rounded-full"
                       >
                         {tag}
                       </span>

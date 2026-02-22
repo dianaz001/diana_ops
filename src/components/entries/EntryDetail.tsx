@@ -64,33 +64,33 @@ export function EntryDetail({ entry, onClose, onDelete }: EntryDetailProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
+    <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50 overflow-y-auto">
       <div className="flex items-start justify-center min-h-screen px-4 pt-4 pb-20">
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onClick={onClose} />
+        <div className="fixed inset-0" onClick={onClose} />
 
-        <div className="relative bg-white rounded-lg shadow-xl max-w-3xl w-full my-8">
+        <div className="relative bg-white rounded-2xl shadow-2xl shadow-black/10 one-pixel-border max-w-3xl w-full my-8">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-gray-200">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-[#195de6]/8">
             <div className="flex items-center gap-2">
-              <span className={`text-sm px-2 py-1 rounded-full ${categoryInfo.color}`}>
+              <span className={`text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full ${categoryInfo.color}`}>
                 {categoryInfo.icon} {categoryInfo.label}
               </span>
               {entry.subcategory && (
-                <span className="text-sm text-gray-500">/ {entry.subcategory}</span>
+                <span className="text-[10px] uppercase tracking-wider text-slate-400">/ {entry.subcategory}</span>
               )}
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               {!isEditing ? (
                 <>
                   <button
                     onClick={() => setIsEditing(true)}
-                    className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg"
+                    className="p-2 text-slate-400 hover:text-[#195de6] hover:bg-[#195de6]/5 rounded-xl transition-colors"
                   >
                     <Edit2 className="w-5 h-5" />
                   </button>
                   <button
                     onClick={() => setShowDeleteConfirm(true)}
-                    className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg"
+                    className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors"
                   >
                     <Trash2 className="w-5 h-5" />
                   </button>
@@ -98,7 +98,7 @@ export function EntryDetail({ entry, onClose, onDelete }: EntryDetailProps) {
               ) : (
                 <button
                   onClick={handleSave}
-                  className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  className="flex items-center gap-2 bg-[#195de6] text-white rounded-xl text-[11px] uppercase tracking-[0.2em] px-4 py-2 hover:bg-[#195de6]/90 transition-colors"
                 >
                   <Save className="w-4 h-4" />
                   Save
@@ -106,7 +106,7 @@ export function EntryDetail({ entry, onClose, onDelete }: EntryDetailProps) {
               )}
               <button
                 onClick={onClose}
-                className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg"
+                className="p-2 text-slate-400 hover:text-[#195de6] hover:bg-[#195de6]/5 rounded-xl transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -114,26 +114,26 @@ export function EntryDetail({ entry, onClose, onDelete }: EntryDetailProps) {
           </div>
 
           {/* Content */}
-          <div className="p-6">
+          <div className="p-8">
             {isEditing ? (
-              <div className="space-y-4">
+              <div className="space-y-5">
                 <input
                   type="text"
                   value={editedEntry.title || ''}
                   onChange={(e) => setEditedEntry({ ...editedEntry, title: e.target.value })}
-                  className="w-full text-2xl font-bold border-none focus:outline-none focus:ring-0 p-0"
+                  className="w-full text-2xl font-light border-none focus:outline-none focus:ring-0 bg-transparent p-0 text-slate-900 placeholder-slate-300"
                   placeholder="Title"
                 />
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-[10px] tracking-[0.2em] uppercase font-medium text-slate-500 mb-1.5">
                       Category
                     </label>
                     <select
                       value={editedEntry.category || entry.category}
                       onChange={(e) => setEditedEntry({ ...editedEntry, category: e.target.value as Category })}
-                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 bg-[#195de6]/5 border-none rounded-xl focus:outline-none focus:ring-1 focus:ring-[#195de6]/30 text-sm"
                     >
                       {CATEGORIES.map((cat) => (
                         <option key={cat.name} value={cat.name}>
@@ -144,13 +144,13 @@ export function EntryDetail({ entry, onClose, onDelete }: EntryDetailProps) {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-[10px] tracking-[0.2em] uppercase font-medium text-slate-500 mb-1.5">
                       Owner
                     </label>
                     <select
                       value={editedEntry.owner || entry.owner}
                       onChange={(e) => setEditedEntry({ ...editedEntry, owner: e.target.value as Owner })}
-                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 bg-[#195de6]/5 border-none rounded-xl focus:outline-none focus:ring-1 focus:ring-[#195de6]/30 text-sm"
                     >
                       <option value="julian">Julian</option>
                       <option value="liz">Liz</option>
@@ -160,7 +160,7 @@ export function EntryDetail({ entry, onClose, onDelete }: EntryDetailProps) {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-[10px] tracking-[0.2em] uppercase font-medium text-slate-500 mb-1.5">
                     Tags (comma separated)
                   </label>
                   <input
@@ -170,13 +170,13 @@ export function EntryDetail({ entry, onClose, onDelete }: EntryDetailProps) {
                       ...editedEntry,
                       tags: e.target.value.split(',').map((t) => t.trim()).filter(Boolean)
                     })}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-[#195de6]/5 border-none rounded-xl focus:outline-none focus:ring-1 focus:ring-[#195de6]/30 text-sm"
                     placeholder="tag1, tag2, tag3"
                   />
                 </div>
 
                 {sensitiveWarning && (
-                  <div className="flex items-start gap-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-800 text-sm">
+                  <div className="flex items-start gap-2 p-3 bg-amber-50/80 border-none rounded-xl text-amber-800 text-sm">
                     <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" />
                     <span>{sensitiveWarning}</span>
                   </div>
@@ -185,7 +185,7 @@ export function EntryDetail({ entry, onClose, onDelete }: EntryDetailProps) {
                 <textarea
                   value={editedEntry.content || ''}
                   onChange={(e) => handleContentChange(e.target.value)}
-                  className="w-full h-64 px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm"
+                  className="w-full h-64 px-4 py-3 bg-[#195de6]/5 border-none rounded-xl focus:outline-none focus:ring-1 focus:ring-[#195de6]/30 font-mono text-sm"
                   placeholder="Write your content in Markdown..."
                 />
 
@@ -194,7 +194,7 @@ export function EntryDetail({ entry, onClose, onDelete }: EntryDetailProps) {
               </div>
             ) : (
               <div>
-                <h1 className="text-2xl font-bold text-gray-900 mb-4">{entry.title}</h1>
+                <h1 className="text-2xl font-light tracking-tight text-slate-900 mb-4">{entry.title}</h1>
 
                 {/* Tags */}
                 {entry.tags && entry.tags.length > 0 && (
@@ -202,7 +202,7 @@ export function EntryDetail({ entry, onClose, onDelete }: EntryDetailProps) {
                     {entry.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="px-2 py-1 bg-gray-100 text-gray-600 text-sm rounded"
+                        className="bg-[#195de6]/5 text-[#195de6]/80 text-[10px] uppercase tracking-wider rounded-full px-2.5 py-1"
                       >
                         {tag}
                       </span>
@@ -214,7 +214,7 @@ export function EntryDetail({ entry, onClose, onDelete }: EntryDetailProps) {
                 {renderCategoryDisplay(entry)}
 
                 {/* Content */}
-                <div className="markdown-content prose max-w-none">
+                <div className="markdown-content prose max-w-none prose-slate prose-p:font-light prose-headings:font-medium prose-headings:tracking-tight">
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>
                     {renderContent(entry.content)}
                   </ReactMarkdown>
@@ -224,8 +224,8 @@ export function EntryDetail({ entry, onClose, onDelete }: EntryDetailProps) {
           </div>
 
           {/* Footer */}
-          <div className="px-6 py-4 border-t border-gray-200 text-sm text-gray-500">
-            <div className="flex items-center justify-between">
+          <div className="px-6 py-4 border-t border-[#195de6]/5">
+            <div className="flex items-center justify-between text-[10px] tracking-widest uppercase text-slate-400">
               <span>Owner: {entry.owner}</span>
               <span>Updated: {format(new Date(entry.updated_at), 'MMM d, yyyy h:mm a')}</span>
             </div>
@@ -233,20 +233,20 @@ export function EntryDetail({ entry, onClose, onDelete }: EntryDetailProps) {
 
           {/* Delete confirmation */}
           {showDeleteConfirm && (
-            <div className="absolute inset-0 bg-white bg-opacity-90 flex items-center justify-center rounded-lg">
+            <div className="absolute inset-0 bg-white/95 backdrop-blur flex items-center justify-center rounded-2xl">
               <div className="text-center">
-                <h3 className="text-lg font-semibold mb-2">Delete this entry?</h3>
-                <p className="text-gray-500 mb-4">This action cannot be undone.</p>
+                <h3 className="text-lg font-light text-slate-900 mb-2">Delete this entry?</h3>
+                <p className="text-sm font-light text-slate-500 mb-6">This action cannot be undone.</p>
                 <div className="flex gap-3 justify-center">
                   <button
                     onClick={() => setShowDeleteConfirm(false)}
-                    className="px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50"
+                    className="px-4 py-2 one-pixel-border rounded-xl text-sm font-light text-slate-600 hover:bg-[#195de6]/5 transition-colors"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleDelete}
-                    className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                    className="px-4 py-2 bg-red-500 text-white rounded-xl text-sm font-light hover:bg-red-600 transition-colors"
                   >
                     Delete
                   </button>
@@ -272,11 +272,11 @@ function renderCategoryFields(
       return (
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+            <label className="block text-[10px] tracking-[0.2em] uppercase font-medium text-slate-500 mb-1.5">Status</label>
             <select
               value={editedEntry.goal_status || entry.goal_status || 'not_started'}
               onChange={(e) => setEditedEntry({ ...editedEntry, goal_status: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 bg-[#195de6]/5 border-none rounded-xl focus:outline-none focus:ring-1 focus:ring-[#195de6]/30 text-sm"
             >
               <option value="not_started">Not Started</option>
               <option value="in_progress">In Progress</option>
@@ -285,14 +285,14 @@ function renderCategoryFields(
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Progress %</label>
+            <label className="block text-[10px] tracking-[0.2em] uppercase font-medium text-slate-500 mb-1.5">Progress %</label>
             <input
               type="number"
               min="0"
               max="100"
               value={editedEntry.progress_percent ?? entry.progress_percent ?? 0}
               onChange={(e) => setEditedEntry({ ...editedEntry, progress_percent: parseInt(e.target.value) })}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 bg-[#195de6]/5 border-none rounded-xl focus:outline-none focus:ring-1 focus:ring-[#195de6]/30 text-sm"
             />
           </div>
         </div>
@@ -302,12 +302,12 @@ function renderCategoryFields(
       return (
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Amount</label>
+            <label className="block text-[10px] tracking-[0.2em] uppercase font-medium text-slate-500 mb-1.5">Amount</label>
             <input
               type="number"
               value={editedEntry.amount ?? entry.amount ?? ''}
               onChange={(e) => setEditedEntry({ ...editedEntry, amount: parseFloat(e.target.value) || undefined })}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 bg-[#195de6]/5 border-none rounded-xl focus:outline-none focus:ring-1 focus:ring-[#195de6]/30 text-sm"
               placeholder="0.00"
             />
           </div>
@@ -317,9 +317,9 @@ function renderCategoryFields(
               id="recurring"
               checked={editedEntry.is_recurring ?? entry.is_recurring ?? false}
               onChange={(e) => setEditedEntry({ ...editedEntry, is_recurring: e.target.checked })}
-              className="w-4 h-4"
+              className="w-4 h-4 rounded border-[#195de6]/20 text-[#195de6] focus:ring-[#195de6]/30"
             />
-            <label htmlFor="recurring" className="text-sm text-gray-700">Recurring</label>
+            <label htmlFor="recurring" className="text-sm font-light text-slate-600">Recurring</label>
           </div>
         </div>
       );
@@ -334,19 +334,19 @@ function renderCategoryDisplay(entry: Entry) {
     case 'goals':
       if (entry.progress_percent !== undefined) {
         return (
-          <div className="mb-4 p-4 bg-gray-50 rounded-lg">
+          <div className="mb-5 p-4 bg-[#195de6]/[0.03] rounded-xl">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-gray-600">Progress</span>
-              <span className="text-sm font-semibold">{entry.progress_percent}%</span>
+              <span className="text-[10px] tracking-[0.2em] uppercase font-medium text-slate-500">Progress</span>
+              <span className="text-sm font-light text-slate-700">{entry.progress_percent}%</span>
             </div>
-            <div className="w-full h-2 bg-gray-200 rounded-full">
+            <div className="w-full h-1.5 bg-[#195de6]/10 rounded-full">
               <div
-                className="h-full bg-green-500 rounded-full transition-all"
+                className="h-full bg-[#195de6] rounded-full transition-all"
                 style={{ width: `${entry.progress_percent}%` }}
               />
             </div>
             {entry.goal_status && (
-              <div className="mt-2 text-sm text-gray-500">
+              <div className="mt-2 text-[10px] tracking-wider uppercase text-slate-400">
                 Status: {entry.goal_status.replace('_', ' ')}
               </div>
             )}
@@ -358,12 +358,12 @@ function renderCategoryDisplay(entry: Entry) {
     case 'finance':
       if (entry.amount !== undefined) {
         return (
-          <div className="mb-4 p-4 bg-green-50 rounded-lg">
-            <div className="text-2xl font-bold text-green-600">
+          <div className="mb-5 p-4 bg-[#195de6]/[0.03] rounded-xl">
+            <div className="text-2xl font-light tracking-tighter text-slate-800">
               ${entry.amount.toLocaleString()}
             </div>
             {entry.is_recurring && (
-              <div className="text-sm text-green-600 mt-1">
+              <div className="text-[10px] tracking-wider uppercase text-slate-400 mt-1">
                 Recurring {entry.frequency || 'expense'}
               </div>
             )}

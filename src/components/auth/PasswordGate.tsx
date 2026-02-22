@@ -23,8 +23,10 @@ export function PasswordGate({ children }: { children: React.ReactNode }) {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="animate-pulse text-gray-400">Loading...</div>
+      <div className="min-h-screen flex items-center justify-center bg-[#f9f8f6]">
+        <div className="animate-pulse text-slate-400 text-[10px] uppercase tracking-widest font-light">
+          Loading...
+        </div>
       </div>
     );
   }
@@ -34,30 +36,35 @@ export function PasswordGate({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="max-w-md w-full">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 mb-4">
-              <Lock className="w-8 h-8 text-blue-600" />
+    <div className="min-h-screen flex items-center justify-center bg-[#f9f8f6] px-4">
+      <div className="max-w-sm w-full">
+        <div className="bg-white/50 backdrop-blur-xl one-pixel-border rounded-2xl p-10">
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#195de6]/5 one-pixel-border mb-6">
+              <Lock className="w-6 h-6 text-[#195de6]" />
             </div>
-            <h1 className="text-2xl font-semibold text-gray-900">JuLiz Portal</h1>
-            <p className="text-gray-500 mt-2">Enter your password to continue</p>
+            <h1 className="text-xs tracking-[0.3em] uppercase font-light text-[#195de6] mb-2">
+              JULIZ
+            </h1>
+            <p className="text-sm font-light text-slate-400">
+              Enter password to continue
+            </p>
           </div>
 
           <form onSubmit={handleSubmit}>
-            <div className="space-y-4">
-              <div>
+            <div className="space-y-5">
+              <div className="relative">
                 <label htmlFor="password" className="sr-only">
                   Password
                 </label>
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input
                   id="password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Password"
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className="w-full bg-[#195de6]/5 border-none rounded-full py-3 pl-12 pr-4 text-sm font-light text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-[#195de6]/30 transition-all"
                   disabled={isSubmitting}
                   autoFocus
                 />
@@ -69,19 +76,19 @@ export function PasswordGate({ children }: { children: React.ReactNode }) {
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
-                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  className="w-3 h-3 text-[#195de6] border-[#195de6]/20 rounded focus:ring-[#195de6]/20"
                   disabled={isSubmitting}
                 />
                 <label
                   htmlFor="remember-me"
-                  className="ml-2 text-sm text-gray-600"
+                  className="ml-2.5 text-[10px] uppercase tracking-wider text-slate-400 font-light"
                 >
                   Remember me for 30 days
                 </label>
               </div>
 
               {error && (
-                <div className="text-red-600 text-sm bg-red-50 px-4 py-2 rounded-lg">
+                <div className="bg-red-50/80 text-red-600 text-sm font-light px-4 py-2.5 rounded-xl">
                   {error}
                 </div>
               )}
@@ -89,7 +96,7 @@ export function PasswordGate({ children }: { children: React.ReactNode }) {
               <button
                 type="submit"
                 disabled={isSubmitting || !password.trim()}
-                className="w-full py-3 px-4 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className="w-full bg-[#195de6] text-white py-3 rounded-xl text-[11px] uppercase tracking-[0.2em] font-medium hover:bg-[#195de6]/90 focus:outline-none focus:ring-1 focus:ring-[#195de6]/30 focus:ring-offset-2 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
               >
                 {isSubmitting ? 'Signing in...' : 'Sign in'}
               </button>
