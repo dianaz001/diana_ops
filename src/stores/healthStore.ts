@@ -6,8 +6,11 @@ import type { LabReport, Person } from '../types/health';
 interface HealthState {
   uploadedReports: LabReport[];
   hiddenReportIds: string[];
+  archivedReportIds: string[];
   addReports: (reports: LabReport[]) => void;
   removeReport: (id: string) => void;
+  archiveReport: (id: string) => void;
+  restoreReport: (id: string) => void;
 }
 
 export const useHealthStore = create<HealthState>()(
@@ -15,6 +18,7 @@ export const useHealthStore = create<HealthState>()(
     (set) => ({
       uploadedReports: [],
       hiddenReportIds: [],
+      archivedReportIds: [],
 
       addReports: (reports) =>
         set((state) => ({
@@ -33,22 +37,41 @@ export const useHealthStore = create<HealthState>()(
             ? state.hiddenReportIds
             : [...state.hiddenReportIds, id],
         })),
+
+      archiveReport: (id) =>
+        set((state) => ({
+          archivedReportIds: state.archivedReportIds.includes(id)
+            ? state.archivedReportIds
+            : [...state.archivedReportIds, id],
+        })),
+
+      restoreReport: (id) =>
+        set((state) => ({
+          archivedReportIds: state.archivedReportIds.filter((rid) => rid !== id),
+        })),
     }),
     {
       name: 'juliz-portal-health',
       partialize: (state) => ({
         uploadedReports: state.uploadedReports,
         hiddenReportIds: state.hiddenReportIds,
+        archivedReportIds: state.archivedReportIds,
       }),
     }
   )
 );
 
-/** Get all reports (seed + uploaded) merged and sorted, excluding hidden */
-export function getAllReports(uploadedReports: LabReport[], hiddenReportIds: string[] = []): LabReport[] {
+/** Get all reports (seed + uploaded) merged and sorted, excluding hidden and optionally archived */
+export function getAllReports(
+  uploadedReports: LabReport[],
+  hiddenReportIds: string[] = [],
+  archivedReportIds: string[] = [],
+  includeArchived = false
+): LabReport[] {
   const seed = healthReports.map((r) => ({ ...r, source: 'seed' as const }));
   return [...seed, ...uploadedReports]
     .filter((r) => !hiddenReportIds.includes(r.id))
+    .filter((r) => includeArchived ? archivedReportIds.includes(r.id) : !archivedReportIds.includes(r.id))
     .sort((a, b) => b.date.localeCompare(a.date));
 }
 
@@ -56,14 +79,24 @@ export function getAllReports(uploadedReports: LabReport[], hiddenReportIds: str
 export function getReportsForPerson(
   uploadedReports: LabReport[],
   person: Person,
-  hiddenReportIds: string[] = []
+  hiddenReportIds: string[] = [],
+  archivedReportIds: string[] = [],
+  includeArchived = false
 ): LabReport[] {
-  return getAllReports(uploadedReports, hiddenReportIds).filter((r) => r.person === person);
+  return getAllReports(uploadedReports, hiddenReportIds, archivedReportIds, includeArchived)
+    .filter((r) => r.person === person);
 }
 
 /** Get all unique test dates for a person */
-export function getTestDates(uploadedReports: LabReport[], person: Person, hiddenReportIds: string[] = []): string[] {
-  return getReportsForPerson(uploadedReports, person, hiddenReportIds).map((r) => r.date);
+export function getTestDates(
+  uploadedReports: LabReport[],
+  person: Person,
+  hiddenReportIds: string[] = [],
+  archivedReportIds: string[] = [],
+  includeArchived = false
+): string[] {
+  return getReportsForPerson(uploadedReports, person, hiddenReportIds, archivedReportIds, includeArchived)
+    .map((r) => r.date);
 }
 
 /** Get a specific report by person and date */
@@ -71,9 +104,11 @@ export function getReport(
   uploadedReports: LabReport[],
   person: Person,
   date: string,
-  hiddenReportIds: string[] = []
+  hiddenReportIds: string[] = [],
+  archivedReportIds: string[] = [],
+  includeArchived = false
 ): LabReport | undefined {
-  return getAllReports(uploadedReports, hiddenReportIds).find(
+  return getAllReports(uploadedReports, hiddenReportIds, archivedReportIds, includeArchived).find(
     (r) => r.person === person && r.date === date
   );
 }

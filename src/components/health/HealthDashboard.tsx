@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Calendar, User, FileText, ArrowLeft, Upload, Trash2 } from 'lucide-react';
+import { Calendar, User, FileText, ArrowLeft, Upload, Trash2, Archive, RotateCcw } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import {
   useHealthStore,
@@ -18,29 +18,51 @@ interface HealthDashboardProps {
 }
 
 export function HealthDashboard({ onBack }: HealthDashboardProps) {
-  const { uploadedReports, hiddenReportIds, removeReport } = useHealthStore();
+  const { uploadedReports, hiddenReportIds, archivedReportIds, removeReport, archiveReport, restoreReport } = useHealthStore();
   const [selectedPerson, setSelectedPerson] = useState<Person>('liz');
   const [showUpload, setShowUpload] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [viewingArchive, setViewingArchive] = useState(false);
 
-  const dates = getTestDates(uploadedReports, selectedPerson, hiddenReportIds);
+  const dates = getTestDates(uploadedReports, selectedPerson, hiddenReportIds, archivedReportIds, viewingArchive);
   const [selectedDate, setSelectedDate] = useState<string>(dates[0] || '');
 
-  const report = getReport(uploadedReports, selectedPerson, selectedDate, hiddenReportIds);
-  const reports = getReportsForPerson(uploadedReports, selectedPerson, hiddenReportIds);
+  const report = getReport(uploadedReports, selectedPerson, selectedDate, hiddenReportIds, archivedReportIds, viewingArchive);
+  const reports = getReportsForPerson(uploadedReports, selectedPerson, hiddenReportIds, archivedReportIds, viewingArchive);
+  const archivedCount = getReportsForPerson(uploadedReports, selectedPerson, hiddenReportIds, archivedReportIds, true).length;
   const trendData = buildTrendData(reports);
 
   const handlePersonSwitch = (person: Person) => {
     setSelectedPerson(person);
-    const personDates = getTestDates(uploadedReports, person, hiddenReportIds);
+    const personDates = getTestDates(uploadedReports, person, hiddenReportIds, archivedReportIds, viewingArchive);
     setSelectedDate(personDates[0] || '');
+  };
+
+  const handleToggleArchiveView = () => {
+    const next = !viewingArchive;
+    setViewingArchive(next);
+    const nextDates = getTestDates(uploadedReports, selectedPerson, hiddenReportIds, archivedReportIds, next);
+    setSelectedDate(nextDates[0] || '');
+  };
+
+  const handleArchiveReport = () => {
+    if (!report) return;
+    archiveReport(report.id);
+    const remainingDates = dates.filter((d) => d !== selectedDate);
+    setSelectedDate(remainingDates[0] || '');
+  };
+
+  const handleRestoreReport = () => {
+    if (!report) return;
+    restoreReport(report.id);
+    const remainingDates = dates.filter((d) => d !== selectedDate);
+    setSelectedDate(remainingDates[0] || '');
   };
 
   const handleDeleteReport = () => {
     if (!report) return;
     removeReport(report.id);
     setShowDeleteConfirm(false);
-    // Move to the next available date
     const remainingDates = dates.filter((d) => d !== selectedDate);
     setSelectedDate(remainingDates[0] || '');
   };
@@ -81,16 +103,35 @@ export function HealthDashboard({ onBack }: HealthDashboardProps) {
         </div>
 
         <div className="flex items-center gap-4">
+          {/* Archive toggle */}
+          {archivedCount > 0 && (
+            <button
+              onClick={handleToggleArchiveView}
+              className={`border py-3 px-5 rounded-xl flex items-center gap-3 transition-all ${
+                viewingArchive
+                  ? 'bg-amber-50 border-amber-300 text-amber-700'
+                  : 'bg-white border-[#195de6]/20 hover:border-[#195de6]'
+              }`}
+            >
+              <Archive className="w-4 h-4" />
+              <span className="text-[11px] uppercase tracking-[0.2em] font-medium">
+                Archive ({archivedCount})
+              </span>
+            </button>
+          )}
+
           {/* Upload button */}
-          <button
-            onClick={() => setShowUpload(true)}
-            className="bg-white border border-[#195de6]/20 py-3 px-5 rounded-xl flex items-center gap-3 hover:border-[#195de6] transition-all group"
-          >
-            <Upload className="w-4 h-4 text-[#195de6]" />
-            <span className="text-[11px] uppercase tracking-[0.2em] font-medium text-slate-700">
-              Upload Reports
-            </span>
-          </button>
+          {!viewingArchive && (
+            <button
+              onClick={() => setShowUpload(true)}
+              className="bg-white border border-[#195de6]/20 py-3 px-5 rounded-xl flex items-center gap-3 hover:border-[#195de6] transition-all group"
+            >
+              <Upload className="w-4 h-4 text-[#195de6]" />
+              <span className="text-[11px] uppercase tracking-[0.2em] font-medium text-slate-700">
+                Upload Reports
+              </span>
+            </button>
+          )}
 
           {/* Person toggle */}
           <div className="flex bg-[#195de6]/5 rounded-lg p-1">
@@ -119,6 +160,22 @@ export function HealthDashboard({ onBack }: HealthDashboardProps) {
           </div>
         </div>
       </div>
+
+      {/* Archive banner */}
+      {viewingArchive && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl px-5 py-3 mb-6 flex items-center gap-3">
+          <Archive className="w-4 h-4 text-amber-500" />
+          <span className="text-sm font-light text-amber-700">
+            Viewing archived reports
+          </span>
+          <button
+            onClick={handleToggleArchiveView}
+            className="ml-auto text-[10px] tracking-widest uppercase text-amber-600 hover:text-amber-800 transition-colors"
+          >
+            Back to active
+          </button>
+        </div>
+      )}
 
       {/* Date timeline */}
       {dates.length > 0 && (
@@ -176,13 +233,41 @@ export function HealthDashboard({ onBack }: HealthDashboardProps) {
               <span className="text-[#195de6] font-medium">
                 {normalTests}/{totalTests} in range
               </span>
-              <button
-                onClick={() => setShowDeleteConfirm(true)}
-                className="p-2 rounded-xl text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all"
-                title="Delete this report"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
+              {viewingArchive ? (
+                <>
+                  <button
+                    onClick={handleRestoreReport}
+                    className="p-2 rounded-xl text-slate-400 hover:text-[#195de6] hover:bg-[#195de6]/5 transition-all"
+                    title="Restore this report"
+                  >
+                    <RotateCcw className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => setShowDeleteConfirm(true)}
+                    className="p-2 rounded-xl text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all"
+                    title="Delete permanently"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={handleArchiveReport}
+                    className="p-2 rounded-xl text-slate-400 hover:text-amber-500 hover:bg-amber-50 transition-all"
+                    title="Archive this report"
+                  >
+                    <Archive className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => setShowDeleteConfirm(true)}
+                    className="p-2 rounded-xl text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all"
+                    title="Delete this report"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </>
+              )}
             </div>
           </div>
 
@@ -204,22 +289,45 @@ export function HealthDashboard({ onBack }: HealthDashboardProps) {
         </>
       ) : (
         <div className="text-center py-20">
-          <div className="text-5xl opacity-30 mb-4">🏥</div>
-          <p className="text-lg font-light text-slate-600">No lab results yet</p>
-          <p className="text-sm font-light text-slate-400 mt-1">
-            {selectedPerson === 'julian'
-              ? "Julian's results will appear here once added."
-              : "No results found for this date."}
-          </p>
-          <button
-            onClick={() => setShowUpload(true)}
-            className="mt-6 bg-white border border-[#195de6]/20 py-3 px-5 rounded-xl inline-flex items-center gap-3 hover:border-[#195de6] transition-all group"
-          >
-            <Upload className="w-4 h-4 text-[#195de6]" />
-            <span className="text-[11px] uppercase tracking-[0.2em] font-medium text-slate-700">
-              Upload your first report
-            </span>
-          </button>
+          {viewingArchive ? (
+            <>
+              <div className="text-5xl opacity-30 mb-4">
+                <Archive className="w-12 h-12 mx-auto text-slate-300" />
+              </div>
+              <p className="text-lg font-light text-slate-600">No archived reports</p>
+              <p className="text-sm font-light text-slate-400 mt-1">
+                Reports you archive will appear here.
+              </p>
+              <button
+                onClick={handleToggleArchiveView}
+                className="mt-6 bg-white border border-[#195de6]/20 py-3 px-5 rounded-xl inline-flex items-center gap-3 hover:border-[#195de6] transition-all group"
+              >
+                <ArrowLeft className="w-4 h-4 text-[#195de6]" />
+                <span className="text-[11px] uppercase tracking-[0.2em] font-medium text-slate-700">
+                  Back to active reports
+                </span>
+              </button>
+            </>
+          ) : (
+            <>
+              <div className="text-5xl opacity-30 mb-4">🏥</div>
+              <p className="text-lg font-light text-slate-600">No lab results yet</p>
+              <p className="text-sm font-light text-slate-400 mt-1">
+                {selectedPerson === 'julian'
+                  ? "Julian's results will appear here once added."
+                  : "No results found for this date."}
+              </p>
+              <button
+                onClick={() => setShowUpload(true)}
+                className="mt-6 bg-white border border-[#195de6]/20 py-3 px-5 rounded-xl inline-flex items-center gap-3 hover:border-[#195de6] transition-all group"
+              >
+                <Upload className="w-4 h-4 text-[#195de6]" />
+                <span className="text-[11px] uppercase tracking-[0.2em] font-medium text-slate-700">
+                  Upload your first report
+                </span>
+              </button>
+            </>
+          )}
         </div>
       )}
 
