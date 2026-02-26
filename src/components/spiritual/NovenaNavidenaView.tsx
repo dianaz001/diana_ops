@@ -1,49 +1,74 @@
 import { useState } from 'react';
+import { Check, RotateCcw } from 'lucide-react';
 import {
   dias,
   oracionParaTodosLosDias,
   oracionALaVirgen,
   oracionASanJose,
-  aspiraciones,
+  gozos,
+  estribilloGozos,
   oracionAlNinoJesus,
 } from '../../data/novena-navidena';
 
 export function NovenaNavidenaView() {
   const [diaSeleccionado, setDiaSeleccionado] = useState(0);
+  const [gozosLeidos, setGozosLeidos] = useState<boolean[]>(
+    new Array(gozos.length).fill(false)
+  );
   const dia = dias[diaSeleccionado];
+
+  const toggleGozo = (idx: number) => {
+    setGozosLeidos((prev) => {
+      const next = [...prev];
+      next[idx] = !next[idx];
+      return next;
+    });
+  };
+
+  const resetGozos = () => {
+    setGozosLeidos(new Array(gozos.length).fill(false));
+  };
+
+  const gozosCompletados = gozosLeidos.filter(Boolean).length;
 
   const secciones = [
     {
+      id: 'oracion-diaria',
       numero: 1,
       titulo: 'Oración para todos los días',
       texto: oracionParaTodosLosDias,
       tipo: 'comun' as const,
     },
     {
+      id: 'consideracion',
       numero: 2,
       titulo: `Consideración del día ${dia.dia}: ${dia.titulo}`,
       texto: dia.consideracion,
       tipo: 'unica' as const,
     },
     {
+      id: 'oracion-virgen',
       numero: 3,
       titulo: 'Oración a la Santísima Virgen',
       texto: oracionALaVirgen,
       tipo: 'comun' as const,
     },
     {
+      id: 'oracion-jose',
       numero: 4,
       titulo: 'Oración a San José',
       texto: oracionASanJose,
       tipo: 'comun' as const,
     },
     {
+      id: 'gozos',
       numero: 5,
-      titulo: 'Aspiraciones para la Venida del Niño Jesús',
-      texto: aspiraciones,
-      tipo: 'comun' as const,
+      titulo: 'Gozos',
+      texto: '',
+      tipo: 'gozos' as const,
     },
     {
+      id: 'oracion-nino',
       numero: 6,
       titulo: 'Oración al Niño Jesús',
       texto: oracionAlNinoJesus,
@@ -87,52 +112,141 @@ export function NovenaNavidenaView() {
 
       {/* Prayer sections */}
       <div className="space-y-3">
-        {secciones.map((seccion) => (
-          <div
-            key={seccion.numero}
-            className={`bg-white rounded-2xl p-5 shadow-sm border transition-all ${
-              seccion.tipo === 'unica'
-                ? 'border-purple-200/60 ring-1 ring-purple-100/40'
-                : 'border-purple-100/30'
-            }`}
-          >
-            <div className="flex gap-4">
-              {/* Number */}
-              <div
-                className={`flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center ${
-                  seccion.tipo === 'unica'
-                    ? 'bg-purple-600 text-white'
-                    : 'bg-purple-50'
-                }`}
-              >
-                <span
-                  className={`text-sm font-medium ${
-                    seccion.tipo === 'unica'
-                      ? 'text-white'
-                      : 'text-purple-600'
-                  }`}
-                >
-                  {seccion.numero}
-                </span>
-              </div>
+        {secciones.map((seccion) =>
+          seccion.tipo === 'gozos' ? (
+            <div
+              key={seccion.id}
+              className="bg-white rounded-2xl p-5 shadow-sm border border-purple-100/30"
+            >
+              <div className="flex gap-4">
+                <div className="flex-shrink-0 w-9 h-9 rounded-full bg-purple-50 flex items-center justify-center">
+                  <span className="text-sm font-medium text-purple-600">
+                    {seccion.numero}
+                  </span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <h3 className="text-sm font-medium text-slate-700">
+                        {seccion.titulo}
+                      </h3>
+                      <p className="text-[11px] text-slate-400 mt-0.5">
+                        {gozosCompletados}/{gozos.length} leídos — toca cada gozo al leerlo
+                      </p>
+                    </div>
+                    {gozosCompletados > 0 && (
+                      <button
+                        onClick={resetGozos}
+                        className="p-1.5 rounded-lg text-slate-300 hover:text-purple-500 hover:bg-purple-50 transition-colors"
+                        title="Reiniciar"
+                      >
+                        <RotateCcw className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
 
-              {/* Content */}
-              <div className="flex-1 min-w-0">
-                <h3 className="text-sm font-medium text-slate-700 mb-3">
-                  {seccion.titulo}
-                  {seccion.tipo === 'unica' && (
-                    <span className="ml-2 text-[10px] uppercase tracking-widest text-purple-500 font-normal">
-                      Hoy
-                    </span>
-                  )}
-                </h3>
-                <p className="text-sm text-slate-500 leading-relaxed font-light whitespace-pre-line">
-                  {seccion.texto}
-                </p>
+                  {/* Estribillo */}
+                  <div className="bg-purple-50/60 rounded-xl p-3 mb-3 border border-purple-100/40">
+                    <p className="text-sm text-purple-700 font-medium text-center whitespace-pre-line">
+                      {estribilloGozos}
+                    </p>
+                  </div>
+
+                  {/* Individual gozos */}
+                  <div className="space-y-2">
+                    {gozos.map((gozo, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => toggleGozo(idx)}
+                        className={`w-full text-left rounded-xl p-3 border transition-all ${
+                          gozosLeidos[idx]
+                            ? 'bg-purple-50/40 border-purple-200/40 opacity-50'
+                            : 'bg-slate-50/50 border-slate-100 hover:border-purple-200/50 hover:bg-purple-50/30'
+                        }`}
+                      >
+                        <div className="flex gap-3">
+                          <div
+                            className={`flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center mt-0.5 transition-colors ${
+                              gozosLeidos[idx]
+                                ? 'bg-purple-500 border-purple-500'
+                                : 'border-slate-300'
+                            }`}
+                          >
+                            {gozosLeidos[idx] ? (
+                              <Check className="w-3.5 h-3.5 text-white" />
+                            ) : (
+                              <span className="text-[10px] text-slate-400 font-medium">
+                                {idx + 1}
+                              </span>
+                            )}
+                          </div>
+                          <p
+                            className={`text-sm leading-relaxed font-light whitespace-pre-line ${
+                              gozosLeidos[idx]
+                                ? 'text-slate-400 line-through decoration-purple-300/50'
+                                : 'text-slate-600'
+                            }`}
+                          >
+                            {gozo}
+                          </p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Final estribillo */}
+                  <div className="bg-purple-50/60 rounded-xl p-3 mt-3 border border-purple-100/40">
+                    <p className="text-sm text-purple-700 font-medium text-center whitespace-pre-line">
+                      {estribilloGozos}
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ) : (
+            <div
+              key={seccion.id}
+              className={`bg-white rounded-2xl p-5 shadow-sm border transition-all ${
+                seccion.tipo === 'unica'
+                  ? 'border-purple-200/60 ring-1 ring-purple-100/40'
+                  : 'border-purple-100/30'
+              }`}
+            >
+              <div className="flex gap-4">
+                <div
+                  className={`flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center ${
+                    seccion.tipo === 'unica'
+                      ? 'bg-purple-600 text-white'
+                      : 'bg-purple-50'
+                  }`}
+                >
+                  <span
+                    className={`text-sm font-medium ${
+                      seccion.tipo === 'unica'
+                        ? 'text-white'
+                        : 'text-purple-600'
+                    }`}
+                  >
+                    {seccion.numero}
+                  </span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-sm font-medium text-slate-700 mb-3">
+                    {seccion.titulo}
+                    {seccion.tipo === 'unica' && (
+                      <span className="ml-2 text-[10px] uppercase tracking-widest text-purple-500 font-normal">
+                        Hoy
+                      </span>
+                    )}
+                  </h3>
+                  <p className="text-sm text-slate-500 leading-relaxed font-light whitespace-pre-line">
+                    {seccion.texto}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )
+        )}
       </div>
     </div>
   );
