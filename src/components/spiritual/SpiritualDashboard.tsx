@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { ArrowLeft, ChevronRight } from 'lucide-react';
 import { RosarioView } from './RosarioView';
+import { NovenasView } from './NovenasView';
+import { NovenaNavidenaView } from './NovenaNavidenaView';
 
-type SpiritualSection = null | 'rosario';
+type SpiritualSection = null | 'rosario' | 'novenas' | 'novena-navidena';
 
 interface SpiritualDashboardProps {
   onBack: () => void;
@@ -16,11 +18,10 @@ const SPIRITUAL_ITEMS = [
     icono: '📿',
   },
   {
-    id: null,
+    id: 'novenas' as const,
     titulo: 'Novenas',
-    descripcion: 'Próximamente',
+    descripcion: 'Novena Navideña y más',
     icono: '🕯️',
-    disabled: true,
   },
   {
     id: null,
@@ -31,19 +32,26 @@ const SPIRITUAL_ITEMS = [
   },
 ];
 
+const SECTION_TITLES: Record<string, string> = {
+  rosario: 'Santo Rosario',
+  novenas: 'Novenas',
+  'novena-navidena': 'Novena Navideña',
+};
+
 export function SpiritualDashboard({ onBack }: SpiritualDashboardProps) {
   const [section, setSection] = useState<SpiritualSection>(null);
 
   const handleBack = () => {
-    if (section) {
+    if (section === 'novena-navidena') {
+      setSection('novenas');
+    } else if (section) {
       setSection(null);
     } else {
       onBack();
     }
   };
 
-  const sectionTitle =
-    section === 'rosario' ? 'Santo Rosario' : 'Espiritual';
+  const sectionTitle = section ? SECTION_TITLES[section] || 'Espiritual' : 'Espiritual';
 
   return (
     <div className="max-w-3xl mx-auto">
@@ -68,6 +76,12 @@ export function SpiritualDashboard({ onBack }: SpiritualDashboardProps) {
       {/* Content */}
       {section === 'rosario' ? (
         <RosarioView />
+      ) : section === 'novenas' ? (
+        <NovenasView onSelectNovena={(id) => {
+          if (id === 'navidena') setSection('novena-navidena');
+        }} />
+      ) : section === 'novena-navidena' ? (
+        <NovenaNavidenaView />
       ) : (
         <div className="space-y-3">
           {SPIRITUAL_ITEMS.map((item) => (
