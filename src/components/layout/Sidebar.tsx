@@ -6,6 +6,7 @@ import {
   Users,
   Lightbulb,
   Target,
+  Cross,
   User,
   UsersRound,
 } from 'lucide-react';
@@ -23,6 +24,7 @@ const CATEGORY_ICONS: Record<string, React.ReactNode> = {
   social: <Users className="w-[18px] h-[18px]" />,
   ideas: <Lightbulb className="w-[18px] h-[18px]" />,
   goals: <Target className="w-[18px] h-[18px]" />,
+  spiritual: <Cross className="w-[18px] h-[18px]" />,
 };
 
 export function Sidebar({ selectedCategory, onCategorySelect }: SidebarProps) {
