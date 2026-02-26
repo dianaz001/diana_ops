@@ -8,6 +8,7 @@ import { QuickCapture } from '../components/entries/QuickCapture';
 import { RecentActivity } from '../components/entries/RecentActivity';
 import { SearchResults } from '../components/search/SearchResults';
 import { HealthDashboard } from '../components/health/HealthDashboard';
+import { SpiritualDashboard } from '../components/spiritual/SpiritualDashboard';
 import { useEntriesStore } from '../stores/entriesStore';
 import { pullFromGitHub, pushToGitHub } from '../lib/github';
 import type { Entry, Category } from '../types';
@@ -38,7 +39,7 @@ export function HomePage() {
 
   useEffect(() => {
     fetchEntries();
-    if (selectedCategory && selectedCategory !== 'health') {
+    if (selectedCategory && selectedCategory !== 'health' && selectedCategory !== 'spiritual') {
       setFilters({ category: selectedCategory });
     }
   }, [fetchEntries]);
@@ -136,6 +137,8 @@ export function HomePage() {
         <main className="flex-1 p-6 lg:p-8 pb-24 lg:pb-8">
           {selectedCategory === 'health' ? (
             <HealthDashboard onBack={() => handleCategorySelect(null)} />
+          ) : selectedCategory === 'spiritual' ? (
+            <SpiritualDashboard onBack={() => handleCategorySelect(null)} />
           ) : (
             <div className="max-w-5xl mx-auto">
               {!searchQuery.trim() && (
