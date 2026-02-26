@@ -38,6 +38,9 @@ export function NovenaNavidenaView() {
       titulo: 'Oración para todos los días',
       texto: oracionParaTodosLosDias,
       tipo: 'comun' as const,
+      bg: 'bg-blue-50/60',
+      border: 'border-blue-100/50',
+      badge: 'bg-blue-100 text-blue-600',
     },
     {
       id: 'consideracion',
@@ -45,6 +48,9 @@ export function NovenaNavidenaView() {
       titulo: `Consideración del día ${dia.dia}: ${dia.titulo}`,
       texto: dia.consideracion,
       tipo: 'unica' as const,
+      bg: 'bg-amber-50/60',
+      border: 'border-amber-200/60 ring-1 ring-amber-100/40',
+      badge: 'bg-amber-500 text-white',
     },
     {
       id: 'oracion-virgen',
@@ -52,6 +58,9 @@ export function NovenaNavidenaView() {
       titulo: 'Oración a la Santísima Virgen',
       texto: oracionALaVirgen,
       tipo: 'comun' as const,
+      bg: 'bg-rose-50/60',
+      border: 'border-rose-100/50',
+      badge: 'bg-rose-100 text-rose-600',
     },
     {
       id: 'oracion-jose',
@@ -59,6 +68,9 @@ export function NovenaNavidenaView() {
       titulo: 'Oración a San José',
       texto: oracionASanJose,
       tipo: 'comun' as const,
+      bg: 'bg-emerald-50/60',
+      border: 'border-emerald-100/50',
+      badge: 'bg-emerald-100 text-emerald-600',
     },
     {
       id: 'gozos',
@@ -66,6 +78,9 @@ export function NovenaNavidenaView() {
       titulo: 'Gozos',
       texto: '',
       tipo: 'gozos' as const,
+      bg: 'bg-purple-50/60',
+      border: 'border-purple-100/50',
+      badge: 'bg-purple-100 text-purple-600',
     },
     {
       id: 'oracion-nino',
@@ -73,6 +88,9 @@ export function NovenaNavidenaView() {
       titulo: 'Oración al Niño Jesús',
       texto: oracionAlNinoJesus,
       tipo: 'comun' as const,
+      bg: 'bg-sky-50/60',
+      border: 'border-sky-100/50',
+      badge: 'bg-sky-100 text-sky-600',
     },
   ];
 
@@ -116,11 +134,11 @@ export function NovenaNavidenaView() {
           seccion.tipo === 'gozos' ? (
             <div
               key={seccion.id}
-              className="bg-white rounded-2xl p-5 shadow-sm border border-purple-100/30"
+              className={`${seccion.bg} rounded-2xl p-5 shadow-sm border ${seccion.border}`}
             >
               <div className="flex gap-4">
-                <div className="flex-shrink-0 w-9 h-9 rounded-full bg-purple-50 flex items-center justify-center">
-                  <span className="text-sm font-medium text-purple-600">
+                <div className={`flex-shrink-0 w-9 h-9 rounded-full ${seccion.badge} flex items-center justify-center`}>
+                  <span className="text-sm font-medium">
                     {seccion.numero}
                   </span>
                 </div>
@@ -206,27 +224,13 @@ export function NovenaNavidenaView() {
           ) : (
             <div
               key={seccion.id}
-              className={`bg-white rounded-2xl p-5 shadow-sm border transition-all ${
-                seccion.tipo === 'unica'
-                  ? 'border-purple-200/60 ring-1 ring-purple-100/40'
-                  : 'border-purple-100/30'
-              }`}
+              className={`${seccion.bg} rounded-2xl p-5 shadow-sm border transition-all ${seccion.border}`}
             >
               <div className="flex gap-4">
                 <div
-                  className={`flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center ${
-                    seccion.tipo === 'unica'
-                      ? 'bg-purple-600 text-white'
-                      : 'bg-purple-50'
-                  }`}
+                  className={`flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center ${seccion.badge}`}
                 >
-                  <span
-                    className={`text-sm font-medium ${
-                      seccion.tipo === 'unica'
-                        ? 'text-white'
-                        : 'text-purple-600'
-                    }`}
-                  >
+                  <span className="text-sm font-medium">
                     {seccion.numero}
                   </span>
                 </div>
@@ -234,7 +238,7 @@ export function NovenaNavidenaView() {
                   <h3 className="text-sm font-medium text-slate-700 mb-3">
                     {seccion.titulo}
                     {seccion.tipo === 'unica' && (
-                      <span className="ml-2 text-[10px] uppercase tracking-widest text-purple-500 font-normal">
+                      <span className="ml-2 text-[10px] uppercase tracking-widest text-amber-600 font-normal">
                         Hoy
                       </span>
                     )}
