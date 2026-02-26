@@ -4,7 +4,8 @@ import {
   oracionParaTodosLosDias,
   oracionALaVirgen,
   oracionASanJose,
-  gozos,
+  aspiraciones,
+  oracionAlNinoJesus,
 } from '../../data/novena-navidena';
 
 export function NovenaNavidenaView() {
@@ -38,8 +39,14 @@ export function NovenaNavidenaView() {
     },
     {
       numero: 5,
-      titulo: 'Gozos',
-      texto: gozos,
+      titulo: 'Aspiraciones para la Venida del Niño Jesús',
+      texto: aspiraciones,
+      tipo: 'comun' as const,
+    },
+    {
+      numero: 6,
+      titulo: 'Oración al Niño Jesús',
+      texto: oracionAlNinoJesus,
       tipo: 'comun' as const,
     },
   ];

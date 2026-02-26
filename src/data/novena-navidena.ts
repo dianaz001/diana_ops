@@ -24,48 +24,108 @@ Os ruego, por el amor que tuvisteis al Divino Niño, me abracéis en santo amor 
 
 Amén.`;
 
-export const gozos = `¡Dulce Jesús mío, mi Niño adorado!
+export const aspiraciones = `Dulce Jesús mío, mi niño adorado,
 ¡Ven a nuestras almas! ¡Ven, no tardes tanto!
 
-Del seno del Padre, Eternal Palabra,
-¡oh Sabiduría, oh poder sagrado!
-¡Ven a enseñarnos la prudencia santa!
-¡Ven, no tardes tanto!
+¡Oh, Sapiencia suma del Dios soberano,
+que a infantil alcance te rebajas sacro!
+¡Oh, Divino Niño, ven para enseñarnos
+la prudencia que hace verdaderos sabios!
 
-¡Dulce Jesús mío, mi Niño adorado!
+Dulce Jesús mío, mi niño adorado,
 ¡Ven a nuestras almas! ¡Ven, no tardes tanto!
 
-De una Virgen pura, Sol, Aurora hermosa,
-vas a encarnarte en su seno sagrado.
-¡Ven, que ya nos llega este tiempo santo!
-¡Ven, no tardes tanto!
+¡Oh, Adonai potente que Moisés hablando,
+de Israel al pueblo diste los mandatos!
+¡Ah, ven prontamente para rescatarnos,
+y que un niño débil muestre fuerte brazo!
 
-¡Dulce Jesús mío, mi Niño adorado!
+Dulce Jesús mío, mi niño adorado,
 ¡Ven a nuestras almas! ¡Ven, no tardes tanto!
 
-Rey de las naciones, Emmanuel preclaro,
-de Israel esperanza, Pastor del rebaño,
-Consuelo del triste, luz del desterrado.
-¡Ven, no tardes tanto!
+¡Oh, raíz sagrada de José que en lo alto
+presenta al orbe tu fragante nardo!
+Dulcísimo Niño que has sido llamado
+Lirio de los valles, Bella flor del campo.
 
-¡Dulce Jesús mío, mi Niño adorado!
+Dulce Jesús mío, mi niño adorado,
 ¡Ven a nuestras almas! ¡Ven, no tardes tanto!
 
-Ábranse los cielos, llueva de lo alto
-bienhechor rocío como riego santo.
-¡Ven, hermoso Niño! ¡Ven, Dios humanado!
-¡Ven, no tardes tanto!
+¡Llave de David que abre al desterrado
+las cerradas puertas del regio palacio!
+¡Sácanos oh Niño con tu blanca mano,
+de la cárcel triste que labró el pecado!
 
-¡Dulce Jesús mío, mi Niño adorado!
+Dulce Jesús mío, mi niño adorado,
 ¡Ven a nuestras almas! ¡Ven, no tardes tanto!
 
-Ven, que ya María previene sus brazos,
-do su Niño tierno verá reclinado.
-¡Ven, que ya nos llega tu santo regalo!
-¡Ven, no tardes tanto!
+¡Oh, lumbre de Oriente, sol de eternos rayos,
+que entre las tinieblas tu esplendor veamos!
+Niño tan precioso, dicha del cristiano,
+luzca la sonrisa de tus dulces labios.
 
-¡Dulce Jesús mío, mi Niño adorado!
+Dulce Jesús mío, mi niño adorado,
+¡Ven a nuestras almas! ¡Ven, no tardes tanto!
+
+¡Espejo sin mancha, santo de los santos,
+sin igual imagen del Dios soberano!
+¡Borra nuestras culpas, salva al desterrado
+y en forma de niño, da al mísero amparo!
+
+Dulce Jesús mío, mi niño adorado,
+¡Ven a nuestras almas! ¡Ven, no tardes tanto!
+
+¡Rey de las naciones, Emmanuel preclaro,
+de Israel anhelo, Pastor del rebaño!
+¡Niño que apacientas con suave cayado,
+ya la oveja arisca, ya el cordero manso!
+
+Dulce Jesús mío, mi niño adorado,
+¡Ven a nuestras almas! ¡Ven, no tardes tanto!
+
+¡Ábranse los cielos y llueva de lo alto
+bienhechor rocío como riego santo!
+¡Ven hermoso Niño, ven Dios humanado!
+¡Luce, Dios estrella! ¡Brota, flor del campo!
+
+Dulce Jesús mío, mi niño adorado,
+¡Ven a nuestras almas! ¡Ven, no tardes tanto!
+
+¡Ven, que ya María previene sus brazos,
+do su niño vean, en tiempo cercanos!
+¡Ven, que ya José, con anhelo sacro,
+se dispone a hacerse de tu amor sagrario!
+
+Dulce Jesús mío, mi niño adorado,
+¡Ven a nuestras almas! ¡Ven, no tardes tanto!
+
+¡Del débil auxilio, del doliente amparo,
+consuelo del triste, luz del desterrado!
+¡Vida de mi vida, mi dueño adorado,
+mi constante amigo, mi divino hermano!
+
+Dulce Jesús mío, mi niño adorado,
+¡Ven a nuestras almas! ¡Ven, no tardes tanto!
+
+¡Ven ante mis ojos, de ti enamorados!
+¡Bese ya tus plantas! ¡Bese ya tus manos!
+¡Prosternado en tierra, te tiendo los brazos,
+y aún más que mis frases, te dice mi llanto!
+
+Dulce Jesús mío, mi niño adorado,
+¡Ven a nuestras almas! ¡Ven, no tardes tanto!
+
+¡Ven Salvador nuestro por quien suspiramos,
+ven a nuestras almas, ven, no tardes tanto!
+
+Dulce Jesús mío, mi niño adorado,
 ¡Ven a nuestras almas! ¡Ven, no tardes tanto!`;
+
+export const oracionAlNinoJesus = `Acordaos, ¡oh dulcísimo Niño Jesús!, que dijisteis a la venerable Margarita del Santísimo Sacramento, y en persona suya a todos vuestros devotos, estas palabras tan consoladoras para nuestra pobre humanidad agobiada y doliente: "Todo lo que quieras pedir, pídelo por los méritos de mi infancia y nada te será negado."
+
+Llenos de confianza en vos, oh Jesús, que sois la misma verdad, venimos a exponeros toda nuestra miseria. Ayúdanos a llevar una vida santa, para conseguir una eternidad bienaventurada. Concédenos por los méritos infinitos de vuestra infancia, la gracia de la cual necesitamos tanto. Nos entregamos a vos, ¡Oh Niño omnipotente!, seguros de que no quedará frustrada nuestra esperanza, y de que, en virtud de vuestra divina promesa, acogeréis y despacharéis favorablemente nuestra súplica.
+
+Amén.`;
 
 export const dias: DiaNovena[] = [
   {
