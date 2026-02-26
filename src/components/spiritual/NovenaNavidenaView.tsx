@@ -68,9 +68,9 @@ export function NovenaNavidenaView() {
       titulo: 'Oración a San José',
       texto: oracionASanJose,
       tipo: 'comun' as const,
-      bg: 'bg-emerald-50/60',
-      border: 'border-emerald-100/50',
-      badge: 'bg-emerald-100 text-emerald-600',
+      bg: 'bg-stone-50/60',
+      border: 'border-stone-200/50',
+      badge: 'bg-stone-200 text-stone-600',
     },
     {
       id: 'gozos',
