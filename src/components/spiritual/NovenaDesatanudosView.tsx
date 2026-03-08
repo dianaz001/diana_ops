@@ -31,8 +31,10 @@ export function NovenaDesatanudosView() {
   );
   const [eligiendoDia, setEligiendoDia] = useState(false);
   const diaHoy = fechaInicio !== null ? daysBetween(fechaInicio) : null;
-  const novenaActiva = diaHoy !== null && diaHoy >= 0 && diaHoy < 9;
-  const novenaTerminada = diaHoy !== null && diaHoy >= 9;
+  // Auto-restart: wrap around every 9 days
+  const diaCiclo = diaHoy !== null && diaHoy >= 0 ? diaHoy % 9 : null;
+  const novenaActiva = diaCiclo !== null;
+  const cicloActual = diaHoy !== null && diaHoy >= 0 ? Math.floor(diaHoy / 9) + 1 : 0;
 
   const [diaSeleccionado, setDiaSeleccionado] = useState(0);
   const [modoLight, setModoLight] = useState(false);
@@ -42,10 +44,10 @@ export function NovenaDesatanudosView() {
 
   // Auto-select today's day when novena is active
   useEffect(() => {
-    if (novenaActiva && diaHoy !== null) {
-      setDiaSeleccionado(diaHoy);
+    if (novenaActiva && diaCiclo !== null) {
+      setDiaSeleccionado(diaCiclo);
     }
-  }, [novenaActiva, diaHoy]);
+  }, [novenaActiva, diaCiclo]);
 
   const dia = dias[diaSeleccionado];
 
@@ -60,12 +62,6 @@ export function NovenaDesatanudosView() {
     setEligiendoDia(false);
   };
 
-  const reiniciarNovena = () => {
-    localStorage.removeItem(STORAGE_KEY);
-    setFechaInicio(null);
-    setDiaSeleccionado(0);
-    setEligiendoDia(false);
-  };
 
   const toggleGozo = (idx: number) => {
     setGozosLeidos((prev) => {
@@ -210,44 +206,28 @@ export function NovenaDesatanudosView() {
             </button>
           )}
         </div>
-      ) : novenaTerminada ? (
-        <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl p-5 shadow-sm border border-emerald-200/50">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
-                <Check className="w-5 h-5 text-emerald-600" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-emerald-700">Novena completada</p>
-                <p className="text-xs text-emerald-500">Terminaste los 9 dias</p>
-              </div>
-            </div>
-            <button
-              onClick={() => { reiniciarNovena(); setEligiendoDia(false); }}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-100 text-emerald-700 text-xs hover:bg-emerald-200 transition-colors"
-            >
-              <RotateCcw className="w-3 h-3" />
-              Nueva novena
-            </button>
-          </div>
-        </div>
       ) : (
         <div className="bg-gradient-to-r from-purple-50 to-violet-50 rounded-2xl p-4 shadow-sm border border-purple-200/50">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
-                <span className="text-sm font-bold text-purple-600">{(diaHoy ?? 0) + 1}</span>
+                <span className="text-sm font-bold text-purple-600">{(diaCiclo ?? 0) + 1}</span>
               </div>
               <div>
                 <p className="text-sm font-medium text-purple-700">
-                  Hoy es Dia {(diaHoy ?? 0) + 1} de 9
+                  Hoy es Dia {(diaCiclo ?? 0) + 1} de 9
+                  {cicloActual > 1 && (
+                    <span className="ml-1.5 text-[10px] font-normal text-purple-400">
+                      (ciclo {cicloActual})
+                    </span>
+                  )}
                 </p>
                 <div className="flex gap-1 mt-1.5">
                   {Array.from({ length: 9 }).map((_, i) => (
                     <div
                       key={i}
                       className={`h-1.5 flex-1 rounded-full transition-colors ${
-                        i <= (diaHoy ?? 0) ? 'bg-purple-500' : 'bg-purple-200/50'
+                        i <= (diaCiclo ?? 0) ? 'bg-purple-500' : 'bg-purple-200/50'
                       }`}
                     />
                   ))}
@@ -268,7 +248,7 @@ export function NovenaDesatanudosView() {
       {/* Day selector */}
       <div className="flex gap-1.5 overflow-x-auto scrollbar-hide pb-1">
         {dias.map((d, idx) => {
-          const isToday = novenaActiva && idx === diaHoy;
+          const isToday = novenaActiva && idx === diaCiclo;
           return (
             <button
               key={d.dia}
@@ -300,7 +280,7 @@ export function NovenaDesatanudosView() {
             <div>
               <h2 className="text-lg font-medium text-slate-700">
                 Dia {dia.dia}
-                {novenaActiva && diaSeleccionado === diaHoy && (
+                {novenaActiva && diaSeleccionado === diaCiclo && (
                   <span className="ml-2 text-xs font-normal text-purple-500">— hoy</span>
                 )}
               </h2>
