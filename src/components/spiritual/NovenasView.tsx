@@ -17,7 +17,7 @@ const NOVENAS: { id: NovenaId; titulo: string; descripcion: string; icono: strin
     id: 'desatanudos',
     titulo: 'Virgen Desatanudos',
     descripcion: 'Novena Biblica — 9 dias',
-    icono: '🕊️',
+    icono: '👑',
   },
 ];
 
