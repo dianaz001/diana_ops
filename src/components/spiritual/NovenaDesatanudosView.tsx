@@ -29,6 +29,7 @@ export function NovenaDesatanudosView() {
   const [fechaInicio, setFechaInicio] = useState<string | null>(() =>
     localStorage.getItem(STORAGE_KEY)
   );
+  const [eligiendoDia, setEligiendoDia] = useState(false);
   const diaHoy = fechaInicio !== null ? daysBetween(fechaInicio) : null;
   const novenaActiva = diaHoy !== null && diaHoy >= 0 && diaHoy < 9;
   const novenaTerminada = diaHoy !== null && diaHoy >= 9;
@@ -48,17 +49,22 @@ export function NovenaDesatanudosView() {
 
   const dia = dias[diaSeleccionado];
 
-  const iniciarNovena = () => {
-    const hoy = getToday();
-    localStorage.setItem(STORAGE_KEY, hoy);
-    setFechaInicio(hoy);
-    setDiaSeleccionado(0);
+  const iniciarEnDia = (diaNum: number) => {
+    // Set start date = today minus (diaNum - 1) days so today = diaNum
+    const today = new Date();
+    today.setDate(today.getDate() - (diaNum - 1));
+    const startDate = today.toISOString().split('T')[0];
+    localStorage.setItem(STORAGE_KEY, startDate);
+    setFechaInicio(startDate);
+    setDiaSeleccionado(diaNum - 1);
+    setEligiendoDia(false);
   };
 
   const reiniciarNovena = () => {
     localStorage.removeItem(STORAGE_KEY);
     setFechaInicio(null);
     setDiaSeleccionado(0);
+    setEligiendoDia(false);
   };
 
   const toggleGozo = (idx: number) => {
@@ -171,19 +177,39 @@ export function NovenaDesatanudosView() {
   return (
     <div className="space-y-6">
       {/* Novena tracker banner */}
-      {fechaInicio === null ? (
-        <button
-          onClick={iniciarNovena}
-          className="w-full bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-2xl p-5 shadow-sm flex items-center gap-4 hover:from-purple-600 hover:to-purple-700 transition-all"
-        >
-          <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
-            <Play className="w-5 h-5 fill-current" />
+      {fechaInicio === null || eligiendoDia ? (
+        <div className="bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-2xl p-5 shadow-sm">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
+              <Play className="w-5 h-5 fill-current" />
+            </div>
+            <div>
+              <p className="text-sm font-medium">
+                {eligiendoDia ? 'Cambiar dia' : 'Comenzar novena'}
+              </p>
+              <p className="text-xs text-purple-200">En que dia vas hoy?</p>
+            </div>
           </div>
-          <div className="text-left">
-            <p className="text-sm font-medium">Comenzar novena</p>
-            <p className="text-xs text-purple-200">Toca para iniciar el seguimiento de 9 dias</p>
+          <div className="grid grid-cols-3 gap-2">
+            {Array.from({ length: 9 }).map((_, i) => (
+              <button
+                key={i}
+                onClick={() => iniciarEnDia(i + 1)}
+                className="bg-white/15 hover:bg-white/30 rounded-xl py-2.5 text-sm font-medium transition-all"
+              >
+                Dia {i + 1}
+              </button>
+            ))}
           </div>
-        </button>
+          {eligiendoDia && (
+            <button
+              onClick={() => setEligiendoDia(false)}
+              className="mt-3 w-full text-xs text-purple-200 hover:text-white transition-colors"
+            >
+              Cancelar
+            </button>
+          )}
+        </div>
       ) : novenaTerminada ? (
         <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl p-5 shadow-sm border border-emerald-200/50">
           <div className="flex items-center justify-between">
@@ -197,11 +223,11 @@ export function NovenaDesatanudosView() {
               </div>
             </div>
             <button
-              onClick={reiniciarNovena}
+              onClick={() => { reiniciarNovena(); setEligiendoDia(false); }}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-100 text-emerald-700 text-xs hover:bg-emerald-200 transition-colors"
             >
               <RotateCcw className="w-3 h-3" />
-              Reiniciar
+              Nueva novena
             </button>
           </div>
         </div>
@@ -229,11 +255,11 @@ export function NovenaDesatanudosView() {
               </div>
             </div>
             <button
-              onClick={reiniciarNovena}
-              className="p-1.5 rounded-lg text-purple-300 hover:text-purple-600 hover:bg-purple-100 transition-colors"
-              title="Reiniciar novena"
+              onClick={() => setEligiendoDia(true)}
+              className="px-2.5 py-1 rounded-lg text-purple-400 hover:text-purple-700 hover:bg-purple-100 transition-colors text-xs"
+              title="Cambiar dia"
             >
-              <RotateCcw className="w-3.5 h-3.5" />
+              Cambiar
             </button>
           </div>
         </div>
