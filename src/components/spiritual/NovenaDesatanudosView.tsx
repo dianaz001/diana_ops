@@ -15,6 +15,7 @@ import {
 
 export function NovenaDesatanudosView() {
   const [diaSeleccionado, setDiaSeleccionado] = useState(0);
+  const [modoLight, setModoLight] = useState(false);
   const [gozosLeidos, setGozosLeidos] = useState<boolean[]>(
     new Array(gozos.length).fill(false)
   );
@@ -146,24 +147,46 @@ export function NovenaDesatanudosView() {
         ))}
       </div>
 
-      {/* Day header */}
+      {/* Day header + light mode toggle */}
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-purple-100/50">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
-            <span className="text-sm">🙏</span>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
+              <span className="text-sm">🙏</span>
+            </div>
+            <div>
+              <h2 className="text-lg font-medium text-slate-700">
+                Dia {dia.dia}
+              </h2>
+              <p className="text-xs text-slate-400">{dia.titulo}</p>
+            </div>
           </div>
-          <div>
-            <h2 className="text-lg font-medium text-slate-700">
-              Dia {dia.dia}
-            </h2>
-            <p className="text-xs text-slate-400">{dia.titulo}</p>
-          </div>
+          <button
+            onClick={() => setModoLight(!modoLight)}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs transition-all ${
+              modoLight
+                ? 'bg-purple-100 text-purple-700'
+                : 'bg-slate-100 text-slate-400 hover:text-slate-600'
+            }`}
+          >
+            <div className={`w-8 h-4.5 rounded-full relative transition-colors ${
+              modoLight ? 'bg-purple-500' : 'bg-slate-300'
+            }`}>
+              <div className={`absolute top-0.5 w-3.5 h-3.5 rounded-full bg-white shadow-sm transition-all ${
+                modoLight ? 'left-[calc(100%-1rem)]' : 'left-0.5'
+              }`} />
+            </div>
+            <span>Light</span>
+          </button>
         </div>
       </div>
 
       {/* Prayer sections */}
       <div className="space-y-3">
-        {secciones.map((seccion) =>
+        {(modoLight
+          ? secciones.filter((s) => s.id === 'lectura-biblica' || s.id === 'consideracion')
+          : secciones
+        ).map((seccion) =>
           seccion.tipo === 'gozos' ? (
             <div
               key={seccion.id}
