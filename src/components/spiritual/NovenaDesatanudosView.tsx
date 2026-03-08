@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Check, RotateCcw } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Check, RotateCcw, Play } from 'lucide-react';
 import {
   dias,
   oracionesIniciales,
@@ -13,13 +13,53 @@ import {
   accionDeGracias,
 } from '../../data/novena-desatanudos';
 
+const STORAGE_KEY = 'novena-desatanudos-inicio';
+
+function getToday(): string {
+  return new Date().toISOString().split('T')[0];
+}
+
+function daysBetween(dateStr: string): number {
+  const start = new Date(dateStr + 'T00:00:00');
+  const today = new Date(getToday() + 'T00:00:00');
+  return Math.floor((today.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+}
+
 export function NovenaDesatanudosView() {
+  const [fechaInicio, setFechaInicio] = useState<string | null>(() =>
+    localStorage.getItem(STORAGE_KEY)
+  );
+  const diaHoy = fechaInicio !== null ? daysBetween(fechaInicio) : null;
+  const novenaActiva = diaHoy !== null && diaHoy >= 0 && diaHoy < 9;
+  const novenaTerminada = diaHoy !== null && diaHoy >= 9;
+
   const [diaSeleccionado, setDiaSeleccionado] = useState(0);
   const [modoLight, setModoLight] = useState(false);
   const [gozosLeidos, setGozosLeidos] = useState<boolean[]>(
     new Array(gozos.length).fill(false)
   );
+
+  // Auto-select today's day when novena is active
+  useEffect(() => {
+    if (novenaActiva && diaHoy !== null) {
+      setDiaSeleccionado(diaHoy);
+    }
+  }, [novenaActiva, diaHoy]);
+
   const dia = dias[diaSeleccionado];
+
+  const iniciarNovena = () => {
+    const hoy = getToday();
+    localStorage.setItem(STORAGE_KEY, hoy);
+    setFechaInicio(hoy);
+    setDiaSeleccionado(0);
+  };
+
+  const reiniciarNovena = () => {
+    localStorage.removeItem(STORAGE_KEY);
+    setFechaInicio(null);
+    setDiaSeleccionado(0);
+  };
 
   const toggleGozo = (idx: number) => {
     setGozosLeidos((prev) => {
@@ -130,21 +170,98 @@ export function NovenaDesatanudosView() {
 
   return (
     <div className="space-y-6">
+      {/* Novena tracker banner */}
+      {fechaInicio === null ? (
+        <button
+          onClick={iniciarNovena}
+          className="w-full bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-2xl p-5 shadow-sm flex items-center gap-4 hover:from-purple-600 hover:to-purple-700 transition-all"
+        >
+          <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
+            <Play className="w-5 h-5 fill-current" />
+          </div>
+          <div className="text-left">
+            <p className="text-sm font-medium">Comenzar novena</p>
+            <p className="text-xs text-purple-200">Toca para iniciar el seguimiento de 9 dias</p>
+          </div>
+        </button>
+      ) : novenaTerminada ? (
+        <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl p-5 shadow-sm border border-emerald-200/50">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
+                <Check className="w-5 h-5 text-emerald-600" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-emerald-700">Novena completada</p>
+                <p className="text-xs text-emerald-500">Terminaste los 9 dias</p>
+              </div>
+            </div>
+            <button
+              onClick={reiniciarNovena}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-100 text-emerald-700 text-xs hover:bg-emerald-200 transition-colors"
+            >
+              <RotateCcw className="w-3 h-3" />
+              Reiniciar
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="bg-gradient-to-r from-purple-50 to-violet-50 rounded-2xl p-4 shadow-sm border border-purple-200/50">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
+                <span className="text-sm font-bold text-purple-600">{(diaHoy ?? 0) + 1}</span>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-purple-700">
+                  Hoy es Dia {(diaHoy ?? 0) + 1} de 9
+                </p>
+                <div className="flex gap-1 mt-1.5">
+                  {Array.from({ length: 9 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className={`h-1.5 flex-1 rounded-full transition-colors ${
+                        i <= (diaHoy ?? 0) ? 'bg-purple-500' : 'bg-purple-200/50'
+                      }`}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={reiniciarNovena}
+              className="p-1.5 rounded-lg text-purple-300 hover:text-purple-600 hover:bg-purple-100 transition-colors"
+              title="Reiniciar novena"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Day selector */}
       <div className="flex gap-1.5 overflow-x-auto scrollbar-hide pb-1">
-        {dias.map((d, idx) => (
-          <button
-            key={d.dia}
-            onClick={() => setDiaSeleccionado(idx)}
-            className={`flex-shrink-0 px-4 py-2.5 rounded-xl text-xs tracking-widest uppercase transition-all ${
-              diaSeleccionado === idx
-                ? 'bg-purple-600 text-white shadow-sm'
-                : 'bg-white text-slate-400 hover:text-slate-600 hover:bg-slate-50'
-            }`}
-          >
-            Dia {d.dia}
-          </button>
-        ))}
+        {dias.map((d, idx) => {
+          const isToday = novenaActiva && idx === diaHoy;
+          return (
+            <button
+              key={d.dia}
+              onClick={() => setDiaSeleccionado(idx)}
+              className={`flex-shrink-0 px-4 py-2.5 rounded-xl text-xs tracking-widest uppercase transition-all relative ${
+                diaSeleccionado === idx
+                  ? 'bg-purple-600 text-white shadow-sm'
+                  : isToday
+                    ? 'bg-purple-100 text-purple-600 ring-2 ring-purple-300'
+                    : 'bg-white text-slate-400 hover:text-slate-600 hover:bg-slate-50'
+              }`}
+            >
+              Dia {d.dia}
+              {isToday && diaSeleccionado !== idx && (
+                <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-purple-500" />
+              )}
+            </button>
+          );
+        })}
       </div>
 
       {/* Day header + light mode toggle */}
@@ -157,6 +274,9 @@ export function NovenaDesatanudosView() {
             <div>
               <h2 className="text-lg font-medium text-slate-700">
                 Dia {dia.dia}
+                {novenaActiva && diaSeleccionado === diaHoy && (
+                  <span className="ml-2 text-xs font-normal text-purple-500">— hoy</span>
+                )}
               </h2>
               <p className="text-xs text-slate-400">{dia.titulo}</p>
             </div>
