@@ -91,7 +91,7 @@ export function NovenaDesatanudosView() {
     {
       id: 'oracion-virgen',
       numero: 2,
-      titulo: 'Oracion a la Santisima Virgen',
+      titulo: 'Oración a la Santísima Virgen',
       texto: oracionALaSantisimaVirgen,
       tipo: 'comun' as const,
       bg: 'bg-blue-50/60',
@@ -101,7 +101,7 @@ export function NovenaDesatanudosView() {
     {
       id: 'lectura-biblica',
       numero: 3,
-      titulo: 'Lectura Biblica',
+      titulo: 'Lectura Bíblica',
       texto: `${dia.lecturaBiblica}\n\n(${dia.citaBiblica})`,
       tipo: 'unica' as const,
       bg: 'bg-amber-50/60',
@@ -111,7 +111,7 @@ export function NovenaDesatanudosView() {
     {
       id: 'consideracion',
       numero: 4,
-      titulo: `Consideracion: ${dia.consideracionTitulo}`,
+      titulo: `Consideración: ${dia.consideracionTitulo}`,
       texto: dia.consideracion,
       tipo: 'unica' as const,
       bg: 'bg-rose-50/60',
@@ -131,7 +131,7 @@ export function NovenaDesatanudosView() {
     {
       id: 'peticion-magnificat',
       numero: 6,
-      titulo: 'Peticion y Magnificat',
+      titulo: 'Petición y Magníficat',
       texto: `${peticionInstruccion}\n\n${magnificat}`,
       tipo: 'comun' as const,
       bg: 'bg-teal-50/60',
@@ -141,7 +141,7 @@ export function NovenaDesatanudosView() {
     {
       id: 'oracion-final',
       numero: 7,
-      titulo: 'Oracion Final',
+      titulo: 'Oración Final',
       texto: oracionFinal,
       tipo: 'comun' as const,
       bg: 'bg-sky-50/60',
@@ -151,7 +151,7 @@ export function NovenaDesatanudosView() {
     {
       id: 'peticiones-virgen',
       numero: 8,
-      titulo: 'Peticiones a la Santisima Virgen',
+      titulo: 'Peticiones a la Santísima Virgen',
       texto: peticionesALaVirgen,
       tipo: 'comun' as const,
       bg: 'bg-pink-50/60',
@@ -161,7 +161,7 @@ export function NovenaDesatanudosView() {
     {
       id: 'accion-gracias',
       numero: 9,
-      titulo: 'Accion de Gracias a Dios',
+      titulo: 'Acción de Gracias a Dios',
       texto: accionDeGracias,
       tipo: 'comun' as const,
       bg: 'bg-emerald-50/60',
@@ -181,9 +181,9 @@ export function NovenaDesatanudosView() {
             </div>
             <div>
               <p className="text-sm font-medium">
-                {eligiendoDia ? 'Cambiar dia' : 'Comenzar novena'}
+                {eligiendoDia ? 'Cambiar día' : 'Comenzar novena'}
               </p>
-              <p className="text-xs text-purple-200">En que dia vas hoy?</p>
+              <p className="text-xs text-purple-200">¿En qué día vas hoy?</p>
             </div>
           </div>
           <div className="grid grid-cols-3 gap-2">
@@ -193,7 +193,7 @@ export function NovenaDesatanudosView() {
                 onClick={() => iniciarEnDia(i + 1)}
                 className="bg-white/15 hover:bg-white/30 rounded-xl py-2.5 text-sm font-medium transition-all"
               >
-                Dia {i + 1}
+                Día {i + 1}
               </button>
             ))}
           </div>
@@ -215,7 +215,7 @@ export function NovenaDesatanudosView() {
               </div>
               <div>
                 <p className="text-sm font-medium text-purple-700">
-                  Hoy es Dia {(diaCiclo ?? 0) + 1} de 9
+                  Hoy es Día {(diaCiclo ?? 0) + 1} de 9
                   {cicloActual > 1 && (
                     <span className="ml-1.5 text-[10px] font-normal text-purple-400">
                       (ciclo {cicloActual})
@@ -237,7 +237,7 @@ export function NovenaDesatanudosView() {
             <button
               onClick={() => setEligiendoDia(true)}
               className="px-2.5 py-1 rounded-lg text-purple-400 hover:text-purple-700 hover:bg-purple-100 transition-colors text-xs"
-              title="Cambiar dia"
+              title="Cambiar día"
             >
               Cambiar
             </button>
@@ -261,7 +261,7 @@ export function NovenaDesatanudosView() {
                     : 'bg-white text-slate-400 hover:text-slate-600 hover:bg-slate-50'
               }`}
             >
-              Dia {d.dia}
+              Día {d.dia}
               {isToday && diaSeleccionado !== idx && (
                 <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-purple-500" />
               )}
@@ -279,7 +279,7 @@ export function NovenaDesatanudosView() {
             </div>
             <div>
               <h2 className="text-lg font-medium text-slate-700">
-                Dia {dia.dia}
+                Día {dia.dia}
                 {novenaActiva && diaSeleccionado === diaCiclo && (
                   <span className="ml-2 text-xs font-normal text-purple-500">— hoy</span>
                 )}
@@ -331,7 +331,7 @@ export function NovenaDesatanudosView() {
                         {seccion.titulo}
                       </h3>
                       <p className="text-[11px] text-slate-400 mt-0.5">
-                        {gozosCompletados}/{gozos.length} leidos — toca cada gozo al leerlo
+                        {gozosCompletados}/{gozos.length} leídos — toca cada gozo al leerlo
                       </p>
                     </div>
                     {gozosCompletados > 0 && (
