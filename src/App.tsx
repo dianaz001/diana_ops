@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { PasswordGate } from './components/auth/PasswordGate';
+import { VersionUpdateBanner } from './components/VersionUpdateBanner';
 import { HomePage } from './pages/HomePage';
 import { DashboardTest } from './pages/DashboardTest';
 import './index.css';
@@ -19,6 +20,7 @@ function App() {
   return (
     <ThemeProvider>
       <QueryClientProvider client={queryClient}>
+        <VersionUpdateBanner />
         <BrowserRouter>
           <Routes>
             <Route path="/dashboard-test" element={<DashboardTest />} />

@@ -33,3 +33,6 @@ dist-ssr
 
 .vercel
 .env*.local
+
+# Generated at build time
+public/version.json

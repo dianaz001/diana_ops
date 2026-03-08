@@ -11,6 +11,84 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      // ── Early version detection + SW registration ──────
+      (function () {
+        // Clean up _reload param from URL (post-refresh)
+        var url = new URL(window.location.href);
+        if (url.searchParams.has('_reload')) {
+          url.searchParams.delete('_reload');
+          window.history.replaceState(null, '', url.pathname + url.search + url.hash);
+          sessionStorage.removeItem('juliz-version-shown');
+        }
+
+        // Globals for version tracking
+        window.__JULIZ_LOADED_VERSION__ = null;
+        window.__JULIZ_UPDATE_FIRED__ = false;
+
+        // Register service worker
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker
+            .register('/sw.js')
+            .then(function (reg) {
+              // Listen for SW messages
+              navigator.serviceWorker.addEventListener('message', function (event) {
+                if (event.data && event.data.type === 'VERSION_UPDATE') {
+                  fireVersionEvent(event.data);
+                }
+              });
+            })
+            .catch(function (err) {
+              console.warn('[SW] Registration failed:', err.message);
+            });
+        }
+
+        // Initial version check
+        fetchVersion();
+
+        // Poll every 60s as backup
+        setInterval(fetchVersion, 60000);
+
+        function fetchVersion() {
+          fetch('/version.json?_cb=' + Date.now(), { cache: 'no-store' })
+            .then(function (r) { return r.ok ? r.json() : null; })
+            .then(function (data) {
+              if (!data || !data.version) return;
+
+              // Store loaded version on first fetch
+              if (!window.__JULIZ_LOADED_VERSION__) {
+                window.__JULIZ_LOADED_VERSION__ = data.version;
+                return;
+              }
+
+              // Detect mismatch
+              if (data.version !== window.__JULIZ_LOADED_VERSION__) {
+                fireVersionEvent(data);
+              }
+            })
+            .catch(function () { /* network error — ignore */ });
+        }
+
+        function fireVersionEvent(data) {
+          if (window.__JULIZ_UPDATE_FIRED__) return;
+          window.__JULIZ_UPDATE_FIRED__ = true;
+
+          window.dispatchEvent(
+            new CustomEvent('juliz-version-update', { detail: data })
+          );
+
+          // Fallback: if React banner isn't mounted after 3s, show native confirm
+          setTimeout(function () {
+            if (!document.querySelector('[data-version-banner]')) {
+              if (confirm('A new version is available. Refresh now?')) {
+                window.location.href =
+                  window.location.pathname + '?_reload=' + Date.now();
+              }
+            }
+          }, 3000);
+        }
+      })();
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
