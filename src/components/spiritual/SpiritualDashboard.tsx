@@ -62,15 +62,15 @@ export function SpiritualDashboard({ onBack }: SpiritualDashboardProps) {
         <div className="flex items-center gap-4">
           <button
             onClick={handleBack}
-            className="p-2 rounded-xl text-slate-400 hover:text-[#195de6] hover:bg-[#195de6]/5 transition-colors"
+            className="p-2 rounded-xl text-slate-400 dark:text-slate-500 hover:text-[#195de6] hover:bg-[#195de6]/5 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
           <div className="border-l-2 border-purple-300/40 pl-4">
-            <h1 className="text-xs tracking-[0.4em] uppercase font-light text-slate-400">
+            <h1 className="text-xs tracking-[0.4em] uppercase font-light text-slate-400 dark:text-slate-500">
               Espiritual
             </h1>
-            <p className="text-2xl font-light text-slate-600">{sectionTitle}</p>
+            <p className="text-2xl font-light text-slate-600 dark:text-slate-300">{sectionTitle}</p>
           </div>
         </div>
       </div>
@@ -94,20 +94,20 @@ export function SpiritualDashboard({ onBack }: SpiritualDashboardProps) {
               key={item.titulo}
               onClick={() => item.id && setSection(item.id)}
               disabled={item.disabled}
-              className={`w-full bg-white rounded-2xl p-5 shadow-sm border transition-all text-left flex items-center gap-4 ${
+              className={`w-full bg-white dark:bg-slate-800/50 rounded-2xl p-5 shadow-sm border transition-all text-left flex items-center gap-4 ${
                 item.disabled
-                  ? 'border-slate-100 opacity-50 cursor-not-allowed'
-                  : 'border-purple-100/30 hover:border-purple-200/50 hover:shadow-md cursor-pointer'
+                  ? 'border-slate-100 dark:border-slate-700 opacity-50 cursor-not-allowed'
+                  : 'border-purple-100/30 dark:border-slate-700/50 hover:border-purple-200/50 hover:shadow-md cursor-pointer'
               }`}
             >
-              <div className="w-11 h-11 rounded-full bg-purple-50 flex items-center justify-center flex-shrink-0">
+              <div className="w-11 h-11 rounded-full bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center flex-shrink-0">
                 <span className="text-xl">{item.icono}</span>
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="text-sm font-medium text-slate-700">
+                <h3 className="text-sm font-medium text-slate-700 dark:text-slate-200">
                   {item.titulo}
                 </h3>
-                <p className="text-xs text-slate-400">{item.descripcion}</p>
+                <p className="text-xs text-slate-400 dark:text-slate-500">{item.descripcion}</p>
               </div>
               {!item.disabled && (
                 <ChevronRight className="w-4 h-4 text-slate-300 flex-shrink-0" />

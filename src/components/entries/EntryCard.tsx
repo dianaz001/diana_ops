@@ -42,7 +42,7 @@ export function EntryCard({ entry, onClick }: EntryCardProps) {
   return (
     <div
       onClick={onClick}
-      className="bg-white/60 backdrop-blur-sm rounded-2xl one-pixel-border p-5 hover:shadow-lg hover:shadow-[#195de6]/5 cursor-pointer transition-all"
+      className="bg-white/60 dark:bg-slate-800/40 backdrop-blur-sm rounded-2xl one-pixel-border p-5 hover:shadow-lg hover:shadow-[#195de6]/5 cursor-pointer transition-all"
     >
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
@@ -57,7 +57,7 @@ export function EntryCard({ entry, onClick }: EntryCardProps) {
             )}
           </div>
 
-          <h3 className="font-medium text-slate-900 truncate">{entry.title}</h3>
+          <h3 className="font-medium text-slate-900 dark:text-slate-100 truncate">{entry.title}</h3>
 
           {contentSnippet && (
             <p className="text-sm font-light text-slate-500 mt-1 line-clamp-2">
@@ -111,7 +111,7 @@ export function EntryCard({ entry, onClick }: EntryCardProps) {
       </div>
 
       {/* Footer */}
-      <div className="flex items-center gap-4 mt-4 pt-3 border-t border-[#195de6]/5 text-[10px] tracking-wider uppercase text-slate-400">
+      <div className="flex items-center gap-4 mt-4 pt-3 border-t border-[#195de6]/5 dark:border-slate-700/50 text-[10px] tracking-wider uppercase text-slate-400 dark:text-slate-500">
         <div className="flex items-center gap-1">
           {getOwnerIcon()}
           <span>{getOwnerLabel()}</span>

@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 * {
   box-sizing: border-box;
 }
@@ -13,6 +15,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.dark body,
+:where(.dark) body {
+  background-color: #0f1219;
+  color: #e2e8f0;
+}
+
 /* ── Soft Duality Design Tokens ─────────────────────── */
 
 /* One-pixel blue-tinted border (signature element) */
@@ -20,11 +28,19 @@ body {
   border: 1px solid rgba(25, 93, 230, 0.08);
 }
 
+:where(.dark) .one-pixel-border {
+  border: 1px solid rgba(25, 93, 230, 0.15);
+}
+
 /* Frosted glass panel */
 .glass-panel {
   background: rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(40px);
   -webkit-backdrop-filter: blur(40px);
+}
+
+:where(.dark) .glass-panel {
+  background: rgba(15, 18, 25, 0.6);
 }
 
 /* Subtle glass overlay */
@@ -99,6 +115,10 @@ body {
   color: #64748b;
 }
 
+:where(.dark) .markdown-content p {
+  color: #94a3b8;
+}
+
 .markdown-content ul, .markdown-content ol {
   margin-bottom: 1rem;
   margin-left: 1.5rem;
@@ -108,6 +128,10 @@ body {
   margin-bottom: 0.25rem;
   font-weight: 300;
   color: #64748b;
+}
+
+:where(.dark) .markdown-content li {
+  color: #94a3b8;
 }
 
 .markdown-content ul li {
@@ -138,6 +162,10 @@ body {
   color: #195de6;
 }
 
+:where(.dark) .markdown-content code {
+  background-color: rgba(25, 93, 230, 0.15);
+}
+
 .markdown-content pre {
   background-color: rgba(25, 93, 230, 0.04);
   padding: 1rem;
@@ -147,10 +175,19 @@ body {
   border: 1px solid rgba(25, 93, 230, 0.08);
 }
 
+:where(.dark) .markdown-content pre {
+  background-color: rgba(25, 93, 230, 0.1);
+  border-color: rgba(25, 93, 230, 0.15);
+}
+
 .markdown-content pre code {
   background-color: transparent;
   padding: 0;
   color: #334155;
+}
+
+:where(.dark) .markdown-content pre code {
+  color: #cbd5e1;
 }
 
 .markdown-content blockquote {
@@ -160,6 +197,10 @@ body {
   font-style: italic;
   font-weight: 300;
   color: #64748b;
+}
+
+:where(.dark) .markdown-content blockquote {
+  color: #94a3b8;
 }
 
 /* Wiki link */

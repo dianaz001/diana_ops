@@ -28,16 +28,16 @@ export function NovenasView({ onSelectNovena }: NovenasViewProps) {
         <button
           key={novena.titulo}
           onClick={() => onSelectNovena(novena.id)}
-          className="w-full bg-white rounded-2xl p-5 shadow-sm border transition-all text-left flex items-center gap-4 border-purple-100/30 hover:border-purple-200/50 hover:shadow-md cursor-pointer"
+          className="w-full bg-white dark:bg-slate-800/50 rounded-2xl p-5 shadow-sm border transition-all text-left flex items-center gap-4 border-purple-100/30 dark:border-slate-700/50 hover:border-purple-200/50 hover:shadow-md cursor-pointer"
         >
-          <div className="w-11 h-11 rounded-full bg-purple-50 flex items-center justify-center flex-shrink-0">
+          <div className="w-11 h-11 rounded-full bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center flex-shrink-0">
             <span className="text-xl">{novena.icono}</span>
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-medium text-slate-700">
+            <h3 className="text-sm font-medium text-slate-700 dark:text-slate-200">
               {novena.titulo}
             </h3>
-            <p className="text-xs text-slate-400">{novena.descripcion}</p>
+            <p className="text-xs text-slate-400 dark:text-slate-500">{novena.descripcion}</p>
           </div>
           <ChevronRight className="w-4 h-4 text-slate-300 flex-shrink-0" />
         </button>

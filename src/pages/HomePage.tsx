@@ -118,7 +118,7 @@ export function HomePage() {
   const displayedEntries = searchQuery.trim() ? searchResults : entries;
 
   return (
-    <div className="min-h-screen bg-[#f9f8f6] flex">
+    <div className="min-h-screen bg-[#f9f8f6] dark:bg-[#0f1219] flex">
       {/* Sticky sidebar */}
       <Sidebar
         selectedCategory={selectedCategory}
@@ -157,12 +157,12 @@ export function HomePage() {
               ) : (
                 <>
                   <div className="border-l-2 border-[#195de6]/20 pl-6 mb-8">
-                    <h1 className="text-xs tracking-[0.4em] uppercase font-light text-slate-400 mb-1">
+                    <h1 className="text-xs tracking-[0.4em] uppercase font-light text-slate-400 dark:text-slate-500 mb-1">
                       {selectedCategory
                         ? selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)
                         : 'All Entries'}
                     </h1>
-                    <p className="text-2xl font-light text-slate-600">
+                    <p className="text-2xl font-light text-slate-600 dark:text-slate-300">
                       {selectedCategory
                         ? selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)
                         : 'Overview'}

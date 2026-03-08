@@ -23,7 +23,7 @@ export function PasswordGate({ children }: { children: React.ReactNode }) {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#f9f8f6]">
+      <div className="min-h-screen flex items-center justify-center bg-[#f9f8f6] dark:bg-[#0f1219]">
         <div className="animate-pulse text-slate-400 text-[10px] uppercase tracking-widest font-light">
           Loading...
         </div>
@@ -36,9 +36,9 @@ export function PasswordGate({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#f9f8f6] px-4">
+    <div className="min-h-screen flex items-center justify-center bg-[#f9f8f6] dark:bg-[#0f1219] px-4">
       <div className="max-w-sm w-full">
-        <div className="bg-white/50 backdrop-blur-xl one-pixel-border rounded-2xl p-10">
+        <div className="bg-white/50 dark:bg-slate-800/50 backdrop-blur-xl one-pixel-border rounded-2xl p-10">
           <div className="text-center mb-10">
             <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#195de6]/5 one-pixel-border mb-6">
               <Lock className="w-6 h-6 text-[#195de6]" />
