@@ -1,0 +1,91 @@
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
+import { useGroceryStore } from '../../stores/groceryStore';
+import { getCategoryColor } from '../../lib/grocery-categorizer';
+import type { GroceryCategory } from '../../types/grocery';
+
+export function GroceryCategoryDonut() {
+  const { getCategoryBreakdown, filters } = useGroceryStore();
+  const breakdown = getCategoryBreakdown();
+
+  const total = breakdown.reduce((s, b) => s + b.value, 0);
+  const hasData = total > 0;
+
+  return (
+    <div className="rounded-xl border p-4 h-full flex flex-col"
+      style={{ background: '#fff', borderColor: 'rgba(232,222,209,0.6)' }}>
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-[12px] font-semibold" style={{ color: '#282627' }}>
+          Allocation
+        </h2>
+        <span className="text-[9px] uppercase tracking-[0.1em]" style={{ color: '#6B5B4F' }}>
+          {filters.year}
+        </span>
+      </div>
+
+      {!hasData ? (
+        <div className="flex-1 flex items-center justify-center">
+          <p className="text-[12px]" style={{ color: '#9DAFD0' }}>No data</p>
+        </div>
+      ) : (
+        <div className="flex-1 flex flex-col">
+          {/* Chart */}
+          <div className="flex-1 min-h-[180px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={breakdown}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius="45%"
+                  outerRadius="75%"
+                  paddingAngle={2}
+                  dataKey="value"
+                  label={({ percent }: { percent?: number }) => {
+                    const p = (percent ?? 0) * 100;
+                    if (p < 5) return '';
+                    return `${p.toFixed(0)}%`;
+                  }}
+                  labelLine={false}
+                  style={{ fontSize: '0.6rem', fontFamily: "'SF Mono', monospace" }}
+                >
+                  {breakdown.map((entry) => (
+                    <Cell key={entry.category} fill={getCategoryColor(entry.category as GroceryCategory)} />
+                  ))}
+                </Pie>
+                <Tooltip
+                  formatter={(value) => [`$${Number(value ?? 0).toFixed(2)}`, 'Spend']}
+                  contentStyle={{
+                    borderRadius: '0.5rem',
+                    border: '1px solid #E8DED1',
+                    fontSize: '0.7rem',
+                    background: '#fff',
+                  }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Legend */}
+          <div className="grid grid-cols-2 gap-x-3 gap-y-1 mt-2">
+            {breakdown.slice(0, 8).map((entry) => {
+              const pct = total > 0 ? ((entry.value / total) * 100).toFixed(1) : '0';
+              return (
+                <div key={entry.category} className="flex items-center gap-1.5 min-w-0">
+                  <div className="w-2 h-2 rounded-full flex-shrink-0"
+                    style={{ background: getCategoryColor(entry.category as GroceryCategory) }} />
+                  <span className="text-[9px] truncate" style={{ color: '#6B5B4F' }}>
+                    {entry.name}
+                  </span>
+                  <span className="text-[9px] ml-auto flex-shrink-0"
+                    style={{ color: '#9DAFD0', fontFamily: "'SF Mono', monospace" }}>
+                    {pct}%
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
