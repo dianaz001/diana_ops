@@ -75,7 +75,7 @@ process.stdin.on('end', () => {
   try {
     const data = JSON.parse(input);
     const title = condense(data.prompt);
-    process.stdout.write(`\x1b]0;${title}\x07`);
+    process.stderr.write(`\x1b]0;${title}\x07`);
   } catch {
     // Silently ignore errors
   }
