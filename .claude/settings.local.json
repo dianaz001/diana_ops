@@ -1,0 +1,60 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash",
+      "Read",
+      "Write",
+      "Edit",
+      "WebSearch",
+      "Skill",
+      "mcp__supabase__*",
+      "mcp__playwright__*",
+      "mcp__github__*",
+      "mcp__plugin_github_github__*",
+      "mcp__claude_ai_Supabase__execute_sql",
+      "mcp__claude_ai_Supabase__list_projects",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:api.github.com)",
+      "WebFetch(domain:docs.github.com)",
+      "WebFetch(domain:supabase.co)",
+      "WebFetch(domain:www.npmjs.com)",
+      "WebFetch(domain:reactjs.org)",
+      "WebFetch(domain:legacy.reactjs.org)",
+      "WebFetch(domain:status.supabase.com)",
+      "WebFetch(domain:www.githubstatus.com)",
+      "WebFetch(domain:tailwindcss.com)",
+      "WebFetch(domain:tanstack.com)",
+      "WebFetch(domain:zustand-demo.pmnd.rs)",
+      "WebFetch(domain:recharts.org)",
+      "WebFetch(domain:juliz.treedigits.ca)"
+    ],
+    "deny": [
+      "WebFetch(domain:*.ru)",
+      "WebFetch(domain:*.cn)",
+      "WebFetch(domain:bit.ly)",
+      "WebFetch(domain:tinyurl.com)",
+      "WebFetch(domain:t.co)",
+      "WebFetch(domain:goo.gl)",
+      "WebFetch(domain:pastebin.com)",
+      "WebFetch(domain:hastebin.com)",
+      "WebFetch(domain:*.onion)",
+      "WebFetch(domain:thepiratebay.*)",
+      "WebFetch(domain:1337x.*)",
+      "WebFetch(domain:*.xyz)",
+      "WebFetch(domain:*.tk)",
+      "WebFetch(domain:*.ml)",
+      "WebFetch(domain:*.ga)",
+      "WebFetch(domain:*.cf)",
+      "WebFetch(domain:*.gq)"
+    ],
+    "ask": [],
+    "defaultMode": "bypassPermissions"
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "supabase",
+    "playwright",
+    "github"
+  ]
+}
