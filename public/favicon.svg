@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Soft circular background -->
+  <circle cx="16" cy="16" r="15" fill="#d4e8d0" opacity="0.6"/>
+  <!-- Main stem - single elegant stroke -->
+  <path d="M16 28 Q15 20 16 10" fill="none" stroke="#2d5a3d" stroke-width="1.8" stroke-linecap="round"/>
+  <!-- Left leaf - minimal curve -->
+  <path d="M15 18 Q10 14 8 10" fill="none" stroke="#2d5a3d" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Right leaf - minimal curve -->
+  <path d="M16 14 Q20 11 22 7" fill="none" stroke="#2d5a3d" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Small top sprout -->
+  <path d="M16 10 Q14 7 13 5" fill="none" stroke="#3a7a52" stroke-width="1.2" stroke-linecap="round"/>
+</svg>
