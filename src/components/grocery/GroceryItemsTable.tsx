@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { Search, X, Trash2, ChevronUp, ChevronDown, Download } from 'lucide-react';
 import { useGroceryStore } from '../../stores/groceryStore';
+import { useGroceryTheme } from '../../lib/grocery-theme';
 import { getCategoryLabel, getCategoryColor } from '../../lib/grocery-categorizer';
 import type { GroceryItem, GroceryCategory } from '../../types/grocery';
 
@@ -9,6 +10,7 @@ type SortDir = 'asc' | 'desc';
 
 export function GroceryItemsTable() {
   const { getFilteredItems, deleteItem } = useGroceryStore();
+  const gc = useGroceryTheme();
   const items = getFilteredItems();
 
   const [search, setSearch] = useState('');
@@ -74,33 +76,33 @@ export function GroceryItemsTable() {
   const SortIcon = ({ col }: { col: SortKey }) => {
     if (sortKey !== col) return <ChevronUp className="w-3 h-3 opacity-20" />;
     return sortDir === 'asc'
-      ? <ChevronUp className="w-3 h-3" style={{ color: '#4A3728' }} />
-      : <ChevronDown className="w-3 h-3" style={{ color: '#4A3728' }} />;
+      ? <ChevronUp className="w-3 h-3" style={{ color: gc.accent }} />
+      : <ChevronDown className="w-3 h-3" style={{ color: gc.accent }} />;
   };
 
   return (
-    <div className="rounded-xl border" style={{ background: '#fff', borderColor: 'rgba(232,222,209,0.6)' }}>
+    <div className="rounded-xl border" style={{ background: gc.bgCard, borderColor: gc.borderCard }}>
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center gap-2 p-4 border-b" style={{ borderColor: '#E8DED1' }}>
-        <h2 className="text-[12px] font-semibold flex-1" style={{ color: '#282627' }}>
-          Items <span className="font-normal" style={{ color: '#9DAFD0' }}>({filtered.length})</span>
+      <div className="flex flex-col sm:flex-row sm:items-center gap-2 p-4 border-b" style={{ borderColor: gc.border }}>
+        <h2 className="text-[12px] font-semibold flex-1" style={{ color: gc.text }}>
+          Items <span className="font-normal" style={{ color: gc.textSubtle }}>({filtered.length})</span>
         </h2>
 
         {/* Search */}
         <div className="relative">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5" style={{ color: '#9DAFD0' }} />
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5" style={{ color: gc.textSubtle }} />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search items..."
             className="pl-8 pr-7 py-1.5 rounded-lg text-[11px] border w-full sm:w-48 focus:outline-none focus:ring-1"
-            style={{ borderColor: '#E8DED1', color: '#282627', background: '#FDFBF7' }}
+            style={{ borderColor: gc.border, color: gc.text, background: gc.bgInput }}
           />
           {search && (
             <button onClick={() => setSearch('')}
               className="absolute right-2 top-1/2 -translate-y-1/2">
-              <X className="w-3 h-3" style={{ color: '#9DAFD0' }} />
+              <X className="w-3 h-3" style={{ color: gc.textSubtle }} />
             </button>
           )}
         </div>
@@ -108,7 +110,7 @@ export function GroceryItemsTable() {
         {/* Export */}
         <button onClick={handleExportCSV}
           className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[10px] font-medium uppercase tracking-[0.1em] border transition-colors hover:shadow-sm"
-          style={{ borderColor: '#E8DED1', color: '#6B5B4F', background: '#fff' }}>
+          style={{ borderColor: gc.border, color: gc.textMuted, background: gc.bgCard }}>
           <Download className="w-3 h-3" />
           CSV
         </button>
@@ -118,7 +120,7 @@ export function GroceryItemsTable() {
       <div className="overflow-x-auto">
         <table className="w-full text-left">
           <thead>
-            <tr style={{ borderBottom: '1px solid #E8DED1' }}>
+            <tr style={{ borderBottom: `1px solid ${gc.border}` }}>
               {([
                 { key: 'item_date' as SortKey, label: 'Date', cls: 'w-24' },
                 { key: 'name' as SortKey, label: 'Item', cls: '' },
@@ -129,7 +131,7 @@ export function GroceryItemsTable() {
                 <th key={col.key}
                   onClick={() => handleSort(col.key)}
                   className={`px-4 py-2.5 text-[10px] font-medium uppercase tracking-[0.15em] cursor-pointer select-none ${col.cls}`}
-                  style={{ color: '#6B5B4F' }}>
+                  style={{ color: gc.textMuted }}>
                   <div className="flex items-center gap-1">
                     {col.label}
                     <SortIcon col={col.key} />
@@ -142,7 +144,7 @@ export function GroceryItemsTable() {
           <tbody>
             {sorted.length === 0 ? (
               <tr>
-                <td colSpan={6} className="py-12 text-center text-[12px]" style={{ color: '#9DAFD0' }}>
+                <td colSpan={6} className="py-12 text-center text-[12px]" style={{ color: gc.textSubtle }}>
                   No items found
                 </td>
               </tr>
@@ -154,6 +156,7 @@ export function GroceryItemsTable() {
                   isSelected={selectedId === item.id}
                   onSelect={() => setSelectedId(selectedId === item.id ? null : item.id)}
                   onDelete={() => deleteItem(item.id)}
+                  gc={gc}
                 />
               ))
             )}
@@ -164,11 +167,12 @@ export function GroceryItemsTable() {
   );
 }
 
-function TableRow({ item, isSelected, onSelect, onDelete }: {
+function TableRow({ item, isSelected, onSelect, onDelete, gc }: {
   item: GroceryItem;
   isSelected: boolean;
   onSelect: () => void;
   onDelete: () => void;
+  gc: ReturnType<typeof import('../../lib/grocery-theme').useGroceryTheme>;
 }) {
   const catColor = getCategoryColor(item.category as GroceryCategory);
 
@@ -178,26 +182,26 @@ function TableRow({ item, isSelected, onSelect, onDelete }: {
         onClick={onSelect}
         className="cursor-pointer transition-colors"
         style={{
-          borderBottom: '1px solid #f5f0ea',
-          background: isSelected ? 'rgba(74,55,40,0.04)' : 'transparent',
+          borderBottom: `1px solid ${gc.borderLight}`,
+          background: isSelected ? gc.bgSelected : 'transparent',
         }}
       >
         {/* Date */}
         <td className="px-4 py-2.5">
-          <span className="text-[11px]" style={{ color: '#6B5B4F', fontFamily: "'SF Mono', monospace" }}>
+          <span className="text-[11px]" style={{ color: gc.textMuted, fontFamily: "'SF Mono', monospace" }}>
             {item.item_date}
           </span>
         </td>
 
         {/* Name */}
         <td className="px-4 py-2.5">
-          <span className="text-[11px] font-medium" style={{ color: '#282627' }}>
+          <span className="text-[11px] font-medium" style={{ color: gc.text }}>
             {item.name}
           </span>
           {/* Mobile: show category inline */}
           <span className="sm:hidden ml-2 inline-flex items-center gap-1">
             <span className="w-1.5 h-1.5 rounded-full" style={{ background: catColor }} />
-            <span className="text-[9px]" style={{ color: '#9DAFD0' }}>
+            <span className="text-[9px]" style={{ color: gc.textSubtle }}>
               {getCategoryLabel(item.category)}
             </span>
           </span>
@@ -207,7 +211,7 @@ function TableRow({ item, isSelected, onSelect, onDelete }: {
         <td className="px-4 py-2.5 hidden sm:table-cell">
           <div className="flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full" style={{ background: catColor }} />
-            <span className="text-[10px]" style={{ color: '#6B5B4F' }}>
+            <span className="text-[10px]" style={{ color: gc.textMuted }}>
               {getCategoryLabel(item.category)}
             </span>
           </div>
@@ -215,14 +219,14 @@ function TableRow({ item, isSelected, onSelect, onDelete }: {
 
         {/* Price */}
         <td className="px-4 py-2.5 text-right">
-          <span className="text-[11px] font-medium" style={{ color: '#282627', fontFamily: "'SF Mono', monospace" }}>
+          <span className="text-[11px] font-medium" style={{ color: gc.text, fontFamily: "'SF Mono', monospace" }}>
             ${item.price.toFixed(2)}
           </span>
         </td>
 
         {/* Tax */}
         <td className="px-4 py-2.5 text-right hidden sm:table-cell">
-          <span className="text-[10px]" style={{ color: '#9DAFD0', fontFamily: "'SF Mono', monospace" }}>
+          <span className="text-[10px]" style={{ color: gc.textSubtle, fontFamily: "'SF Mono', monospace" }}>
             ${item.tax_amount.toFixed(2)}
           </span>
         </td>
@@ -238,9 +242,9 @@ function TableRow({ item, isSelected, onSelect, onDelete }: {
 
       {/* Expanded row on mobile */}
       {isSelected && (
-        <tr className="sm:hidden" style={{ background: 'rgba(74,55,40,0.02)' }}>
+        <tr className="sm:hidden" style={{ background: gc.bgHover }}>
           <td colSpan={6} className="px-4 py-2">
-            <div className="flex flex-wrap gap-3 text-[10px]" style={{ color: '#6B5B4F' }}>
+            <div className="flex flex-wrap gap-3 text-[10px]" style={{ color: gc.textMuted }}>
               <span>Category: {getCategoryLabel(item.category)}</span>
               <span>Tax: ${item.tax_amount.toFixed(2)}</span>
               <span>Total: ${(item.price + item.tax_amount).toFixed(2)}</span>

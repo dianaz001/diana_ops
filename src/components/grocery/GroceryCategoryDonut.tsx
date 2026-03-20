@@ -1,10 +1,12 @@
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 import { useGroceryStore } from '../../stores/groceryStore';
+import { useGroceryTheme } from '../../lib/grocery-theme';
 import { getCategoryColor } from '../../lib/grocery-categorizer';
 import type { GroceryCategory } from '../../types/grocery';
 
 export function GroceryCategoryDonut() {
   const { getCategoryBreakdown, filters } = useGroceryStore();
+  const gc = useGroceryTheme();
   const breakdown = getCategoryBreakdown();
 
   const total = breakdown.reduce((s, b) => s + b.value, 0);
@@ -12,19 +14,19 @@ export function GroceryCategoryDonut() {
 
   return (
     <div className="rounded-xl border p-4 h-full flex flex-col"
-      style={{ background: '#fff', borderColor: 'rgba(232,222,209,0.6)' }}>
+      style={{ background: gc.bgCard, borderColor: gc.borderCard }}>
       <div className="flex items-center justify-between mb-3">
-        <h2 className="text-[12px] font-semibold" style={{ color: '#282627' }}>
+        <h2 className="text-[12px] font-semibold" style={{ color: gc.text }}>
           Allocation
         </h2>
-        <span className="text-[9px] uppercase tracking-[0.1em]" style={{ color: '#6B5B4F' }}>
+        <span className="text-[9px] uppercase tracking-[0.1em]" style={{ color: gc.textMuted }}>
           {filters.year}
         </span>
       </div>
 
       {!hasData ? (
         <div className="flex-1 flex items-center justify-center">
-          <p className="text-[12px]" style={{ color: '#9DAFD0' }}>No data</p>
+          <p className="text-[12px]" style={{ color: gc.textSubtle }}>No data</p>
         </div>
       ) : (
         <div className="flex-1 flex flex-col">
@@ -46,7 +48,7 @@ export function GroceryCategoryDonut() {
                     return `${p.toFixed(0)}%`;
                   }}
                   labelLine={false}
-                  style={{ fontSize: '0.6rem', fontFamily: "'SF Mono', monospace" }}
+                  style={{ fontSize: '0.6rem', fontFamily: "'SF Mono', monospace", fill: gc.text }}
                 >
                   {breakdown.map((entry) => (
                     <Cell key={entry.category} fill={getCategoryColor(entry.category as GroceryCategory)} />
@@ -56,9 +58,10 @@ export function GroceryCategoryDonut() {
                   formatter={(value) => [`$${Number(value ?? 0).toFixed(2)}`, 'Spend']}
                   contentStyle={{
                     borderRadius: '0.5rem',
-                    border: '1px solid #E8DED1',
+                    border: `1px solid ${gc.border}`,
                     fontSize: '0.7rem',
-                    background: '#fff',
+                    background: gc.tooltipBg,
+                    color: gc.text,
                   }}
                 />
               </PieChart>
@@ -73,11 +76,11 @@ export function GroceryCategoryDonut() {
                 <div key={entry.category} className="flex items-center gap-1.5 min-w-0">
                   <div className="w-2 h-2 rounded-full flex-shrink-0"
                     style={{ background: getCategoryColor(entry.category as GroceryCategory) }} />
-                  <span className="text-[9px] truncate" style={{ color: '#6B5B4F' }}>
+                  <span className="text-[9px] truncate" style={{ color: gc.textMuted }}>
                     {entry.name}
                   </span>
                   <span className="text-[9px] ml-auto flex-shrink-0"
-                    style={{ color: '#9DAFD0', fontFamily: "'SF Mono', monospace" }}>
+                    style={{ color: gc.textSubtle, fontFamily: "'SF Mono', monospace" }}>
                     {pct}%
                   </span>
                 </div>

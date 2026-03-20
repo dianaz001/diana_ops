@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { X, Plus, Check } from 'lucide-react';
 import { useGroceryStore } from '../../stores/groceryStore';
+import { useGroceryTheme } from '../../lib/grocery-theme';
 import { getAllCategories, categorizeItem } from '../../lib/grocery-categorizer';
 import type { GroceryCategory } from '../../types/grocery';
 
@@ -10,6 +11,7 @@ interface Props {
 
 export function ManualItemModal({ onClose }: Props) {
   const { addManualItem } = useGroceryStore();
+  const gc = useGroceryTheme();
   const categories = getAllCategories();
 
   const [name, setName] = useState('');
@@ -78,105 +80,105 @@ export function ManualItemModal({ onClose }: Props) {
       <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" />
 
       <div className="relative w-full max-w-md rounded-2xl shadow-2xl overflow-hidden"
-        style={{ background: '#FDFBF7' }}>
+        style={{ background: gc.bg }}>
 
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 border-b"
-          style={{ borderColor: '#E8DED1' }}>
+          style={{ borderColor: gc.border }}>
           <div className="flex items-center gap-2">
-            <Plus className="w-4 h-4" style={{ color: '#4A3728' }} />
-            <h2 className="text-[13px] font-semibold" style={{ color: '#282627' }}>Add Grocery Item</h2>
+            <Plus className="w-4 h-4" style={{ color: gc.accent }} />
+            <h2 className="text-[13px] font-semibold" style={{ color: gc.text }}>Add Grocery Item</h2>
           </div>
           <button onClick={onClose} className="p-1 rounded-lg hover:bg-black/5">
-            <X className="w-4 h-4" style={{ color: '#6B5B4F' }} />
+            <X className="w-4 h-4" style={{ color: gc.textMuted }} />
           </button>
         </div>
 
         <div className="p-5 space-y-3">
           {/* Name */}
           <div>
-            <label className="text-[10px] font-medium uppercase tracking-[0.1em] block mb-1" style={{ color: '#6B5B4F' }}>
+            <label className="text-[10px] font-medium uppercase tracking-[0.1em] block mb-1" style={{ color: gc.textMuted }}>
               Item Name
             </label>
             <input value={name} onChange={(e) => handleNameChange(e.target.value)}
               placeholder="e.g. Organic Bananas"
               autoFocus
               className="w-full px-3 py-2 rounded-lg border text-[12px] focus:outline-none focus:ring-1"
-              style={{ borderColor: '#E8DED1', color: '#282627' }} />
+              style={{ borderColor: gc.borderInput, color: gc.text, background: gc.bgCard }} />
           </div>
 
           {/* Price + Quantity row */}
           <div className="grid grid-cols-3 gap-3">
             <div>
-              <label className="text-[10px] font-medium uppercase tracking-[0.1em] block mb-1" style={{ color: '#6B5B4F' }}>
+              <label className="text-[10px] font-medium uppercase tracking-[0.1em] block mb-1" style={{ color: gc.textMuted }}>
                 Price ($)
               </label>
               <input type="number" step="0.01" value={price}
                 onChange={(e) => setPrice(e.target.value)}
                 placeholder="0.00"
                 className="w-full px-3 py-2 rounded-lg border text-[12px] focus:outline-none focus:ring-1"
-                style={{ borderColor: '#E8DED1', color: '#282627', fontFamily: "'SF Mono', monospace" }} />
+                style={{ borderColor: gc.borderInput, color: gc.text, background: gc.bgCard, fontFamily: "'SF Mono', monospace" }} />
             </div>
             <div>
-              <label className="text-[10px] font-medium uppercase tracking-[0.1em] block mb-1" style={{ color: '#6B5B4F' }}>
+              <label className="text-[10px] font-medium uppercase tracking-[0.1em] block mb-1" style={{ color: gc.textMuted }}>
                 Qty
               </label>
               <input type="number" step="1" min="1" value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
                 className="w-full px-3 py-2 rounded-lg border text-[12px] focus:outline-none focus:ring-1"
-                style={{ borderColor: '#E8DED1', color: '#282627', fontFamily: "'SF Mono', monospace" }} />
+                style={{ borderColor: gc.borderInput, color: gc.text, background: gc.bgCard, fontFamily: "'SF Mono', monospace" }} />
             </div>
             <div>
-              <label className="text-[10px] font-medium uppercase tracking-[0.1em] block mb-1" style={{ color: '#6B5B4F' }}>
+              <label className="text-[10px] font-medium uppercase tracking-[0.1em] block mb-1" style={{ color: gc.textMuted }}>
                 Tax ($)
               </label>
               <input type="number" step="0.01" value={taxAmount}
                 onChange={(e) => setTaxAmount(e.target.value)}
                 placeholder="0.00"
                 className="w-full px-3 py-2 rounded-lg border text-[12px] focus:outline-none focus:ring-1"
-                style={{ borderColor: '#E8DED1', color: '#282627', fontFamily: "'SF Mono', monospace" }} />
+                style={{ borderColor: gc.borderInput, color: gc.text, background: gc.bgCard, fontFamily: "'SF Mono', monospace" }} />
             </div>
           </div>
 
           {/* Category + Date row */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-[10px] font-medium uppercase tracking-[0.1em] block mb-1" style={{ color: '#6B5B4F' }}>
+              <label className="text-[10px] font-medium uppercase tracking-[0.1em] block mb-1" style={{ color: gc.textMuted }}>
                 Category
               </label>
               <select value={category}
                 onChange={(e) => setCategory(e.target.value as GroceryCategory)}
                 className="w-full px-3 py-2 rounded-lg border text-[11px] focus:outline-none"
-                style={{ borderColor: '#E8DED1', color: '#282627' }}>
+                style={{ borderColor: gc.borderInput, color: gc.text, background: gc.bgCard }}>
                 {categories.map((c) => (
                   <option key={c.value} value={c.value}>{c.label}</option>
                 ))}
               </select>
             </div>
             <div>
-              <label className="text-[10px] font-medium uppercase tracking-[0.1em] block mb-1" style={{ color: '#6B5B4F' }}>
+              <label className="text-[10px] font-medium uppercase tracking-[0.1em] block mb-1" style={{ color: gc.textMuted }}>
                 Date
               </label>
               <input type="date" value={itemDate}
                 onChange={(e) => setItemDate(e.target.value)}
                 className="w-full px-3 py-2 rounded-lg border text-[11px] focus:outline-none"
-                style={{ borderColor: '#E8DED1', color: '#282627' }} />
+                style={{ borderColor: gc.borderInput, color: gc.text, background: gc.bgCard }} />
             </div>
           </div>
 
           {/* Owner */}
           <div>
-            <label className="text-[10px] font-medium uppercase tracking-[0.1em] block mb-1" style={{ color: '#6B5B4F' }}>
+            <label className="text-[10px] font-medium uppercase tracking-[0.1em] block mb-1" style={{ color: gc.textMuted }}>
               Owner
             </label>
-            <div className="inline-flex rounded-lg overflow-hidden border" style={{ borderColor: '#E8DED1' }}>
+            <div className="inline-flex rounded-lg overflow-hidden border" style={{ borderColor: gc.border }}>
               {(['shared', 'julian', 'liz'] as const).map((o) => (
                 <button key={o}
                   onClick={() => setOwner(o)}
                   className="px-3 py-1.5 text-[10px] font-medium capitalize transition-colors"
                   style={{
-                    background: owner === o ? '#4A3728' : '#fff',
-                    color: owner === o ? '#fff' : '#6B5B4F',
+                    background: owner === o ? gc.btnActiveBg : gc.btnInactiveBg,
+                    color: owner === o ? gc.btnActiveText : gc.btnInactiveText,
                   }}>
                   {o}
                 </button>
@@ -186,19 +188,19 @@ export function ManualItemModal({ onClose }: Props) {
 
           {/* Notes */}
           <div>
-            <label className="text-[10px] font-medium uppercase tracking-[0.1em] block mb-1" style={{ color: '#6B5B4F' }}>
+            <label className="text-[10px] font-medium uppercase tracking-[0.1em] block mb-1" style={{ color: gc.textMuted }}>
               Notes <span className="normal-case">(optional)</span>
             </label>
             <input value={notes} onChange={(e) => setNotes(e.target.value)}
               placeholder="Store, brand, etc."
               className="w-full px-3 py-2 rounded-lg border text-[11px] focus:outline-none"
-              style={{ borderColor: '#E8DED1', color: '#282627' }} />
+              style={{ borderColor: gc.borderInput, color: gc.text, background: gc.bgCard }} />
           </div>
 
           {/* Actions */}
           <div className="flex items-center justify-between pt-2">
             {saved && (
-              <span className="flex items-center gap-1 text-[11px]" style={{ color: '#4A3728' }}>
+              <span className="flex items-center gap-1 text-[11px]" style={{ color: gc.accent }}>
                 <Check className="w-3.5 h-3.5" /> Saved! Add another?
               </span>
             )}
@@ -208,14 +210,14 @@ export function ManualItemModal({ onClose }: Props) {
               <button onClick={handleSave}
                 disabled={!name.trim() || !price || saving}
                 className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-[11px] font-medium uppercase tracking-[0.1em] border transition-all disabled:opacity-40"
-                style={{ borderColor: '#E8DED1', color: '#4A3728' }}>
+                style={{ borderColor: gc.border, color: gc.accent }}>
                 <Plus className="w-3.5 h-3.5" />
                 Save & Add More
               </button>
               <button onClick={handleSaveAndClose}
                 disabled={saving}
                 className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-[11px] font-medium uppercase tracking-[0.1em] transition-all"
-                style={{ background: '#4A3728', color: '#fff' }}>
+                style={{ background: gc.btnActiveBg, color: gc.btnActiveText }}>
                 <Check className="w-3.5 h-3.5" />
                 Done
               </button>

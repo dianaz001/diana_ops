@@ -4,6 +4,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { useGroceryStore } from '../../stores/groceryStore';
+import { useGroceryTheme } from '../../lib/grocery-theme';
 import { GROCERY_CATEGORIES } from '../../lib/grocery-categorizer';
 import type { GroceryCategory } from '../../types/grocery';
 
@@ -15,6 +16,7 @@ const TOP_CATEGORIES: { key: GroceryCategory; label: string; color: string }[] =
 
 export function GroceryTrendChart() {
   const { getMonthlyData, filters } = useGroceryStore();
+  const gc = useGroceryTheme();
   const monthlyData = getMonthlyData();
   const [hiddenSeries, setHiddenSeries] = useState<Set<string>>(new Set());
 
@@ -37,32 +39,32 @@ export function GroceryTrendChart() {
   const hasData = monthlyData.some((r) => r.total > 0);
 
   return (
-    <div className="rounded-xl border p-4" style={{ background: '#fff', borderColor: 'rgba(232,222,209,0.6)' }}>
+    <div className="rounded-xl border p-4" style={{ background: gc.bgCard, borderColor: gc.borderCard }}>
       <div className="flex items-center justify-between mb-3">
-        <h2 className="text-[12px] font-semibold" style={{ color: '#282627' }}>
+        <h2 className="text-[12px] font-semibold" style={{ color: gc.text }}>
           Spend by Month ({filters.year})
         </h2>
-        <span className="text-[9px] uppercase tracking-[0.1em]" style={{ color: '#6B5B4F' }}>
+        <span className="text-[9px] uppercase tracking-[0.1em]" style={{ color: gc.textMuted }}>
           Stacked by category
         </span>
       </div>
 
       {!hasData ? (
         <div className="flex items-center justify-center h-[280px]">
-          <p className="text-[12px]" style={{ color: '#9DAFD0' }}>No grocery data for {filters.year}</p>
+          <p className="text-[12px]" style={{ color: gc.textSubtle }}>No grocery data for {filters.year}</p>
         </div>
       ) : (
         <ResponsiveContainer width="100%" height={280}>
           <ComposedChart data={dataWithTrend} margin={{ top: 4, right: 8, bottom: 0, left: -12 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#E8DED1" vertical={false} />
+            <CartesianGrid strokeDasharray="3 3" stroke={gc.gridStroke} vertical={false} />
             <XAxis
               dataKey="month"
-              tick={{ fontSize: 10, fill: '#6B5B4F' }}
-              axisLine={{ stroke: '#E8DED1' }}
+              tick={{ fontSize: 10, fill: gc.axisFill }}
+              axisLine={{ stroke: gc.axisStroke }}
               tickLine={false}
             />
             <YAxis
-              tick={{ fontSize: 10, fill: '#6B5B4F', fontFamily: "'SF Mono', monospace" }}
+              tick={{ fontSize: 10, fill: gc.axisFill, fontFamily: "'SF Mono', monospace" }}
               axisLine={false}
               tickLine={false}
               tickFormatter={(v: number) => `$${v}`}
@@ -70,9 +72,10 @@ export function GroceryTrendChart() {
             <Tooltip
               contentStyle={{
                 borderRadius: '0.5rem',
-                border: '1px solid #E8DED1',
+                border: `1px solid ${gc.border}`,
                 fontSize: '0.7rem',
-                background: '#fff',
+                background: gc.tooltipBg,
+                color: gc.text,
                 boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
               }}
               formatter={(value, name) => [`$${Number(value ?? 0).toFixed(2)}`, String(name)]}
@@ -86,7 +89,7 @@ export function GroceryTrendChart() {
                 const isHidden = hiddenSeries.has(entry.dataKey as string);
                 return (
                   <span style={{
-                    color: isHidden ? '#ccc' : '#6B5B4F',
+                    color: isHidden ? '#666' : gc.textMuted,
                     textDecoration: isHidden ? 'line-through' : 'none',
                     cursor: 'pointer',
                   }}>

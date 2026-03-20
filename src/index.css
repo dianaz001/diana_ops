@@ -241,3 +241,161 @@ body {
 .animate-slide-down {
   animation: slide-down 0.3s ease-out;
 }
+
+/* ── Comprehensive Dark Mode ──────────────────────── */
+
+/* --- Text colors: remap light-only text to be readable --- */
+.dark .text-slate-900 { color: #f1f5f9 !important; }
+.dark .text-slate-800 { color: #e2e8f0 !important; }
+.dark .text-slate-700 { color: #cbd5e1 !important; }
+.dark .text-slate-600 { color: #94a3b8 !important; }
+.dark .text-gray-900  { color: #f1f5f9 !important; }
+.dark .text-gray-700  { color: #cbd5e1 !important; }
+.dark .text-gray-600  { color: #94a3b8 !important; }
+.dark .text-gray-500  { color: #94a3b8 !important; }
+
+/* Colored text: ensure contrast on dark backgrounds */
+.dark .text-purple-700 { color: #c4b5fd !important; }
+.dark .text-purple-600 { color: #a78bfa !important; }
+.dark .text-purple-400 { color: #c4b5fd !important; }
+.dark .text-amber-600  { color: #fbbf24 !important; }
+.dark .text-amber-700  { color: #fcd34d !important; }
+.dark .text-amber-500  { color: #f59e0b !important; }
+.dark .text-red-600    { color: #fca5a5 !important; }
+.dark .text-emerald-600 { color: #6ee7b7 !important; }
+.dark .text-blue-600   { color: #93c5fd !important; }
+.dark .text-rose-600   { color: #fda4af !important; }
+.dark .text-teal-600   { color: #5eead4 !important; }
+.dark .text-sky-600    { color: #7dd3fc !important; }
+.dark .text-pink-600   { color: #f9a8d4 !important; }
+
+/* --- Backgrounds: white / near-white → dark --- */
+.dark .bg-white {
+  background-color: #1e293b !important;
+}
+.dark .bg-white\/40 { background-color: rgba(30, 41, 59, 0.4) !important; }
+.dark .bg-white\/50 { background-color: rgba(30, 41, 59, 0.5) !important; }
+.dark .bg-white\/60 { background-color: rgba(30, 41, 59, 0.6) !important; }
+.dark .bg-white\/80 { background-color: rgba(30, 41, 59, 0.8) !important; }
+.dark .bg-white\/95 { background-color: rgba(30, 41, 59, 0.95) !important; }
+.dark .bg-white\/15 { background-color: rgba(255, 255, 255, 0.15) !important; }
+.dark .bg-white\/20 { background-color: rgba(255, 255, 255, 0.2) !important; }
+
+.dark .bg-slate-50  { background-color: #1e293b !important; }
+.dark .bg-slate-50\/50 { background-color: rgba(30, 41, 59, 0.5) !important; }
+.dark .bg-slate-100 { background-color: #334155 !important; }
+.dark .bg-gray-100  { background-color: #334155 !important; }
+
+/* --- Colored light backgrounds → dark with subtle tint --- */
+.dark .bg-purple-50\/60 { background-color: rgba(88, 28, 135, 0.15) !important; }
+.dark .bg-purple-50\/40 { background-color: rgba(88, 28, 135, 0.1) !important; }
+.dark .bg-purple-50     { background-color: rgba(88, 28, 135, 0.15) !important; }
+.dark .bg-purple-100    { background-color: rgba(88, 28, 135, 0.25) !important; }
+.dark .bg-violet-50     { background-color: rgba(109, 40, 217, 0.12) !important; }
+.dark .bg-blue-50\/60   { background-color: rgba(37, 99, 235, 0.12) !important; }
+.dark .bg-blue-50       { background-color: rgba(37, 99, 235, 0.12) !important; }
+.dark .bg-amber-50\/60  { background-color: rgba(217, 119, 6, 0.12) !important; }
+.dark .bg-amber-50      { background-color: rgba(217, 119, 6, 0.12) !important; }
+.dark .bg-amber-50\/80  { background-color: rgba(217, 119, 6, 0.15) !important; }
+.dark .bg-amber-100     { background-color: rgba(217, 119, 6, 0.2) !important; }
+.dark .bg-rose-50\/60   { background-color: rgba(190, 18, 60, 0.12) !important; }
+.dark .bg-rose-50       { background-color: rgba(190, 18, 60, 0.12) !important; }
+.dark .bg-teal-50\/60   { background-color: rgba(15, 118, 110, 0.12) !important; }
+.dark .bg-teal-50       { background-color: rgba(15, 118, 110, 0.12) !important; }
+.dark .bg-teal-100      { background-color: rgba(15, 118, 110, 0.2) !important; }
+.dark .bg-sky-50\/60    { background-color: rgba(2, 132, 199, 0.12) !important; }
+.dark .bg-sky-50        { background-color: rgba(2, 132, 199, 0.12) !important; }
+.dark .bg-sky-100       { background-color: rgba(2, 132, 199, 0.2) !important; }
+.dark .bg-pink-50\/60   { background-color: rgba(219, 39, 119, 0.12) !important; }
+.dark .bg-pink-50       { background-color: rgba(219, 39, 119, 0.12) !important; }
+.dark .bg-pink-100      { background-color: rgba(219, 39, 119, 0.2) !important; }
+.dark .bg-emerald-50\/60 { background-color: rgba(4, 120, 87, 0.12) !important; }
+.dark .bg-emerald-50    { background-color: rgba(4, 120, 87, 0.12) !important; }
+.dark .bg-emerald-100   { background-color: rgba(4, 120, 87, 0.2) !important; }
+.dark .bg-red-50        { background-color: rgba(220, 38, 38, 0.12) !important; }
+
+/* Status badge backgrounds */
+.dark .bg-emerald-50 { background-color: rgba(4, 120, 87, 0.15) !important; }
+
+/* --- Borders: make visible on dark backgrounds --- */
+.dark .border-purple-100\/50 { border-color: rgba(139, 92, 246, 0.25) !important; }
+.dark .border-purple-200\/50 { border-color: rgba(139, 92, 246, 0.3) !important; }
+.dark .border-purple-100\/40 { border-color: rgba(139, 92, 246, 0.2) !important; }
+.dark .border-purple-100\/30 { border-color: rgba(139, 92, 246, 0.15) !important; }
+.dark .border-purple-200\/40 { border-color: rgba(139, 92, 246, 0.25) !important; }
+.dark .border-purple-300     { border-color: rgba(139, 92, 246, 0.4) !important; }
+.dark .border-blue-100\/50   { border-color: rgba(59, 130, 246, 0.2) !important; }
+.dark .border-amber-200\/60  { border-color: rgba(245, 158, 11, 0.25) !important; }
+.dark .border-amber-200      { border-color: rgba(245, 158, 11, 0.3) !important; }
+.dark .border-amber-300      { border-color: rgba(245, 158, 11, 0.35) !important; }
+.dark .border-rose-200\/60   { border-color: rgba(244, 63, 94, 0.25) !important; }
+.dark .border-rose-100\/50   { border-color: rgba(244, 63, 94, 0.2) !important; }
+.dark .border-teal-100\/50   { border-color: rgba(20, 184, 166, 0.2) !important; }
+.dark .border-sky-100\/50    { border-color: rgba(14, 165, 233, 0.2) !important; }
+.dark .border-pink-100\/50   { border-color: rgba(236, 72, 153, 0.2) !important; }
+.dark .border-emerald-100\/50 { border-color: rgba(16, 185, 129, 0.2) !important; }
+.dark .border-slate-100      { border-color: rgba(51, 65, 85, 0.5) !important; }
+.dark .border-slate-200\/50  { border-color: rgba(51, 65, 85, 0.5) !important; }
+.dark .border-gray-200       { border-color: rgba(51, 65, 85, 0.5) !important; }
+
+/* --- Gradients: override stops for dark mode --- */
+:where(.dark) [class*="from-purple-50"] {
+  --tw-gradient-from: rgba(88, 28, 135, 0.15);
+}
+:where(.dark) [class*="to-violet-50"] {
+  --tw-gradient-to: rgba(109, 40, 217, 0.12);
+}
+:where(.dark) [class*="from-slate-50"] {
+  --tw-gradient-from: rgba(30, 41, 59, 0.5);
+}
+:where(.dark) [class*="to-blue-50"] {
+  --tw-gradient-to: rgba(37, 99, 235, 0.08);
+}
+
+/* --- Ring colors for dark --- */
+.dark .ring-amber-100\/40 {
+  --tw-ring-color: rgba(245, 158, 11, 0.15) !important;
+}
+.dark .ring-rose-100\/40 {
+  --tw-ring-color: rgba(244, 63, 94, 0.15) !important;
+}
+
+/* --- Inputs, selects, textareas in dark mode --- */
+:where(.dark) input:not([type="checkbox"]):not([type="radio"]),
+:where(.dark) select,
+:where(.dark) textarea {
+  background-color: #1e293b;
+  color: #e2e8f0;
+  border-color: rgba(51, 65, 85, 0.5);
+}
+
+:where(.dark) input::placeholder,
+:where(.dark) textarea::placeholder {
+  color: #475569;
+}
+
+/* --- Placeholder text --- */
+.dark .placeholder-slate-300::placeholder { color: #475569 !important; }
+.dark .placeholder\:text-slate-300::placeholder { color: #475569 !important; }
+
+/* --- Prose content in dark mode --- */
+:where(.dark) .prose {
+  --tw-prose-body: #94a3b8;
+  --tw-prose-headings: #e2e8f0;
+  --tw-prose-counters: #94a3b8;
+  --tw-prose-bullets: #64748b;
+  --tw-prose-quotes: #94a3b8;
+  --tw-prose-code: #e2e8f0;
+  color: #94a3b8;
+}
+
+/* --- Shadow adjustments for dark mode --- */
+:where(.dark) .shadow-sm { box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important; }
+:where(.dark) .shadow-xl { box-shadow: 0 20px 25px rgba(0, 0, 0, 0.4) !important; }
+:where(.dark) .shadow-2xl { box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5) !important; }
+
+/* --- Hover states for dark mode --- */
+:where(.dark) .hover\:bg-slate-50:hover { background-color: rgba(51, 65, 85, 0.3) !important; }
+:where(.dark) .hover\:bg-purple-50:hover { background-color: rgba(88, 28, 135, 0.2) !important; }
+:where(.dark) .hover\:bg-purple-50\/30:hover { background-color: rgba(88, 28, 135, 0.15) !important; }
+:where(.dark) .hover\:bg-purple-100:hover { background-color: rgba(88, 28, 135, 0.3) !important; }

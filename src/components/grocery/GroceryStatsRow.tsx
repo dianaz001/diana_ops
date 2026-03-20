@@ -1,8 +1,10 @@
 import { DollarSign, ShoppingBag, Receipt, TrendingUp } from 'lucide-react';
 import { useGroceryStore } from '../../stores/groceryStore';
+import { useGroceryTheme } from '../../lib/grocery-theme';
 
 export function GroceryStatsRow() {
   const { getTotalSpend, getItemCount, getAvgPerTrip, receipts, filters } = useGroceryStore();
+  const gc = useGroceryTheme();
 
   const totalSpend = getTotalSpend();
   const itemCount = getItemCount();
@@ -41,17 +43,17 @@ export function GroceryStatsRow() {
       {stats.map((s) => (
         <div key={s.label}
           className="rounded-xl p-4 border"
-          style={{ background: '#fff', borderColor: 'rgba(232,222,209,0.6)' }}>
+          style={{ background: gc.bgCard, borderColor: gc.borderCard }}>
           <div className="flex items-start justify-between mb-2">
-            <span className="text-[10px] font-medium uppercase tracking-[0.15em]" style={{ color: '#6B5B4F' }}>
+            <span className="text-[10px] font-medium uppercase tracking-[0.15em]" style={{ color: gc.textMuted }}>
               {s.label}
             </span>
-            <s.icon className="w-3.5 h-3.5" style={{ color: '#C4A882' }} />
+            <s.icon className="w-3.5 h-3.5" style={{ color: gc.accentGold }} />
           </div>
-          <p className="text-[18px] font-bold tracking-tight" style={{ color: '#282627', fontFamily: "'SF Mono', 'Fira Code', ui-monospace, monospace" }}>
+          <p className="text-[18px] font-bold tracking-tight" style={{ color: gc.text, fontFamily: "'SF Mono', 'Fira Code', ui-monospace, monospace" }}>
             {s.value}
           </p>
-          <p className="text-[9px] mt-1 uppercase tracking-[0.1em]" style={{ color: '#9DAFD0' }}>
+          <p className="text-[9px] mt-1 uppercase tracking-[0.1em]" style={{ color: gc.textSubtle }}>
             {s.sub}
           </p>
         </div>
