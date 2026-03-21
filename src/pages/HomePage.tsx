@@ -10,6 +10,7 @@ import { SearchResults } from '../components/search/SearchResults';
 import { HealthDashboard } from '../components/health/HealthDashboard';
 import { SpiritualDashboard } from '../components/spiritual/SpiritualDashboard';
 import { GroceryDashboard } from '../components/grocery/GroceryDashboard';
+import { TromboneTab } from './TromboneTab';
 import { useEntriesStore } from '../stores/entriesStore';
 import { pullFromGitHub, pushToGitHub } from '../lib/github';
 import type { Entry, Category } from '../types';
@@ -40,7 +41,7 @@ export function HomePage() {
 
   useEffect(() => {
     fetchEntries();
-    if (selectedCategory && selectedCategory !== 'finance' && selectedCategory !== 'health' && selectedCategory !== 'spiritual') {
+    if (selectedCategory && selectedCategory !== 'finance' && selectedCategory !== 'health' && selectedCategory !== 'spiritual' && selectedCategory !== 'music') {
       setFilters({ category: selectedCategory });
     }
   }, [fetchEntries]);
@@ -142,6 +143,8 @@ export function HomePage() {
             <HealthDashboard onBack={() => handleCategorySelect(null)} />
           ) : selectedCategory === 'spiritual' ? (
             <SpiritualDashboard onBack={() => handleCategorySelect(null)} />
+          ) : selectedCategory === 'music' ? (
+            <TromboneTab />
           ) : (
             <div className="max-w-5xl mx-auto">
               {!searchQuery.trim() && (

@@ -256,8 +256,6 @@ export function TromboneTab() {
   return (
     <div
       style={{
-        minHeight: '100vh',
-        background: '#faf9f6',
         fontFamily: "'Georgia', 'Times New Roman', serif",
       }}
     >

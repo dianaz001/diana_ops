@@ -7,6 +7,7 @@ import {
   Lightbulb,
   Target,
   Cross,
+  Music,
 } from 'lucide-react';
 import { CATEGORIES, type Category } from '../../types';
 
@@ -23,6 +24,7 @@ const CATEGORY_ICONS: Record<string, React.ReactNode> = {
   ideas: <Lightbulb className="w-5 h-5" />,
   goals: <Target className="w-5 h-5" />,
   spiritual: <Cross className="w-5 h-5" />,
+  music: <Music className="w-5 h-5" />,
 };
 
 export function MobileNav({ selectedCategory, onCategorySelect }: MobileNavProps) {
