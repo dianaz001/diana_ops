@@ -5,6 +5,7 @@ import { PasswordGate } from './components/auth/PasswordGate';
 import { VersionUpdateBanner } from './components/VersionUpdateBanner';
 import { HomePage } from './pages/HomePage';
 import { DashboardTest } from './pages/DashboardTest';
+import { MusicPage } from './pages/MusicPage';
 import './index.css';
 
 const queryClient = new QueryClient({
@@ -24,6 +25,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/dashboard-test" element={<DashboardTest />} />
+            <Route path="/musica" element={<MusicPage />} />
             <Route path="*" element={<PasswordGate><HomePage /></PasswordGate>} />
           </Routes>
         </BrowserRouter>
