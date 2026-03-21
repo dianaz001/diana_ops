@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 
 // --- Types ---
+// beats: 4=whole, 2=half, 1=quarter, 0.5=eighth, 0.25=sixteenth
 interface TromboneNote {
   slide: number;   // 1-7 slide position
   partial: number; // 1-7 partial (embouchure)
   label?: string;  // note name
+  beats?: number;  // duration in beats (default 1 = quarter note)
 }
 
 interface Song {
@@ -15,39 +17,42 @@ interface Song {
 }
 
 // --- Song Data ---
+// beats: 4=redonda, 2=blanca, 1=negra, 0.5=corchea
 const SONGS: Song[] = [
   {
     id: 'bb-scale',
     title: 'Escala Bb Mayor',
     notes: [
-      { slide: 1, partial: 2, label: 'Bb' },
-      { slide: 6, partial: 3, label: 'C' },
-      { slide: 4, partial: 3, label: 'D' },
-      { slide: 3, partial: 3, label: 'Eb' },
-      { slide: 1, partial: 3, label: 'F' },
-      { slide: 4, partial: 4, label: 'G' },
-      { slide: 2, partial: 4, label: 'A' },
-      { slide: 1, partial: 4, label: 'Bb' },
+      { slide: 1, partial: 2, label: 'Bb', beats: 1 },
+      { slide: 6, partial: 3, label: 'C', beats: 1 },
+      { slide: 4, partial: 3, label: 'D', beats: 1 },
+      { slide: 3, partial: 3, label: 'Eb', beats: 1 },
+      { slide: 1, partial: 3, label: 'F', beats: 1 },
+      { slide: 4, partial: 4, label: 'G', beats: 1 },
+      { slide: 2, partial: 4, label: 'A', beats: 1 },
+      { slide: 1, partial: 4, label: 'Bb', beats: 4 },
     ],
   },
   {
     id: 'twinkle',
     title: 'Twinkle Twinkle Little Star',
     notes: [
-      { slide: 1, partial: 2, label: 'Bb' },
-      { slide: 1, partial: 2, label: 'Bb' },
-      { slide: 1, partial: 3, label: 'F' },
-      { slide: 1, partial: 3, label: 'F' },
-      { slide: 4, partial: 4, label: 'G' },
-      { slide: 4, partial: 4, label: 'G' },
-      { slide: 1, partial: 3, label: 'F' },
-      { slide: 3, partial: 3, label: 'Eb' },
-      { slide: 3, partial: 3, label: 'Eb' },
-      { slide: 4, partial: 3, label: 'D' },
-      { slide: 4, partial: 3, label: 'D' },
-      { slide: 6, partial: 3, label: 'C' },
-      { slide: 6, partial: 3, label: 'C' },
-      { slide: 1, partial: 2, label: 'Bb' },
+      // Twin-kle twin-kle lit-tle star
+      { slide: 1, partial: 2, label: 'Bb', beats: 1 },
+      { slide: 1, partial: 2, label: 'Bb', beats: 1 },
+      { slide: 1, partial: 3, label: 'F', beats: 1 },
+      { slide: 1, partial: 3, label: 'F', beats: 1 },
+      { slide: 4, partial: 4, label: 'G', beats: 1 },
+      { slide: 4, partial: 4, label: 'G', beats: 1 },
+      { slide: 1, partial: 3, label: 'F', beats: 2 },
+      // How I won-der what you are
+      { slide: 3, partial: 3, label: 'Eb', beats: 1 },
+      { slide: 3, partial: 3, label: 'Eb', beats: 1 },
+      { slide: 4, partial: 3, label: 'D', beats: 1 },
+      { slide: 4, partial: 3, label: 'D', beats: 1 },
+      { slide: 6, partial: 3, label: 'C', beats: 1 },
+      { slide: 6, partial: 3, label: 'C', beats: 1 },
+      { slide: 1, partial: 2, label: 'Bb', beats: 2 },
     ],
   },
   {
@@ -55,74 +60,83 @@ const SONGS: Song[] = [
     title: 'Ode to Joy',
     artist: 'Beethoven',
     notes: [
-      { slide: 4, partial: 3, label: 'D' },
-      { slide: 4, partial: 3, label: 'D' },
-      { slide: 3, partial: 3, label: 'Eb' },
-      { slide: 1, partial: 3, label: 'F' },
-      { slide: 1, partial: 3, label: 'F' },
-      { slide: 3, partial: 3, label: 'Eb' },
-      { slide: 4, partial: 3, label: 'D' },
-      { slide: 6, partial: 3, label: 'C' },
-      { slide: 1, partial: 2, label: 'Bb' },
-      { slide: 1, partial: 2, label: 'Bb' },
-      { slide: 6, partial: 3, label: 'C' },
-      { slide: 4, partial: 3, label: 'D' },
-      { slide: 4, partial: 3, label: 'D' },
-      { slide: 6, partial: 3, label: 'C' },
-      { slide: 6, partial: 3, label: 'C' },
+      // Line 1: D D Eb F | F Eb D C
+      { slide: 4, partial: 3, label: 'D', beats: 1 },
+      { slide: 4, partial: 3, label: 'D', beats: 1 },
+      { slide: 3, partial: 3, label: 'Eb', beats: 1 },
+      { slide: 1, partial: 3, label: 'F', beats: 1 },
+      { slide: 1, partial: 3, label: 'F', beats: 1 },
+      { slide: 3, partial: 3, label: 'Eb', beats: 1 },
+      { slide: 4, partial: 3, label: 'D', beats: 1 },
+      { slide: 6, partial: 3, label: 'C', beats: 1 },
+      // Line 2: Bb Bb C D | D. C C
+      { slide: 1, partial: 2, label: 'Bb', beats: 1 },
+      { slide: 1, partial: 2, label: 'Bb', beats: 1 },
+      { slide: 6, partial: 3, label: 'C', beats: 1 },
+      { slide: 4, partial: 3, label: 'D', beats: 1 },
+      { slide: 4, partial: 3, label: 'D', beats: 1.5 },
+      { slide: 6, partial: 3, label: 'C', beats: 0.5 },
+      { slide: 6, partial: 3, label: 'C', beats: 2 },
     ],
   },
   {
     id: 'saints',
     title: 'When the Saints',
     notes: [
-      { slide: 1, partial: 2, label: 'Bb' },
-      { slide: 4, partial: 3, label: 'D' },
-      { slide: 3, partial: 3, label: 'Eb' },
-      { slide: 1, partial: 3, label: 'F' },
-      { slide: 1, partial: 2, label: 'Bb' },
-      { slide: 4, partial: 3, label: 'D' },
-      { slide: 3, partial: 3, label: 'Eb' },
-      { slide: 1, partial: 3, label: 'F' },
-      { slide: 1, partial: 2, label: 'Bb' },
-      { slide: 4, partial: 3, label: 'D' },
-      { slide: 3, partial: 3, label: 'Eb' },
-      { slide: 1, partial: 3, label: 'F' },
-      { slide: 4, partial: 3, label: 'D' },
-      { slide: 1, partial: 2, label: 'Bb' },
-      { slide: 4, partial: 3, label: 'D' },
-      { slide: 6, partial: 3, label: 'C' },
+      // Oh when the saints (pickup)
+      { slide: 1, partial: 2, label: 'Bb', beats: 1 },
+      { slide: 4, partial: 3, label: 'D', beats: 1 },
+      { slide: 3, partial: 3, label: 'Eb', beats: 1 },
+      { slide: 1, partial: 3, label: 'F', beats: 4 },
+      // Oh when the saints
+      { slide: 1, partial: 2, label: 'Bb', beats: 1 },
+      { slide: 4, partial: 3, label: 'D', beats: 1 },
+      { slide: 3, partial: 3, label: 'Eb', beats: 1 },
+      { slide: 1, partial: 3, label: 'F', beats: 4 },
+      // Oh when the saints go marching in
+      { slide: 1, partial: 2, label: 'Bb', beats: 1 },
+      { slide: 4, partial: 3, label: 'D', beats: 1 },
+      { slide: 3, partial: 3, label: 'Eb', beats: 1 },
+      { slide: 1, partial: 3, label: 'F', beats: 2 },
+      { slide: 4, partial: 3, label: 'D', beats: 2 },
+      { slide: 1, partial: 2, label: 'Bb', beats: 2 },
+      { slide: 4, partial: 3, label: 'D', beats: 2 },
+      { slide: 6, partial: 3, label: 'C', beats: 4 },
     ],
   },
   {
     id: 'happy-birthday',
     title: 'Happy Birthday',
     notes: [
-      { slide: 6, partial: 3, label: 'C' },
-      { slide: 6, partial: 3, label: 'C' },
-      { slide: 4, partial: 3, label: 'D' },
-      { slide: 6, partial: 3, label: 'C' },
-      { slide: 1, partial: 3, label: 'F' },
-      { slide: 2, partial: 3, label: 'E' },
-      { slide: 6, partial: 3, label: 'C' },
-      { slide: 6, partial: 3, label: 'C' },
-      { slide: 4, partial: 3, label: 'D' },
-      { slide: 6, partial: 3, label: 'C' },
-      { slide: 4, partial: 4, label: 'G' },
-      { slide: 1, partial: 3, label: 'F' },
-      { slide: 6, partial: 3, label: 'C' },
-      { slide: 6, partial: 3, label: 'C' },
-      { slide: 3, partial: 5, label: "C'" },
-      { slide: 2, partial: 4, label: 'A' },
-      { slide: 1, partial: 3, label: 'F' },
-      { slide: 2, partial: 3, label: 'E' },
-      { slide: 4, partial: 3, label: 'D' },
-      { slide: 1, partial: 4, label: 'Bb' },
-      { slide: 1, partial: 4, label: 'Bb' },
-      { slide: 2, partial: 4, label: 'A' },
-      { slide: 1, partial: 3, label: 'F' },
-      { slide: 4, partial: 4, label: 'G' },
-      { slide: 1, partial: 3, label: 'F' },
+      // Hap-py birth-day to you (3/4 time, BPM applies per quarter)
+      { slide: 6, partial: 3, label: 'C', beats: 0.5 },
+      { slide: 6, partial: 3, label: 'C', beats: 0.5 },
+      { slide: 4, partial: 3, label: 'D', beats: 1 },
+      { slide: 6, partial: 3, label: 'C', beats: 1 },
+      { slide: 1, partial: 3, label: 'F', beats: 1 },
+      { slide: 2, partial: 3, label: 'E', beats: 2 },
+      // Hap-py birth-day to you
+      { slide: 6, partial: 3, label: 'C', beats: 0.5 },
+      { slide: 6, partial: 3, label: 'C', beats: 0.5 },
+      { slide: 4, partial: 3, label: 'D', beats: 1 },
+      { slide: 6, partial: 3, label: 'C', beats: 1 },
+      { slide: 4, partial: 4, label: 'G', beats: 1 },
+      { slide: 1, partial: 3, label: 'F', beats: 2 },
+      // Hap-py birth-day dear ...
+      { slide: 6, partial: 3, label: 'C', beats: 0.5 },
+      { slide: 6, partial: 3, label: 'C', beats: 0.5 },
+      { slide: 3, partial: 5, label: "C'", beats: 1 },
+      { slide: 2, partial: 4, label: 'A', beats: 1 },
+      { slide: 1, partial: 3, label: 'F', beats: 1 },
+      { slide: 2, partial: 3, label: 'E', beats: 1 },
+      { slide: 4, partial: 3, label: 'D', beats: 1 },
+      // Hap-py birth-day to you
+      { slide: 1, partial: 4, label: 'Bb', beats: 0.5 },
+      { slide: 1, partial: 4, label: 'Bb', beats: 0.5 },
+      { slide: 2, partial: 4, label: 'A', beats: 1 },
+      { slide: 1, partial: 3, label: 'F', beats: 1 },
+      { slide: 4, partial: 4, label: 'G', beats: 1 },
+      { slide: 1, partial: 3, label: 'F', beats: 2 },
     ],
   },
 ];
@@ -130,9 +144,26 @@ const SONGS: Song[] = [
 // --- Staff Constants ---
 const LINE_SPACING = 22;
 const STAFF_TOP = 48;
-const NOTE_SPACING = 50;
+const BEAT_WIDTH = 50;  // pixels per beat
 const NOTE_R = 15;
 const LEFT_MARGIN = 56;
+const MIN_NOTE_W = 30;  // minimum spacing even for very short notes
+
+// Get horizontal spacing for a note based on its beat duration
+function noteWidth(beats: number) {
+  return Math.max(MIN_NOTE_W, BEAT_WIDTH * beats);
+}
+
+// Duration label for display
+function durationLabel(beats: number): string {
+  if (beats >= 4) return 'redonda';
+  if (beats >= 3) return 'blanca.';
+  if (beats >= 2) return 'blanca';
+  if (beats >= 1.5) return 'negra.';
+  if (beats >= 1) return 'negra';
+  if (beats >= 0.5) return 'corchea';
+  return 'semicorchea';
+}
 
 // Partials 2-6 sit on the 5 staff lines (bottom → top)
 function noteY(partial: number) {
@@ -198,18 +229,25 @@ function playTone(freq: number, duration: number) {
   osc.stop(ctx.currentTime + duration);
 }
 
-// --- Playback Hook ---
+// --- Playback Hook (duration-aware) ---
 function usePlayback(notes: TromboneNote[], bpm: number, soundOn: boolean) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(-1);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const indexRef = useRef(-1);
+  const bpmRef = useRef(bpm);
+  const soundRef = useRef(soundOn);
+  bpmRef.current = bpm;
+  soundRef.current = soundOn;
+
+  const clearTimer = useCallback(() => {
+    if (timerRef.current) { clearTimeout(timerRef.current); timerRef.current = null; }
+  }, []);
 
   const stop = useCallback(() => {
-    if (intervalRef.current) clearInterval(intervalRef.current);
-    intervalRef.current = null;
+    clearTimer();
     setIsPlaying(false);
-  }, []);
+  }, [clearTimer]);
 
   const reset = useCallback(() => {
     stop();
@@ -217,55 +255,36 @@ function usePlayback(notes: TromboneNote[], bpm: number, soundOn: boolean) {
     indexRef.current = -1;
   }, [stop]);
 
+  const scheduleNext = useCallback((idx: number) => {
+    if (idx >= notes.length) { stop(); return; }
+    indexRef.current = idx;
+    setCurrentIndex(idx);
+
+    const beats = notes[idx].beats ?? 1;
+    const beatMs = 60000 / bpmRef.current;
+    const durationMs = beats * beatMs;
+
+    if (soundRef.current) playTone(getNoteFreq(notes[idx]), durationMs / 1000 * 0.9);
+
+    timerRef.current = setTimeout(() => scheduleNext(idx + 1), durationMs);
+  }, [notes, stop]);
+
   const play = useCallback(() => {
-    // Resume AudioContext if suspended (browser autoplay policy)
-    if (soundOn && audioCtx?.state === 'suspended') audioCtx.resume();
-
+    if (soundRef.current && audioCtx?.state === 'suspended') audioCtx.resume();
     const startIdx = indexRef.current >= notes.length - 1 ? 0 : indexRef.current + 1;
-    indexRef.current = startIdx - 1; // will increment on first tick
-
-    const ms = 60000 / bpm;
     setIsPlaying(true);
-
-    // Immediate first tick
-    const tick = () => {
-      const next = indexRef.current + 1;
-      if (next >= notes.length) {
-        stop();
-        return;
-      }
-      indexRef.current = next;
-      setCurrentIndex(next);
-      if (soundOn) playTone(getNoteFreq(notes[next]), ms / 1000 * 0.9);
-    };
-
-    tick();
-    intervalRef.current = setInterval(tick, ms);
-  }, [notes, bpm, soundOn, stop]);
+    scheduleNext(startIdx);
+  }, [notes, scheduleNext]);
 
   const toggle = useCallback(() => {
     if (isPlaying) stop(); else play();
   }, [isPlaying, stop, play]);
 
   // Cleanup
-  useEffect(() => () => { if (intervalRef.current) clearInterval(intervalRef.current); }, []);
+  useEffect(() => () => clearTimer(), [clearTimer]);
 
   // Reset when song changes
   useEffect(() => { reset(); }, [notes, reset]);
-
-  // Update interval when bpm changes during playback
-  useEffect(() => {
-    if (!isPlaying) return;
-    if (intervalRef.current) clearInterval(intervalRef.current);
-    const ms = 60000 / bpm;
-    intervalRef.current = setInterval(() => {
-      const next = indexRef.current + 1;
-      if (next >= notes.length) { stop(); return; }
-      indexRef.current = next;
-      setCurrentIndex(next);
-      if (soundOn) playTone(getNoteFreq(notes[next]), ms / 1000 * 0.9);
-    }, ms);
-  }, [bpm, isPlaying, notes, soundOn, stop]);
 
   return { isPlaying, currentIndex, toggle, reset };
 }
@@ -273,127 +292,118 @@ function usePlayback(notes: TromboneNote[], bpm: number, soundOn: boolean) {
 // --- Components ---
 function Staff({ notes, activeIndex }: { notes: TromboneNote[]; activeIndex: number }) {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const svgW = LEFT_MARGIN + notes.length * NOTE_SPACING + 30;
+
+  // Pre-compute x positions with variable spacing
+  const noteXPositions: number[] = [];
+  let runX = LEFT_MARGIN;
+  for (const n of notes) {
+    const w = noteWidth(n.beats ?? 1);
+    noteXPositions.push(runX + w / 2);
+    runX += w;
+  }
+  const svgW = runX + 30;
   const svgH = STAFF_TOP + 4 * LINE_SPACING + 60;
   const labelY = STAFF_TOP + 4 * LINE_SPACING + 34;
 
   // Auto-scroll to active note
   useEffect(() => {
     if (activeIndex < 0 || !scrollRef.current) return;
-    const noteX = LEFT_MARGIN + activeIndex * NOTE_SPACING + NOTE_SPACING / 2;
+    const noteX = noteXPositions[activeIndex] ?? 0;
     const container = scrollRef.current;
-    const target = noteX - container.clientWidth / 2;
-    container.scrollTo({ left: target, behavior: 'smooth' });
-  }, [activeIndex]);
+    container.scrollTo({ left: noteX - container.clientWidth / 2, behavior: 'smooth' });
+  }, [activeIndex, noteXPositions]);
+
+  // Playhead rect
+  let hlX = 0, hlW = 0;
+  if (activeIndex >= 0 && activeIndex < notes.length) {
+    const w = noteWidth(notes[activeIndex].beats ?? 1);
+    hlX = noteXPositions[activeIndex] - w / 2 + 2;
+    hlW = w - 4;
+  }
 
   return (
     <div ref={scrollRef} style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
       <svg width={svgW} height={svgH} style={{ display: 'block' }}>
-        {/* Playhead highlight column */}
+        {/* Playhead highlight */}
         {activeIndex >= 0 && (
-          <rect
-            x={LEFT_MARGIN + activeIndex * NOTE_SPACING + 2}
-            y={0}
-            width={NOTE_SPACING - 4}
-            height={svgH}
-            rx={8}
-            fill="#3b82f6"
-            opacity={0.07}
-          />
+          <rect x={hlX} y={0} width={hlW} height={svgH} rx={8} fill="#3b82f6" opacity={0.07} />
         )}
 
         {/* 5 staff lines */}
         {[0, 1, 2, 3, 4].map((i) => (
-          <line
-            key={i}
-            x1={LEFT_MARGIN - 8}
-            y1={lineY(i)}
-            x2={svgW - 16}
-            y2={lineY(i)}
-            stroke="#d4d4d8"
-            strokeWidth={1}
-          />
+          <line key={i} x1={LEFT_MARGIN - 8} y1={lineY(i)} x2={svgW - 16} y2={lineY(i)} stroke="#d4d4d8" strokeWidth={1} />
         ))}
 
         {/* Partial labels */}
         {[6, 5, 4, 3, 2].map((p) => (
-          <text
-            key={p}
-            x={LEFT_MARGIN - 16}
-            y={noteY(p) + 4}
-            textAnchor="end"
-            fontSize={10}
-            fill="#a1a1aa"
-            fontFamily="system-ui, sans-serif"
-          >
+          <text key={p} x={LEFT_MARGIN - 16} y={noteY(p) + 4} textAnchor="end" fontSize={10} fill="#a1a1aa" fontFamily="system-ui, sans-serif">
             P{p}
           </text>
         ))}
 
         {/* Notes */}
         {notes.map((n, i) => {
-          const cx = LEFT_MARGIN + i * NOTE_SPACING + NOTE_SPACING / 2;
+          const cx = noteXPositions[i];
           const cy = noteY(n.partial);
           const col = PARTIAL_COLOR[n.partial] ?? '#71717a';
           const outside = n.partial < 2 || n.partial > 6;
           const isActive = i === activeIndex;
           const isPast = activeIndex >= 0 && i < activeIndex;
+          const beats = n.beats ?? 1;
+          const isHollow = beats >= 2;
+          const isDotted = beats === 1.5 || beats === 3;
+          const hasFlag = beats <= 0.5;
+          const r = isActive ? NOTE_R + 2 : NOTE_R;
 
           return (
             <g key={i} style={{ opacity: isPast ? 0.35 : 1, transition: 'opacity 0.15s' }}>
               {/* Ledger line */}
               {outside && (
+                <line x1={cx - NOTE_R - 7} y1={cy} x2={cx + NOTE_R + 7} y2={cy} stroke="#d4d4d8" strokeWidth={1} />
+              )}
+
+              {/* Duration tail for long notes */}
+              {beats >= 2 && (
                 <line
-                  x1={cx - NOTE_R - 7}
-                  y1={cy}
-                  x2={cx + NOTE_R + 7}
-                  y2={cy}
-                  stroke="#d4d4d8"
-                  strokeWidth={1}
+                  x1={cx + NOTE_R + 2} y1={cy}
+                  x2={cx + noteWidth(beats) / 2 - 6} y2={cy}
+                  stroke={col} strokeWidth={2.5} opacity={0.3} strokeLinecap="round"
                 />
               )}
 
               {/* Active glow */}
-              {isActive && (
-                <circle cx={cx} cy={cy} r={NOTE_R + 5} fill={col} opacity={0.2} />
+              {isActive && <circle cx={cx} cy={cy} r={r + 5} fill={col} opacity={0.2} />}
+
+              {/* Note head */}
+              {isHollow ? (
+                <circle cx={cx} cy={cy} r={r} fill="#fff" stroke={col} strokeWidth={3} />
+              ) : (
+                <circle cx={cx} cy={cy} r={r} fill={col} />
               )}
 
-              {/* Note dot */}
-              <circle
-                cx={cx}
-                cy={cy}
-                r={isActive ? NOTE_R + 2 : NOTE_R}
-                fill={col}
-                style={{ transition: 'r 0.1s' }}
-              />
+              {/* Flag for eighth notes */}
+              {hasFlag && (
+                <g>
+                  <line x1={cx + r - 2} y1={cy - r + 3} x2={cx + r - 2} y2={cy - r - 12} stroke={col} strokeWidth={2} />
+                  <path d={`M ${cx + r - 2} ${cy - r - 12} q 8 5 2 12`} stroke={col} strokeWidth={2} fill="none" />
+                </g>
+              )}
+
+              {/* Dotted note indicator */}
+              {isDotted && <circle cx={cx + r + 5} cy={cy} r={2.5} fill={col} />}
 
               {/* Slide number */}
-              <text
-                x={cx}
-                y={cy + 5}
-                textAnchor="middle"
-                fontSize={isActive ? 17 : 15}
-                fontWeight="700"
-                fill="#fff"
-                fontFamily="system-ui, sans-serif"
-              >
+              <text x={cx} y={cy + 5} textAnchor="middle" fontSize={isActive ? 17 : 15} fontWeight="700" fill={isHollow ? col : '#fff'} fontFamily="system-ui, sans-serif">
                 {n.slide}
               </text>
 
-              {/* Note label */}
-              {n.label && (
-                <text
-                  x={cx}
-                  y={labelY}
-                  textAnchor="middle"
-                  fontSize={isActive ? 12 : 10}
-                  fontWeight={isActive ? 700 : 400}
-                  fill={isActive ? '#18181b' : '#a1a1aa'}
-                  fontFamily="system-ui, sans-serif"
-                >
-                  {n.label}
-                </text>
-              )}
+              {/* Note label + duration hint */}
+              <text x={cx} y={labelY} textAnchor="middle" fontSize={isActive ? 11 : 9} fontWeight={isActive ? 700 : 400} fill={isActive ? '#18181b' : '#a1a1aa'} fontFamily="system-ui, sans-serif">
+                {n.label ?? ''}
+              </text>
+              <text x={cx} y={labelY + 11} textAnchor="middle" fontSize={7} fill="#c4c4cc" fontFamily="system-ui, sans-serif">
+                {durationLabel(beats)}
+              </text>
             </g>
           );
         })}
