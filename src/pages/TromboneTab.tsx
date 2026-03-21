@@ -250,46 +250,91 @@ function Staff({ notes }: { notes: TromboneNote[] }) {
 
 // --- Trombone SVG Graphic ---
 function TromboneGraphic({ highlightPos }: { highlightPos: number | null }) {
-  // Simplified trombone side view with 7 slide positions marked
-  const slideX = (pos: number) => 62 + (pos - 1) * 38; // x position for each slide stop
+  // How far the slide extends for each position (0 = closed, 1 = fully out)
+  const slidePct = [0, 0, 0.16, 0.33, 0.5, 0.66, 0.83, 1];
+  const slideEnd = highlightPos ? 130 + slidePct[highlightPos] * 180 : 130;
 
   return (
-    <svg viewBox="0 0 340 120" style={{ width: '100%', maxWidth: 340 }}>
-      {/* Bell */}
-      <ellipse cx="38" cy="44" rx="28" ry="32" fill="none" stroke="#a1a1aa" strokeWidth="2" />
-      <ellipse cx="38" cy="44" rx="18" ry="22" fill="#f4f4f5" stroke="#d4d4d8" strokeWidth="1" />
+    <svg viewBox="0 0 400 160" style={{ width: '100%', maxWidth: 420 }}>
+      {/* === BELL SECTION (left) === */}
+      {/* Bell flare */}
+      <path d="M 10,20 Q 10,55 30,55 L 30,25 Q 10,25 10,20 Z" fill="#e8e8ec" stroke="#a1a1aa" strokeWidth="1.5" />
+      <ellipse cx="10" cy="37" rx="4" ry="18" fill="none" stroke="#a1a1aa" strokeWidth="1.5" />
 
-      {/* Main tube upper */}
-      <line x1="56" y1="28" x2="320" y2="28" stroke="#a1a1aa" strokeWidth="2" />
-      {/* Main tube lower */}
-      <line x1="56" y1="60" x2="320" y2="60" stroke="#a1a1aa" strokeWidth="2" />
-      {/* End cap */}
-      <line x1="320" y1="28" x2="320" y2="60" stroke="#a1a1aa" strokeWidth="2" strokeLinecap="round" />
+      {/* Upper fixed tube (bell to bend) */}
+      <rect x="30" y="24" width="100" height="6" rx="3" fill="#d4d4d8" stroke="#a1a1aa" strokeWidth="1" />
+      {/* Lower fixed tube (bell to bend) */}
+      <rect x="30" y="50" width="100" height="6" rx="3" fill="#d4d4d8" stroke="#a1a1aa" strokeWidth="1" />
 
-      {/* Slide rail (inner tubes) */}
-      <line x1="56" y1="36" x2="300" y2="36" stroke="#d4d4d8" strokeWidth="1" strokeDasharray="4 3" />
-      <line x1="56" y1="52" x2="300" y2="52" stroke="#d4d4d8" strokeWidth="1" strokeDasharray="4 3" />
+      {/* U-bend on the right of the fixed section */}
+      <path d="M 130,24 Q 145,24 145,40 Q 145,56 130,56" fill="none" stroke="#a1a1aa" strokeWidth="6" strokeLinecap="round" />
+      <path d="M 130,27 Q 142,27 142,40 Q 142,53 130,53" fill="none" stroke="#d4d4d8" strokeWidth="2" />
 
-      {/* Mouthpiece */}
-      <rect x="52" y="36" width="14" height="16" rx="3" fill="#d4d4d8" stroke="#a1a1aa" strokeWidth="1.5" />
-      <rect x="44" y="39" width="10" height="10" rx="2" fill="#e4e4e7" stroke="#a1a1aa" strokeWidth="1" />
+      {/* === SLIDE SECTION (extends right) === */}
+      {/* Upper slide tube */}
+      <rect x="30" y="30" width={slideEnd - 30} height="4" rx="2" fill="#b0b0b8" stroke="#8b8b95" strokeWidth="0.5" />
+      {/* Lower slide tube */}
+      <rect x="30" y="46" width={slideEnd - 30} height="4" rx="2" fill="#b0b0b8" stroke="#8b8b95" strokeWidth="0.5" />
 
-      {/* Position markers */}
+      {/* Slide U-bend (moves) */}
+      <path d={`M ${slideEnd},30 Q ${slideEnd + 14},30 ${slideEnd + 14},40 Q ${slideEnd + 14},50 ${slideEnd},50`} fill="none" stroke="#8b8b95" strokeWidth="5" strokeLinecap="round" />
+      <path d={`M ${slideEnd},32 Q ${slideEnd + 11},32 ${slideEnd + 11},40 Q ${slideEnd + 11},48 ${slideEnd},48`} fill="none" stroke="#b0b0b8" strokeWidth="1.5" />
+
+      {/* Water key */}
+      <circle cx={slideEnd - 5} cy="54" r="2.5" fill="#a1a1aa" stroke="#8b8b95" strokeWidth="0.8" />
+
+      {/* === MOUTHPIECE (far left) === */}
+      <rect x="24" y="29" width="8" height="6" rx="2" fill="#c4c4cc" stroke="#a1a1aa" strokeWidth="1" />
+      <path d="M 16,31 Q 14,32 14,34 Q 14,34 16,35 L 24,35 L 24,31 Z" fill="#d4d4d8" stroke="#a1a1aa" strokeWidth="1" />
+      <ellipse cx="14" cy="33" rx="2" ry="2.5" fill="#e4e4e7" stroke="#a1a1aa" strokeWidth="0.8" />
+
+      {/* === POSITION RULER === */}
+      {/* Ruler line */}
+      <line x1="50" y1="85" x2="350" y2="85" stroke="#e4e4e7" strokeWidth="1" />
+
+      {/* Arrow showing direction */}
+      <text x="52" y="80" fontSize="7" fill="#a1a1aa" fontFamily="system-ui">cerrada</text>
+      <text x="320" y="80" fontSize="7" fill="#a1a1aa" fontFamily="system-ui">extendida</text>
+      <path d="M 85,78 L 310,78" fill="none" stroke="#d4d4d8" strokeWidth="0.8" markerEnd="url(#arrowhead)" />
+      <defs>
+        <marker id="arrowhead" markerWidth="6" markerHeight="4" refX="6" refY="2" orient="auto">
+          <polygon points="0 0, 6 2, 0 4" fill="#d4d4d8" />
+        </marker>
+      </defs>
+
+      {/* Position markers on ruler */}
       {[1, 2, 3, 4, 5, 6, 7].map((pos) => {
-        const x = slideX(pos);
-        const isHighlight = highlightPos === pos;
+        const x = 50 + (pos - 1) * 50;
+        const active = highlightPos === pos;
         return (
           <g key={pos}>
-            <line x1={x} y1={62} x2={x} y2={72} stroke={isHighlight ? '#3b82f6' : '#d4d4d8'} strokeWidth={isHighlight ? 2 : 1} />
-            <circle cx={x} cy={82} r={isHighlight ? 13 : 11} fill={isHighlight ? '#3b82f6' : '#f4f4f5'} stroke={isHighlight ? '#3b82f6' : '#d4d4d8'} strokeWidth={1.5} />
-            <text x={x} y={87} textAnchor="middle" fontSize={isHighlight ? 13 : 11} fontWeight={isHighlight ? 700 : 500} fill={isHighlight ? '#fff' : '#71717a'} fontFamily="system-ui">{pos}</text>
-            {/* Distance label */}
-            <text x={x} y={105} textAnchor="middle" fontSize={8} fill="#a1a1aa" fontFamily="system-ui">
-              {pos === 1 ? 'cerrada' : pos === 7 ? 'max' : ''}
-            </text>
+            <line x1={x} y1={82} x2={x} y2={88} stroke={active ? '#3b82f6' : '#d4d4d8'} strokeWidth={active ? 2 : 1} />
+            <circle cx={x} cy={100} r={active ? 14 : 12} fill={active ? '#3b82f6' : '#fff'} stroke={active ? '#3b82f6' : '#d4d4d8'} strokeWidth={1.5} />
+            <text x={x} y={105} textAnchor="middle" fontSize={active ? 14 : 12} fontWeight={active ? 700 : 500} fill={active ? '#fff' : '#52525b'} fontFamily="system-ui">{pos}</text>
           </g>
         );
       })}
+
+      {/* Highlight indicator line from slide to ruler */}
+      {highlightPos && (
+        <line
+          x1={slideEnd + 7}
+          y1={56}
+          x2={50 + (highlightPos - 1) * 50}
+          y2={86}
+          stroke="#3b82f6"
+          strokeWidth="1"
+          strokeDasharray="4 3"
+          opacity={0.5}
+        />
+      )}
+
+      {/* Label */}
+      <text x="200" y="140" textAnchor="middle" fontSize="10" fill="#a1a1aa" fontFamily="system-ui">
+        {highlightPos
+          ? `Posicion ${highlightPos} — vara ${highlightPos === 1 ? 'cerrada' : highlightPos === 7 ? 'completamente extendida' : `extendida ${Math.round(slidePct[highlightPos] * 100)}%`}`
+          : 'Toca un numero para ver la posicion'}
+      </text>
     </svg>
   );
 }
@@ -297,38 +342,85 @@ function TromboneGraphic({ highlightPos }: { highlightPos: number | null }) {
 // --- Embouchure / Partial Visual ---
 function PartialDiagram() {
   const levels = [
-    { p: 1, name: 'Pedal', desc: 'Labios muy relajados, aire lento' },
-    { p: 2, name: 'Bajo', desc: 'Relajado, vibración amplia' },
-    { p: 3, name: 'Medio-bajo', desc: 'Firmeza moderada' },
-    { p: 4, name: 'Medio', desc: 'Tensión media, buen soporte' },
-    { p: 5, name: 'Medio-alto', desc: 'Labios más firmes, aire rápido' },
-    { p: 6, name: 'Alto', desc: 'Tensión alta, apertura pequeña' },
-    { p: 7, name: 'Muy alto', desc: 'Máxima firmeza, aire concentrado' },
+    { p: 1, name: 'Pedal', desc: 'Muy relajados, aire lento', lip: 5 },
+    { p: 2, name: 'Bajo', desc: 'Relajado, vibración amplia', lip: 4.2 },
+    { p: 3, name: 'Medio-bajo', desc: 'Firmeza moderada', lip: 3.4 },
+    { p: 4, name: 'Medio', desc: 'Buen soporte de aire', lip: 2.8 },
+    { p: 5, name: 'Medio-alto', desc: 'Más firmes, aire rápido', lip: 2.2 },
+    { p: 6, name: 'Alto', desc: 'Apertura pequeña', lip: 1.6 },
+    { p: 7, name: 'Muy alto', desc: 'Máxima firmeza', lip: 1.0 },
   ];
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-      {[...levels].reverse().map(({ p, name, desc }) => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+      {[...levels].reverse().map(({ p, name, desc, lip }) => (
         <div
           key={p}
           style={{
             display: 'flex',
             alignItems: 'center',
             gap: 10,
-            padding: '6px 10px',
+            padding: '7px 10px',
             borderRadius: 8,
             background: `${PARTIAL_COLOR[p]}10`,
+            borderLeft: `3px solid ${PARTIAL_COLOR[p]}`,
           }}
         >
+          {/* Partial number badge */}
           <div style={{ width: 28, height: 28, borderRadius: '50%', background: PARTIAL_COLOR[p], display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 13, fontWeight: 700, fontFamily: 'system-ui', flexShrink: 0 }}>
             {p}
           </div>
-          <div style={{ minWidth: 0 }}>
+
+          {/* Lip aperture icon */}
+          <svg width="28" height="28" viewBox="0 0 28 28" style={{ flexShrink: 0 }}>
+            {/* Face circle */}
+            <circle cx="14" cy="14" r="12" fill="#fef3c7" stroke="#fbbf24" strokeWidth="0.8" />
+            {/* Upper lip */}
+            <ellipse cx="14" cy={14 - lip / 2} rx="5" ry="2.5" fill="#f9a8d4" />
+            {/* Lower lip */}
+            <ellipse cx="14" cy={14 + lip / 2} rx="5" ry="2.5" fill="#f9a8d4" />
+            {/* Aperture gap */}
+            <ellipse cx="14" cy="14" rx={Math.max(1.5, lip * 0.8)} ry={lip / 2} fill="#18181b" />
+          </svg>
+
+          {/* Text */}
+          <div style={{ minWidth: 0, flex: 1 }}>
             <div style={{ fontSize: '0.82rem', fontWeight: 600, color: '#18181b', fontFamily: 'system-ui' }}>{name}</div>
             <div style={{ fontSize: '0.72rem', color: '#71717a', fontFamily: 'system-ui' }}>{desc}</div>
           </div>
+
+          {/* Pitch indicator */}
+          <div style={{ fontSize: '0.65rem', color: '#a1a1aa', fontFamily: 'system-ui', textAlign: 'right', flexShrink: 0 }}>
+            {p <= 2 ? 'grave' : p <= 4 ? 'medio' : 'agudo'}
+          </div>
         </div>
       ))}
+
+      {/* Visual explanation */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16, marginTop: 8, padding: '8px 0' }}>
+        <div style={{ textAlign: 'center' }}>
+          <svg width="24" height="24" viewBox="0 0 28 28">
+            <circle cx="14" cy="14" r="12" fill="#fef3c7" stroke="#fbbf24" strokeWidth="0.8" />
+            <ellipse cx="14" cy="11.5" rx="5" ry="2.5" fill="#f9a8d4" />
+            <ellipse cx="14" cy="16.5" rx="5" ry="2.5" fill="#f9a8d4" />
+            <ellipse cx="14" cy="14" rx="4" ry="2.5" fill="#18181b" />
+          </svg>
+          <div style={{ fontSize: '0.65rem', color: '#71717a', fontFamily: 'system-ui', marginTop: 2 }}>abierto = grave</div>
+        </div>
+        <svg width="24" height="8" viewBox="0 0 24 8">
+          <path d="M 2,4 L 22,4" stroke="#d4d4d8" strokeWidth="1.5" markerEnd="url(#arrowR)" />
+          <defs><marker id="arrowR" markerWidth="6" markerHeight="4" refX="6" refY="2" orient="auto"><polygon points="0 0, 6 2, 0 4" fill="#d4d4d8" /></marker></defs>
+        </svg>
+        <div style={{ textAlign: 'center' }}>
+          <svg width="24" height="24" viewBox="0 0 28 28">
+            <circle cx="14" cy="14" r="12" fill="#fef3c7" stroke="#fbbf24" strokeWidth="0.8" />
+            <ellipse cx="14" cy="13.5" rx="5" ry="2.5" fill="#f9a8d4" />
+            <ellipse cx="14" cy="14.5" rx="5" ry="2.5" fill="#f9a8d4" />
+            <ellipse cx="14" cy="14" rx="1.2" ry="0.5" fill="#18181b" />
+          </svg>
+          <div style={{ fontSize: '0.65rem', color: '#71717a', fontFamily: 'system-ui', marginTop: 2 }}>cerrado = agudo</div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -434,37 +526,34 @@ function HelpModal({ onClose }: { onClose: () => void }) {
             Posiciones de la vara
           </p>
           <div
-            style={{ background: '#fafafa', borderRadius: 12, padding: '16px 12px 8px', border: '1px solid #f0f0f0' }}
+            style={{ background: '#fafafa', borderRadius: 12, padding: '16px 8px 4px', border: '1px solid #f0f0f0' }}
           >
             <TromboneGraphic highlightPos={hoverPos} />
-            <div style={{ display: 'flex', justifyContent: 'center', gap: 4, marginTop: 8 }}>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginTop: 4, paddingBottom: 8 }}>
               {[1, 2, 3, 4, 5, 6, 7].map((pos) => (
                 <button
                   key={pos}
-                  onMouseEnter={() => setHoverPos(pos)}
-                  onMouseLeave={() => setHoverPos(null)}
-                  onTouchStart={() => setHoverPos(pos)}
-                  onTouchEnd={() => setHoverPos(null)}
+                  onPointerEnter={() => setHoverPos(pos)}
+                  onPointerLeave={() => setHoverPos(null)}
+                  onClick={() => setHoverPos(hoverPos === pos ? null : pos)}
                   style={{
-                    width: 32,
-                    height: 28,
-                    borderRadius: 6,
-                    border: '1px solid #e4e4e7',
+                    width: 34,
+                    height: 30,
+                    borderRadius: 8,
+                    border: hoverPos === pos ? '2px solid #3b82f6' : '1px solid #e4e4e7',
                     background: hoverPos === pos ? '#3b82f6' : '#fff',
-                    color: hoverPos === pos ? '#fff' : '#71717a',
-                    fontSize: 12,
+                    color: hoverPos === pos ? '#fff' : '#52525b',
+                    fontSize: 13,
                     fontWeight: 600,
                     cursor: 'pointer',
                     fontFamily: 'system-ui',
+                    transition: 'all 0.15s',
                   }}
                 >
                   {pos}
                 </button>
               ))}
             </div>
-            <p style={{ textAlign: 'center', fontSize: '0.7rem', color: '#a1a1aa', marginTop: 6, fontFamily: 'system-ui' }}>
-              Toca un numero para ver la posicion
-            </p>
           </div>
         </div>
 
@@ -474,9 +563,9 @@ function HelpModal({ onClose }: { onClose: () => void }) {
             Parciales (embocadura)
           </p>
           <PartialDiagram />
-          <p style={{ fontSize: '0.72rem', color: '#a1a1aa', marginTop: 10, lineHeight: 1.6, fontFamily: 'system-ui' }}>
-            Los parciales se producen cambiando la tension de los labios. Mismo principio que silbar mas agudo o mas grave.
-            En el pentagrama, las 5 lineas representan los parciales 2-6 (los mas usados).
+          <p style={{ fontSize: '0.75rem', color: '#71717a', marginTop: 10, lineHeight: 1.6, fontFamily: 'system-ui' }}>
+            Es el mismo principio que silbar: aprietas mas los labios para notas agudas, relajas para graves.
+            En el pentagrama, las 5 lineas representan los parciales 2 al 6.
           </p>
         </div>
       </div>
