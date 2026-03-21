@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Calendar, User, FileText, ArrowLeft, Upload, Trash2, Archive, RotateCcw, ClipboardList, TrendingUp } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import {
@@ -21,7 +21,10 @@ interface HealthDashboardProps {
 }
 
 export function HealthDashboard({ onBack }: HealthDashboardProps) {
-  const { uploadedReports, hiddenReportIds, archivedReportIds, removeReport, archiveReport, restoreReport } = useHealthStore();
+  const { uploadedReports, hiddenReportIds, archivedReportIds, removeReport, archiveReport, restoreReport, fetchReports } = useHealthStore();
+
+  useEffect(() => { fetchReports(); }, [fetchReports]);
+
   const [selectedPerson, setSelectedPerson] = useState<Person>('liz');
   const [showUpload, setShowUpload] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
