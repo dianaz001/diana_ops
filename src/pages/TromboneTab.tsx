@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
 // --- Types ---
 interface TromboneNote {
@@ -153,15 +153,155 @@ const PARTIAL_COLOR: Record<number, string> = {
 };
 
 
+// --- Audio Engine ---
+// Base frequencies for each partial at position 1
+const PARTIAL_BASE_FREQ: Record<number, number> = {
+  1: 58.27,   // Bb1
+  2: 116.54,  // Bb2
+  3: 174.61,  // F3
+  4: 233.08,  // Bb3
+  5: 293.66,  // D4
+  6: 349.23,  // F4
+  7: 415.30,  // Ab4
+};
+
+function getNoteFreq(note: TromboneNote): number {
+  const base = PARTIAL_BASE_FREQ[note.partial] ?? 174.61;
+  // Each slide position lowers by ~1 semitone
+  const semitones = note.slide - 1;
+  return base * Math.pow(2, -semitones / 12);
+}
+
+let audioCtx: AudioContext | null = null;
+function getAudioCtx() {
+  if (!audioCtx) audioCtx = new AudioContext();
+  return audioCtx;
+}
+
+function playTone(freq: number, duration: number) {
+  const ctx = getAudioCtx();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+
+  osc.type = 'sawtooth';
+  osc.frequency.setValueAtTime(freq, ctx.currentTime);
+
+  // Brass-like envelope
+  gain.gain.setValueAtTime(0, ctx.currentTime);
+  gain.gain.linearRampToValueAtTime(0.15, ctx.currentTime + 0.04);
+  gain.gain.exponentialRampToValueAtTime(0.08, ctx.currentTime + duration * 0.3);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration * 0.95);
+
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start(ctx.currentTime);
+  osc.stop(ctx.currentTime + duration);
+}
+
+// --- Playback Hook ---
+function usePlayback(notes: TromboneNote[], bpm: number, soundOn: boolean) {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(-1);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const indexRef = useRef(-1);
+
+  const stop = useCallback(() => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    intervalRef.current = null;
+    setIsPlaying(false);
+  }, []);
+
+  const reset = useCallback(() => {
+    stop();
+    setCurrentIndex(-1);
+    indexRef.current = -1;
+  }, [stop]);
+
+  const play = useCallback(() => {
+    // Resume AudioContext if suspended (browser autoplay policy)
+    if (soundOn && audioCtx?.state === 'suspended') audioCtx.resume();
+
+    const startIdx = indexRef.current >= notes.length - 1 ? 0 : indexRef.current + 1;
+    indexRef.current = startIdx - 1; // will increment on first tick
+
+    const ms = 60000 / bpm;
+    setIsPlaying(true);
+
+    // Immediate first tick
+    const tick = () => {
+      const next = indexRef.current + 1;
+      if (next >= notes.length) {
+        stop();
+        return;
+      }
+      indexRef.current = next;
+      setCurrentIndex(next);
+      if (soundOn) playTone(getNoteFreq(notes[next]), ms / 1000 * 0.9);
+    };
+
+    tick();
+    intervalRef.current = setInterval(tick, ms);
+  }, [notes, bpm, soundOn, stop]);
+
+  const toggle = useCallback(() => {
+    if (isPlaying) stop(); else play();
+  }, [isPlaying, stop, play]);
+
+  // Cleanup
+  useEffect(() => () => { if (intervalRef.current) clearInterval(intervalRef.current); }, []);
+
+  // Reset when song changes
+  useEffect(() => { reset(); }, [notes, reset]);
+
+  // Update interval when bpm changes during playback
+  useEffect(() => {
+    if (!isPlaying) return;
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    const ms = 60000 / bpm;
+    intervalRef.current = setInterval(() => {
+      const next = indexRef.current + 1;
+      if (next >= notes.length) { stop(); return; }
+      indexRef.current = next;
+      setCurrentIndex(next);
+      if (soundOn) playTone(getNoteFreq(notes[next]), ms / 1000 * 0.9);
+    }, ms);
+  }, [bpm, isPlaying, notes, soundOn, stop]);
+
+  return { isPlaying, currentIndex, toggle, reset };
+}
+
 // --- Components ---
-function Staff({ notes }: { notes: TromboneNote[] }) {
+function Staff({ notes, activeIndex }: { notes: TromboneNote[]; activeIndex: number }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
   const svgW = LEFT_MARGIN + notes.length * NOTE_SPACING + 30;
   const svgH = STAFF_TOP + 4 * LINE_SPACING + 60;
   const labelY = STAFF_TOP + 4 * LINE_SPACING + 34;
 
+  // Auto-scroll to active note
+  useEffect(() => {
+    if (activeIndex < 0 || !scrollRef.current) return;
+    const noteX = LEFT_MARGIN + activeIndex * NOTE_SPACING + NOTE_SPACING / 2;
+    const container = scrollRef.current;
+    const target = noteX - container.clientWidth / 2;
+    container.scrollTo({ left: target, behavior: 'smooth' });
+  }, [activeIndex]);
+
   return (
-    <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+    <div ref={scrollRef} style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
       <svg width={svgW} height={svgH} style={{ display: 'block' }}>
+        {/* Playhead highlight column */}
+        {activeIndex >= 0 && (
+          <rect
+            x={LEFT_MARGIN + activeIndex * NOTE_SPACING + 2}
+            y={0}
+            width={NOTE_SPACING - 4}
+            height={svgH}
+            rx={8}
+            fill="#3b82f6"
+            opacity={0.07}
+          />
+        )}
+
         {/* 5 staff lines */}
         {[0, 1, 2, 3, 4].map((i) => (
           <line
@@ -196,9 +336,11 @@ function Staff({ notes }: { notes: TromboneNote[] }) {
           const cy = noteY(n.partial);
           const col = PARTIAL_COLOR[n.partial] ?? '#71717a';
           const outside = n.partial < 2 || n.partial > 6;
+          const isActive = i === activeIndex;
+          const isPast = activeIndex >= 0 && i < activeIndex;
 
           return (
-            <g key={i}>
+            <g key={i} style={{ opacity: isPast ? 0.35 : 1, transition: 'opacity 0.15s' }}>
               {/* Ledger line */}
               {outside && (
                 <line
@@ -211,15 +353,26 @@ function Staff({ notes }: { notes: TromboneNote[] }) {
                 />
               )}
 
+              {/* Active glow */}
+              {isActive && (
+                <circle cx={cx} cy={cy} r={NOTE_R + 5} fill={col} opacity={0.2} />
+              )}
+
               {/* Note dot */}
-              <circle cx={cx} cy={cy} r={NOTE_R} fill={col} />
+              <circle
+                cx={cx}
+                cy={cy}
+                r={isActive ? NOTE_R + 2 : NOTE_R}
+                fill={col}
+                style={{ transition: 'r 0.1s' }}
+              />
 
               {/* Slide number */}
               <text
                 x={cx}
                 y={cy + 5}
                 textAnchor="middle"
-                fontSize={15}
+                fontSize={isActive ? 17 : 15}
                 fontWeight="700"
                 fill="#fff"
                 fontFamily="system-ui, sans-serif"
@@ -233,8 +386,9 @@ function Staff({ notes }: { notes: TromboneNote[] }) {
                   x={cx}
                   y={labelY}
                   textAnchor="middle"
-                  fontSize={10}
-                  fill="#a1a1aa"
+                  fontSize={isActive ? 12 : 10}
+                  fontWeight={isActive ? 700 : 400}
+                  fill={isActive ? '#18181b' : '#a1a1aa'}
                   fontFamily="system-ui, sans-serif"
                 >
                   {n.label}
@@ -575,10 +729,69 @@ function HelpModal({ onClose }: { onClose: () => void }) {
   );
 }
 
+// --- Icon SVGs ---
+function PlayIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+      <polygon points="6,3 20,12 6,21" />
+    </svg>
+  );
+}
+function PauseIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+      <rect x="5" y="3" width="5" height="18" rx="1" />
+      <rect x="14" y="3" width="5" height="18" rx="1" />
+    </svg>
+  );
+}
+function ResetIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="1,3 1,21 8,12" />
+      <line x1="11" y1="3" x2="11" y2="21" />
+    </svg>
+  );
+}
+function SoundOnIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor" />
+      <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+      <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+    </svg>
+  );
+}
+function SoundOffIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor" />
+      <line x1="23" y1="9" x2="17" y2="15" />
+      <line x1="17" y1="9" x2="23" y2="15" />
+    </svg>
+  );
+}
+
+// --- Control Button ---
+const btnBase: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  border: '1px solid #e4e4e7',
+  borderRadius: 10,
+  background: '#fff',
+  cursor: 'pointer',
+  fontFamily: 'system-ui, sans-serif',
+  transition: 'all 0.15s',
+};
+
 // --- Main Page ---
 export function TromboneTab() {
   const [song, setSong] = useState(SONGS[0]);
   const [showHelp, setShowHelp] = useState(false);
+  const [bpm, setBpm] = useState(100);
+  const [soundOn, setSoundOn] = useState(true);
+  const { isPlaying, currentIndex, toggle, reset } = usePlayback(song.notes, bpm, soundOn);
 
   return (
     <div
@@ -601,7 +814,7 @@ export function TromboneTab() {
         </div>
 
         {/* Song selector dropdown */}
-        <div style={{ marginBottom: '1.75rem', position: 'relative' }}>
+        <div style={{ marginBottom: '1.25rem', position: 'relative' }}>
           <select
             value={song.id}
             onChange={(e) => {
@@ -634,6 +847,72 @@ export function TromboneTab() {
           </select>
         </div>
 
+        {/* Playback controls */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            marginBottom: '1.25rem',
+            flexWrap: 'wrap',
+          }}
+        >
+          {/* Play / Pause */}
+          <button
+            onClick={toggle}
+            style={{
+              ...btnBase,
+              width: 44,
+              height: 44,
+              background: isPlaying ? '#18181b' : '#3b82f6',
+              border: 'none',
+              color: '#fff',
+              borderRadius: 12,
+            }}
+          >
+            {isPlaying ? <PauseIcon /> : <PlayIcon />}
+          </button>
+
+          {/* Reset */}
+          <button
+            onClick={reset}
+            style={{ ...btnBase, width: 40, height: 40, color: '#52525b' }}
+          >
+            <ResetIcon />
+          </button>
+
+          {/* Sound toggle */}
+          <button
+            onClick={() => setSoundOn(!soundOn)}
+            style={{ ...btnBase, width: 40, height: 40, color: soundOn ? '#3b82f6' : '#a1a1aa' }}
+          >
+            {soundOn ? <SoundOnIcon /> : <SoundOffIcon />}
+          </button>
+
+          {/* Separator */}
+          <div style={{ width: 1, height: 28, background: '#e4e4e7', margin: '0 4px' }} />
+
+          {/* BPM control */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <input
+              type="range"
+              min={40}
+              max={200}
+              value={bpm}
+              onChange={(e) => setBpm(Number(e.target.value))}
+              style={{ width: 100, accentColor: '#3b82f6' }}
+            />
+            <span style={{ fontSize: '0.8rem', color: '#52525b', fontFamily: 'system-ui', minWidth: 60 }}>
+              {bpm} BPM
+            </span>
+          </div>
+
+          {/* Note counter */}
+          <span style={{ fontSize: '0.75rem', color: '#a1a1aa', fontFamily: 'system-ui', marginLeft: 'auto' }}>
+            {currentIndex >= 0 ? currentIndex + 1 : 0} / {song.notes.length}
+          </span>
+        </div>
+
         {/* Staff card */}
         <div
           style={{
@@ -644,7 +923,7 @@ export function TromboneTab() {
             boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
           }}
         >
-          <Staff notes={song.notes} />
+          <Staff notes={song.notes} activeIndex={currentIndex} />
         </div>
 
         {/* Help button */}
