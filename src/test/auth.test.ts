@@ -3,121 +3,123 @@ import { renderHook, act } from '@testing-library/react';
 import { useAuthStore } from '../stores/authStore';
 
 // Mock Supabase for auth tests
-const mockSupabase = {
-  from: vi.fn(),
-};
+const mockSignInWithPassword = vi.fn();
+const mockSignOut = vi.fn();
+const mockGetSession = vi.fn();
 
 vi.mock('../lib/supabase', () => ({
-  supabase: mockSupabase,
+  supabase: {
+    auth: {
+      signInWithPassword: (...args: unknown[]) => mockSignInWithPassword(...args),
+      signOut: (...args: unknown[]) => mockSignOut(...args),
+      getSession: (...args: unknown[]) => mockGetSession(...args),
+    },
+  },
 }));
 
 describe('Authentication', () => {
   beforeEach(() => {
-    // Reset the store before each test
-    const { result } = renderHook(() => useAuthStore());
-    act(() => {
-      result.current.isAuthenticated = false;
-      result.current.sessionId = null;
-      result.current.error = null;
-    });
     vi.clearAllMocks();
+    // Reset store state
+    useAuthStore.setState({
+      isAuthenticated: false,
+      userEmail: null,
+      isLoading: true,
+      error: null,
+    });
   });
 
   it('should start in unauthenticated state', () => {
     const { result } = renderHook(() => useAuthStore());
     expect(result.current.isAuthenticated).toBe(false);
-    expect(result.current.sessionId).toBeNull();
+    expect(result.current.userEmail).toBeNull();
   });
 
-  it('should reject incorrect password', async () => {
-    // Mock config table to return a hash that won't match
-    mockSupabase.from.mockReturnValue({
-      select: vi.fn().mockReturnValue({
-        eq: vi.fn().mockReturnValue({
-          single: vi.fn().mockResolvedValue({
-            data: { value: 'different-hash-value' },
-            error: null,
-          }),
-        }),
-      }),
+  it('should reject invalid credentials', async () => {
+    mockSignInWithPassword.mockResolvedValue({
+      data: { user: null, session: null },
+      error: { message: 'Invalid login credentials' },
     });
 
     const { result } = renderHook(() => useAuthStore());
 
     await act(async () => {
-      const success = await result.current.login('wrong-password', false);
+      const success = await result.current.login('bad@email.com', 'wrong');
       expect(success).toBe(false);
     });
 
     expect(result.current.isAuthenticated).toBe(false);
-    expect(result.current.error).toBe('Incorrect password');
+    expect(result.current.error).toBe('Invalid login credentials');
   });
 
-  it('should create session with remember me extending expiration', async () => {
-    // This test verifies the session creation logic
-    const now = new Date();
-    const thirtyDaysFromNow = new Date(now);
-    thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
+  it('should authenticate with valid credentials', async () => {
+    mockSignInWithPassword.mockResolvedValue({
+      data: {
+        user: { email: 'julian@treedigits.ca' },
+        session: { access_token: 'token' },
+      },
+      error: null,
+    });
 
-    const twentyFourHoursFromNow = new Date(now);
-    twentyFourHoursFromNow.setHours(twentyFourHoursFromNow.getHours() + 24);
-
-    // Verify 30-day session is longer than 24-hour session
-    expect(thirtyDaysFromNow.getTime()).toBeGreaterThan(twentyFourHoursFromNow.getTime());
-  });
-
-  it('should clear session on logout', async () => {
     const { result } = renderHook(() => useAuthStore());
 
-    // Manually set authenticated state
-    act(() => {
-      result.current.isAuthenticated = true;
-      result.current.sessionId = 'test-session-id';
+    await act(async () => {
+      const success = await result.current.login('julian@treedigits.ca', 'password');
+      expect(success).toBe(true);
     });
 
-    mockSupabase.from.mockReturnValue({
-      delete: vi.fn().mockReturnValue({
-        eq: vi.fn().mockResolvedValue({ error: null }),
-      }),
+    expect(result.current.isAuthenticated).toBe(true);
+    expect(result.current.userEmail).toBe('julian@treedigits.ca');
+  });
+
+  it('should clear state on logout', async () => {
+    mockSignOut.mockResolvedValue({ error: null });
+
+    useAuthStore.setState({
+      isAuthenticated: true,
+      userEmail: 'julian@treedigits.ca',
     });
+
+    const { result } = renderHook(() => useAuthStore());
 
     await act(async () => {
       await result.current.logout();
     });
 
     expect(result.current.isAuthenticated).toBe(false);
-    expect(result.current.sessionId).toBeNull();
+    expect(result.current.userEmail).toBeNull();
   });
 
-  it('should handle session check with expired session', async () => {
+  it('should restore session on checkSession', async () => {
+    mockGetSession.mockResolvedValue({
+      data: {
+        session: {
+          user: { email: 'liz@treedigits.ca' },
+        },
+      },
+    });
+
     const { result } = renderHook(() => useAuthStore());
 
-    // Set a session ID
-    act(() => {
-      result.current.sessionId = 'expired-session-id';
+    await act(async () => {
+      const valid = await result.current.checkSession();
+      expect(valid).toBe(true);
     });
 
-    // Mock expired session response
-    const expiredDate = new Date();
-    expiredDate.setDate(expiredDate.getDate() - 1); // Yesterday
+    expect(result.current.isAuthenticated).toBe(true);
+    expect(result.current.userEmail).toBe('liz@treedigits.ca');
+  });
 
-    mockSupabase.from.mockReturnValue({
-      select: vi.fn().mockReturnValue({
-        eq: vi.fn().mockReturnValue({
-          single: vi.fn().mockResolvedValue({
-            data: { expires_at: expiredDate.toISOString() },
-            error: null,
-          }),
-        }),
-      }),
-      delete: vi.fn().mockReturnValue({
-        eq: vi.fn().mockResolvedValue({ error: null }),
-      }),
+  it('should handle no active session', async () => {
+    mockGetSession.mockResolvedValue({
+      data: { session: null },
     });
+
+    const { result } = renderHook(() => useAuthStore());
 
     await act(async () => {
-      const isValid = await result.current.checkSession();
-      expect(isValid).toBe(false);
+      const valid = await result.current.checkSession();
+      expect(valid).toBe(false);
     });
 
     expect(result.current.isAuthenticated).toBe(false);

@@ -1,11 +1,11 @@
 import { useState, useEffect, type FormEvent } from 'react';
 import { useAuthStore } from '../../stores/authStore';
-import { Lock } from 'lucide-react';
+import { Lock, Mail } from 'lucide-react';
 
 export function PasswordGate({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading, error, login, checkSession } = useAuthStore();
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -14,10 +14,10 @@ export function PasswordGate({ children }: { children: React.ReactNode }) {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!password.trim()) return;
+    if (!email.trim() || !password.trim()) return;
 
     setIsSubmitting(true);
-    await login(password, rememberMe);
+    await login(email, password);
     setIsSubmitting(false);
   };
 
@@ -47,12 +47,30 @@ export function PasswordGate({ children }: { children: React.ReactNode }) {
               JULIZ
             </h1>
             <p className="text-sm font-light text-slate-400">
-              Enter password to continue
+              Sign in to continue
             </p>
           </div>
 
           <form onSubmit={handleSubmit}>
-            <div className="space-y-5">
+            <div className="space-y-4">
+              <div className="relative">
+                <label htmlFor="email" className="sr-only">
+                  Email
+                </label>
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Email"
+                  className="w-full bg-[#195de6]/5 border-none rounded-full py-3 pl-12 pr-4 text-sm font-light text-slate-700 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-[#195de6]/30 transition-all"
+                  disabled={isSubmitting}
+                  autoFocus
+                  autoComplete="email"
+                />
+              </div>
+
               <div className="relative">
                 <label htmlFor="password" className="sr-only">
                   Password
@@ -64,38 +82,21 @@ export function PasswordGate({ children }: { children: React.ReactNode }) {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Password"
-                  className="w-full bg-[#195de6]/5 border-none rounded-full py-3 pl-12 pr-4 text-sm font-light text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-[#195de6]/30 transition-all"
+                  className="w-full bg-[#195de6]/5 border-none rounded-full py-3 pl-12 pr-4 text-sm font-light text-slate-700 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-[#195de6]/30 transition-all"
                   disabled={isSubmitting}
-                  autoFocus
+                  autoComplete="current-password"
                 />
-              </div>
-
-              <div className="flex items-center">
-                <input
-                  id="remember-me"
-                  type="checkbox"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                  className="w-3 h-3 text-[#195de6] border-[#195de6]/20 rounded focus:ring-[#195de6]/20"
-                  disabled={isSubmitting}
-                />
-                <label
-                  htmlFor="remember-me"
-                  className="ml-2.5 text-[10px] uppercase tracking-wider text-slate-400 font-light"
-                >
-                  Remember me for 30 days
-                </label>
               </div>
 
               {error && (
-                <div className="bg-red-50/80 text-red-600 text-sm font-light px-4 py-2.5 rounded-xl">
+                <div className="bg-red-50/80 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm font-light px-4 py-2.5 rounded-xl">
                   {error}
                 </div>
               )}
 
               <button
                 type="submit"
-                disabled={isSubmitting || !password.trim()}
+                disabled={isSubmitting || !email.trim() || !password.trim()}
                 className="w-full bg-[#195de6] text-white py-3 rounded-xl text-[11px] uppercase tracking-[0.2em] font-medium hover:bg-[#195de6]/90 focus:outline-none focus:ring-1 focus:ring-[#195de6]/30 focus:ring-offset-2 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
               >
                 {isSubmitting ? 'Signing in...' : 'Sign in'}
