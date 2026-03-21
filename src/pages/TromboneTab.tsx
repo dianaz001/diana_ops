@@ -427,7 +427,9 @@ function PartialDiagram() {
 
 // --- Help Modal ---
 function HelpModal({ onClose }: { onClose: () => void }) {
+  const [lockedPos, setLockedPos] = useState<number | null>(null);
   const [hoverPos, setHoverPos] = useState<number | null>(null);
+  const activePos = lockedPos ?? hoverPos;
   const overlayRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -528,21 +530,21 @@ function HelpModal({ onClose }: { onClose: () => void }) {
           <div
             style={{ background: '#fafafa', borderRadius: 12, padding: '16px 8px 4px', border: '1px solid #f0f0f0' }}
           >
-            <TromboneGraphic highlightPos={hoverPos} />
+            <TromboneGraphic highlightPos={activePos} />
             <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginTop: 4, paddingBottom: 8 }}>
               {[1, 2, 3, 4, 5, 6, 7].map((pos) => (
                 <button
                   key={pos}
-                  onPointerEnter={() => setHoverPos(pos)}
-                  onPointerLeave={() => setHoverPos(null)}
-                  onClick={() => setHoverPos(hoverPos === pos ? null : pos)}
+                  onPointerEnter={() => { if (!lockedPos) setHoverPos(pos); }}
+                  onPointerLeave={() => { if (!lockedPos) setHoverPos(null); }}
+                  onClick={() => setLockedPos(lockedPos === pos ? null : pos)}
                   style={{
                     width: 34,
                     height: 30,
                     borderRadius: 8,
-                    border: hoverPos === pos ? '2px solid #3b82f6' : '1px solid #e4e4e7',
-                    background: hoverPos === pos ? '#3b82f6' : '#fff',
-                    color: hoverPos === pos ? '#fff' : '#52525b',
+                    border: activePos === pos ? '2px solid #3b82f6' : '1px solid #e4e4e7',
+                    background: activePos === pos ? '#3b82f6' : '#fff',
+                    color: activePos === pos ? '#fff' : '#52525b',
                     fontSize: 13,
                     fontWeight: 600,
                     cursor: 'pointer',
