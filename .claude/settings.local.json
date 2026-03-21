@@ -27,7 +27,8 @@
       "WebFetch(domain:tanstack.com)",
       "WebFetch(domain:zustand-demo.pmnd.rs)",
       "WebFetch(domain:recharts.org)",
-      "WebFetch(domain:juliz.treedigits.ca)"
+      "WebFetch(domain:juliz.treedigits.ca)",
+      "mcp__plugin_supabase_supabase__*"
     ],
     "deny": [
       "WebFetch(domain:*.ru)",
@@ -49,7 +50,7 @@
       "WebFetch(domain:*.gq)"
     ],
     "ask": [],
-    "defaultMode": "bypassPermissions"
+    "defaultMode": "default"
   },
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
