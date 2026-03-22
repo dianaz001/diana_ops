@@ -143,48 +143,96 @@ const SONGS: Song[] = [
     id: 'talento-tv',
     title: 'Talento de Televisión',
     artist: 'Willie Colón',
+    // Key: Bb major. Chords: Bb - F - D7 - Gm
     notes: [
-      // Intro trombone riff (salsa syncopation)
-      { slide: 1, partial: 3, label: 'F', beats: 0.5 },
-      { slide: 1, partial: 3, label: 'F', beats: 0.5 },
-      { slide: 3, partial: 3, label: 'Eb', beats: 0.5 },
+      // === INTRO TROMBONE (Bb - F - D7 - Gm) ===
+      // Bb chord arpeggio
+      { slide: 1, partial: 2, label: 'Bb', beats: 0.5 },
       { slide: 4, partial: 3, label: 'D', beats: 0.5 },
-      { slide: 3, partial: 3, label: 'Eb', beats: 0.5 },
-      { slide: 1, partial: 3, label: 'F', beats: 0.5 },
-      { slide: 4, partial: 3, label: 'D', beats: 1 },
-      { slide: 1, partial: 3, label: 'F', beats: 0.5 },
-      { slide: 1, partial: 3, label: 'F', beats: 0.5 },
-      { slide: 3, partial: 3, label: 'Eb', beats: 0.5 },
+      { slide: 1, partial: 3, label: 'F', beats: 1.5 },
       { slide: 4, partial: 3, label: 'D', beats: 0.5 },
+      // F chord
+      { slide: 2, partial: 4, label: 'A', beats: 0.5 },
       { slide: 6, partial: 3, label: 'C', beats: 0.5 },
+      { slide: 1, partial: 3, label: 'F', beats: 1 },
+      { slide: 6, partial: 3, label: 'C', beats: 0.5 },
+      { slide: 2, partial: 4, label: 'A', beats: 0.5 },
+      // D7 chord (con F#)
+      { slide: 4, partial: 3, label: 'D', beats: 0.5 },
+      { slide: 5, partial: 4, label: 'F#', beats: 0.5 },
+      { slide: 2, partial: 4, label: 'A', beats: 1.5 },
+      { slide: 5, partial: 4, label: 'F#', beats: 0.5 },
+      // Gm chord
+      { slide: 4, partial: 4, label: 'G', beats: 0.5 },
+      { slide: 1, partial: 4, label: 'Bb', beats: 0.5 },
+      { slide: 1, partial: 5, label: 'D', beats: 1 },
+      { slide: 1, partial: 4, label: 'Bb', beats: 0.5 },
+      { slide: 4, partial: 4, label: 'G', beats: 0.5 },
+
+      // === INTRO TROMBONE vuelta 2 (descendente) ===
+      // Bb
+      { slide: 1, partial: 3, label: 'F', beats: 0.5 },
       { slide: 4, partial: 3, label: 'D', beats: 0.5 },
       { slide: 1, partial: 2, label: 'Bb', beats: 1 },
-      // Coro - "Talento de televisión"
-      { slide: 1, partial: 2, label: 'Bb', beats: 0.5 },
       { slide: 4, partial: 3, label: 'D', beats: 0.5 },
-      { slide: 3, partial: 3, label: 'Eb', beats: 0.5 },
-      { slide: 1, partial: 3, label: 'F', beats: 1 },
       { slide: 1, partial: 3, label: 'F', beats: 0.5 },
-      { slide: 3, partial: 3, label: 'Eb', beats: 0.5 },
+      // F
+      { slide: 6, partial: 3, label: 'C', beats: 0.5 },
+      { slide: 2, partial: 4, label: 'A', beats: 0.5 },
+      { slide: 1, partial: 3, label: 'F', beats: 1.5 },
+      { slide: 1, partial: 3, label: 'F', beats: 0.5 },
+      // D7
+      { slide: 2, partial: 4, label: 'A', beats: 0.5 },
+      { slide: 5, partial: 4, label: 'F#', beats: 0.5 },
       { slide: 4, partial: 3, label: 'D', beats: 1 },
-      { slide: 1, partial: 2, label: 'Bb', beats: 0.5 },
-      { slide: 4, partial: 3, label: 'D', beats: 0.5 },
-      { slide: 3, partial: 3, label: 'Eb', beats: 0.5 },
-      { slide: 1, partial: 3, label: 'F', beats: 1 },
+      { slide: 5, partial: 4, label: 'F#', beats: 0.5 },
+      { slide: 2, partial: 4, label: 'A', beats: 0.5 },
+      // Gm → resolve
+      { slide: 1, partial: 4, label: 'Bb', beats: 0.5 },
       { slide: 4, partial: 4, label: 'G', beats: 0.5 },
-      { slide: 1, partial: 3, label: 'F', beats: 0.5 },
-      { slide: 3, partial: 3, label: 'Eb', beats: 0.5 },
-      { slide: 4, partial: 3, label: 'D', beats: 1.5 },
-      // Trombone break
+      { slide: 4, partial: 3, label: 'D', beats: 1 },
+      { slide: 4, partial: 4, label: 'G', beats: 2 },
+
+      // === CORO - "Talento de televisión" ===
+      // "No tiene talento..."
+      { slide: 1, partial: 2, label: 'Bb', beats: 0.5 },
+      { slide: 1, partial: 2, label: 'Bb', beats: 0.5 },
+      { slide: 6, partial: 3, label: 'C', beats: 0.5 },
       { slide: 4, partial: 3, label: 'D', beats: 0.5 },
-      { slide: 3, partial: 3, label: 'Eb', beats: 0.5 },
-      { slide: 1, partial: 3, label: 'F', beats: 0.5 },
-      { slide: 4, partial: 4, label: 'G', beats: 1 },
-      { slide: 1, partial: 3, label: 'F', beats: 0.5 },
-      { slide: 3, partial: 3, label: 'Eb', beats: 0.5 },
+      { slide: 1, partial: 3, label: 'F', beats: 1 },
+      // "...pero es buena moza"
       { slide: 4, partial: 3, label: 'D', beats: 0.5 },
       { slide: 6, partial: 3, label: 'C', beats: 0.5 },
       { slide: 1, partial: 2, label: 'Bb', beats: 2 },
+      // "por eso es que sale..."
+      { slide: 1, partial: 2, label: 'Bb', beats: 0.5 },
+      { slide: 1, partial: 2, label: 'Bb', beats: 0.5 },
+      { slide: 6, partial: 3, label: 'C', beats: 0.5 },
+      { slide: 4, partial: 3, label: 'D', beats: 0.5 },
+      { slide: 1, partial: 3, label: 'F', beats: 1 },
+      // "...por la televisión"
+      { slide: 4, partial: 4, label: 'G', beats: 0.5 },
+      { slide: 1, partial: 3, label: 'F', beats: 0.5 },
+      { slide: 4, partial: 3, label: 'D', beats: 0.5 },
+      { slide: 6, partial: 3, label: 'C', beats: 0.5 },
+      { slide: 1, partial: 2, label: 'Bb', beats: 2 },
+
+      // === MAMBO ===
+      { slide: 4, partial: 3, label: 'D', beats: 0.5 },
+      { slide: 1, partial: 3, label: 'F', beats: 0.5 },
+      { slide: 2, partial: 4, label: 'A', beats: 0.5 },
+      { slide: 1, partial: 4, label: 'Bb', beats: 0.5 },
+      { slide: 2, partial: 4, label: 'A', beats: 0.5 },
+      { slide: 1, partial: 3, label: 'F', beats: 0.5 },
+      { slide: 4, partial: 3, label: 'D', beats: 1 },
+      { slide: 6, partial: 3, label: 'C', beats: 0.5 },
+      { slide: 4, partial: 3, label: 'D', beats: 0.5 },
+      { slide: 1, partial: 3, label: 'F', beats: 0.5 },
+      { slide: 2, partial: 4, label: 'A', beats: 1 },
+      { slide: 1, partial: 3, label: 'F', beats: 0.5 },
+      { slide: 4, partial: 3, label: 'D', beats: 0.5 },
+      { slide: 6, partial: 3, label: 'C', beats: 0.5 },
+      { slide: 1, partial: 2, label: 'Bb', beats: 1.5 },
     ],
   },
 ];
