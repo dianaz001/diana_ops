@@ -4,10 +4,11 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 // beats: 4=whole, 2=half, 1=quarter, 0.5=eighth, 0.25=sixteenth
 interface TromboneNote {
   slide: number;   // 1-7 slide position (0 for rests)
-  partial: number; // 1-7 partial (embouchure, 0 for rests)
+  partial: number; // 1-8 partial (embouchure, 0 for rests)
   label?: string;  // note name
   beats?: number;  // duration in beats (default 1 = quarter note)
   rest?: boolean;  // true = silence (no sound, shown as rest mark)
+  freq?: number;   // override frequency for edge-case notes (e.g. B4)
 }
 
 interface Song {
@@ -144,115 +145,107 @@ const SONGS: Song[] = [
     id: 'talento-tv',
     title: 'Talento de Televisión',
     artist: 'Willie Colón',
-    // Key: F major, 4/4. Transcribed from ABC notation (Trombone 1)
-    // ABC source: K:Fmaj, L:1/8, Bass Clef
-    // Notes: F=F3, c=C4, A=A3, G=G3, _E=Eb3, D=D3, C=C3, B,=Bb2, A,=A2, G,=G2, F,=F2
+    // Key: A major (F#, C#, G#). 4/4 cut time. Transcription: Germán Ruiz.
+    // Trombone 1. Slide positions verified against harmonic series.
+    // D4=P5/1, E4=P6/2, F#4=P7/3, G4=P7/2, G#4=P7/1, A4=P8/2, A3=P4/2, Bb3=P4/1
     notes: [
-      // === INTRO — pickup ===
-      { slide: 6, partial: 3, label: 'C', beats: 0.5 },
+      // === INTRO (m1-m2) — ascending D-E-F#-A figure ===
+      { slide: 1, partial: 5, label: 'D', beats: 1 },
+      { slide: 2, partial: 6, label: 'E', beats: 1 },
+      { slide: 3, partial: 7, label: 'F#', beats: 1 },
+      { slide: 2, partial: 8, label: 'A', beats: 2 },
+      // Descending answer
+      { slide: 3, partial: 7, label: 'F#', beats: 0.5 },
+      { slide: 2, partial: 7, label: 'G', beats: 1 },
+      { slide: 2, partial: 6, label: 'E', beats: 1 },
+      { slide: 3, partial: 7, label: 'F#', beats: 1 },
+      // Resolve to Bb3 (tied half + quarter = 3 beats)
+      { slide: 1, partial: 4, label: 'Bb', beats: 3 },
+      { slide: 0, partial: 0, beats: 0.5, rest: true },
 
-      // === MAIN RIFF (S) — Trombone 1 melody ===
-      // |: F6 GA | = F3 dotted-half, G3 eighth, A3 eighth
-      { slide: 1, partial: 3, label: 'F', beats: 3 },
-      { slide: 4, partial: 4, label: 'G', beats: 0.5 },
-      { slide: 2, partial: 4, label: 'A', beats: 0.5 },
-      // | c4 z2 c2 | = C4 half, rest quarter, C4 quarter
-      { slide: 3, partial: 5, label: "C'", beats: 2 },
+      // === INTRO repeat (m4-m6) — second phrase ===
+      { slide: 1, partial: 5, label: 'D', beats: 1 },
+      { slide: 2, partial: 6, label: 'E', beats: 1 },
+      { slide: 3, partial: 7, label: 'F#', beats: 1 },
+      { slide: 2, partial: 8, label: 'A', beats: 2 },
+      // Repeat ascending
+      { slide: 1, partial: 5, label: 'D', beats: 1 },
+      { slide: 2, partial: 6, label: 'E', beats: 1 },
+      { slide: 3, partial: 7, label: 'F#', beats: 1 },
+      { slide: 2, partial: 8, label: 'A', beats: 2 },
+      // Descending answer → resolve to D4
+      { slide: 3, partial: 7, label: 'F#', beats: 0.5 },
+      { slide: 2, partial: 7, label: 'G', beats: 1 },
+      { slide: 2, partial: 6, label: 'E', beats: 1 },
+      { slide: 3, partial: 7, label: 'F#', beats: 1 },
+      { slide: 1, partial: 5, label: 'D', beats: 3 },
+      { slide: 0, partial: 0, beats: 0.5, rest: true },
+
+      // === CORO (m9-m10) — play on 2nd time ===
+      { slide: 0, partial: 0, beats: 2, rest: true },
+      { slide: 2, partial: 4, label: 'A,', beats: 2 },
+      { slide: 2, partial: 4, label: 'A,', beats: 2 },
+      { slide: 0, partial: 0, beats: 2, rest: true },
+      { slide: 2, partial: 6, label: 'E', beats: 1 },
       { slide: 0, partial: 0, beats: 1, rest: true },
-      { slide: 3, partial: 5, label: "C'", beats: 1 },
-      // | A6 GF | = A3 dotted-half, G3 eighth, F3 eighth
-      { slide: 2, partial: 4, label: 'A', beats: 3 },
-      { slide: 4, partial: 4, label: 'G', beats: 0.5 },
-      { slide: 1, partial: 3, label: 'F', beats: 0.5 },
-      // | _E4 z4 | = Eb3 half, rest half
-      { slide: 3, partial: 3, label: 'Eb', beats: 2 },
-      { slide: 0, partial: 0, beats: 2, rest: true },
-      // | D6 CB, | = D3 dotted-half, C3 eighth, Bb2 eighth
-      { slide: 4, partial: 3, label: 'D', beats: 3 },
-      { slide: 6, partial: 3, label: 'C', beats: 0.5 },
-      { slide: 1, partial: 2, label: 'Bb', beats: 0.5 },
-      // | A,4 z4 | = A2 half, rest half
-      { slide: 2, partial: 2, label: 'A,', beats: 2 },
-      { slide: 0, partial: 0, beats: 2, rest: true },
-      // | G,8 | = G2 whole
-      { slide: 4, partial: 2, label: 'G,', beats: 4 },
 
-      // === Repeat of main riff (2nd pass) ===
+      // === VOZ (m13) — solo 1st time ===
       { slide: 0, partial: 0, beats: 2, rest: true },
-      { slide: 1, partial: 3, label: 'F', beats: 3 },
-      { slide: 4, partial: 4, label: 'G', beats: 0.5 },
-      { slide: 2, partial: 4, label: 'A', beats: 0.5 },
-      { slide: 3, partial: 5, label: "C'", beats: 2 },
-      { slide: 0, partial: 0, beats: 1, rest: true },
-      { slide: 3, partial: 5, label: "C'", beats: 1 },
-      { slide: 2, partial: 4, label: 'A', beats: 3 },
-      { slide: 4, partial: 4, label: 'G', beats: 0.5 },
-      { slide: 1, partial: 3, label: 'F', beats: 0.5 },
-      { slide: 3, partial: 3, label: 'Eb', beats: 2 },
-      { slide: 0, partial: 0, beats: 2, rest: true },
-      { slide: 4, partial: 3, label: 'D', beats: 3 },
-      { slide: 6, partial: 3, label: 'C', beats: 0.5 },
-      { slide: 1, partial: 2, label: 'Bb', beats: 0.5 },
-      { slide: 2, partial: 2, label: 'A,', beats: 2 },
-      { slide: 0, partial: 0, beats: 2, rest: true },
-      { slide: 4, partial: 2, label: 'G,', beats: 4 },
+      { slide: 2, partial: 6, label: 'E', beats: 1 },
+      { slide: 3, partial: 7, label: 'F#', beats: 1 },
+      { slide: 2, partial: 7, label: 'G', beats: 1 },
+      { slide: 1, partial: 8, label: 'B', beats: 1, freq: 493.88 },
+      { slide: 1, partial: 7, label: 'G#', beats: 1 },
+      { slide: 2, partial: 8, label: 'A', beats: 0.5 },
 
-      // === CORO — sustained trombone notes ===
+      // === VOZ 2 (m19) — eighth note variation ===
       { slide: 0, partial: 0, beats: 2, rest: true },
-      // | F8- | F8 | = F3 tied whole notes (8 beats)
-      { slide: 1, partial: 3, label: 'F', beats: 4 },
-      { slide: 1, partial: 3, label: 'F', beats: 4 },
-      // | G8- | G8 | = G3 tied whole notes (8 beats)
-      { slide: 4, partial: 4, label: 'G', beats: 4 },
-      { slide: 4, partial: 4, label: 'G', beats: 4 },
+      { slide: 2, partial: 6, label: 'E', beats: 1 },
+      { slide: 3, partial: 7, label: 'F#', beats: 1 },
+      { slide: 2, partial: 7, label: 'G', beats: 0.5 },
+      { slide: 1, partial: 8, label: 'B', beats: 0.5, freq: 493.88 },
+      { slide: 1, partial: 7, label: 'G#', beats: 1 },
+      { slide: 2, partial: 8, label: 'A', beats: 0.5 },
 
-      // === VOZ — quick trombone fill ===
+      // === SIGUE (m25-m27) — main riff returns ===
       { slide: 0, partial: 0, beats: 2, rest: true },
-      // | _B A _A G | = Bb3 eighth, A3 eighth, Ab3 eighth, G3 eighth
-      { slide: 1, partial: 4, label: 'Bb', beats: 0.5 },
-      { slide: 2, partial: 4, label: 'A', beats: 0.5 },
-      { slide: 3, partial: 4, label: 'Ab', beats: 0.5 },
-      { slide: 4, partial: 4, label: 'G', beats: 0.5 },
+      { slide: 1, partial: 5, label: 'D', beats: 1 },
+      { slide: 2, partial: 6, label: 'E', beats: 1 },
+      { slide: 3, partial: 7, label: 'F#', beats: 1 },
+      { slide: 2, partial: 8, label: 'A', beats: 2 },
+      // Answer
+      { slide: 3, partial: 7, label: 'F#', beats: 0.5 },
+      { slide: 2, partial: 7, label: 'G', beats: 1 },
+      { slide: 2, partial: 6, label: 'E', beats: 1 },
+      { slide: 3, partial: 7, label: 'F#', beats: 1 },
+      { slide: 2, partial: 8, label: 'A', beats: 2 },
+      // One more ascending
+      { slide: 1, partial: 5, label: 'D', beats: 1 },
+      { slide: 2, partial: 6, label: 'E', beats: 1 },
+      { slide: 3, partial: 7, label: 'F#', beats: 1 },
+      { slide: 2, partial: 8, label: 'A', beats: 2 },
 
-      // === PREGON — same melody, shorter ===
+      // === MAMBO (m36-m37) — E-F#-E pattern ===
       { slide: 0, partial: 0, beats: 2, rest: true },
-      { slide: 1, partial: 3, label: 'F', beats: 3 },
-      { slide: 4, partial: 4, label: 'G', beats: 0.5 },
-      { slide: 2, partial: 4, label: 'A', beats: 0.5 },
-      { slide: 3, partial: 5, label: "C'", beats: 2 },
-      { slide: 0, partial: 0, beats: 1, rest: true },
-      { slide: 3, partial: 5, label: "C'", beats: 1 },
-      { slide: 2, partial: 4, label: 'A', beats: 3 },
-      { slide: 4, partial: 4, label: 'G', beats: 0.5 },
-      { slide: 1, partial: 3, label: 'F', beats: 0.5 },
-      { slide: 3, partial: 3, label: 'Eb', beats: 2 },
+      { slide: 2, partial: 6, label: 'E', beats: 1 },
+      // First pass
+      { slide: 2, partial: 6, label: 'E', beats: 1 },
+      { slide: 3, partial: 7, label: 'F#', beats: 1 },
+      { slide: 2, partial: 6, label: 'E', beats: 1 },
+      // Second pass
+      { slide: 2, partial: 6, label: 'E', beats: 1 },
+      { slide: 3, partial: 7, label: 'F#', beats: 1 },
+      { slide: 2, partial: 6, label: 'E', beats: 1 },
+      { slide: 0, partial: 0, beats: 0.5, rest: true },
 
-      // === MAMBO lick ===
+      // === ENDING (m49-m51) ===
       { slide: 0, partial: 0, beats: 2, rest: true },
-      // | z2 _EF G_A GF | = rest quarter, Eb3 F3 G3 Ab3 G3 F3 (all eighths)
-      { slide: 0, partial: 0, beats: 1, rest: true },
-      { slide: 3, partial: 3, label: 'Eb', beats: 0.5 },
-      { slide: 1, partial: 3, label: 'F', beats: 0.5 },
-      { slide: 4, partial: 4, label: 'G', beats: 0.5 },
-      { slide: 3, partial: 4, label: 'Ab', beats: 0.5 },
-      { slide: 4, partial: 4, label: 'G', beats: 0.5 },
-      { slide: 1, partial: 3, label: 'F', beats: 0.5 },
-
-      // === FINAL — main riff one last time + low F ending ===
-      { slide: 0, partial: 0, beats: 2, rest: true },
-      { slide: 1, partial: 3, label: 'F', beats: 3 },
-      { slide: 4, partial: 4, label: 'G', beats: 0.5 },
-      { slide: 2, partial: 4, label: 'A', beats: 0.5 },
-      { slide: 3, partial: 5, label: "C'", beats: 2 },
-      { slide: 0, partial: 0, beats: 1, rest: true },
-      { slide: 3, partial: 5, label: "C'", beats: 1 },
-      { slide: 2, partial: 4, label: 'A', beats: 3 },
-      { slide: 4, partial: 4, label: 'G', beats: 0.5 },
-      { slide: 1, partial: 3, label: 'F', beats: 0.5 },
-      { slide: 3, partial: 3, label: 'Eb', beats: 2 },
-      { slide: 0, partial: 0, beats: 2, rest: true },
-      // | F,8 | = F2 whole — low F ending
-      { slide: 6, partial: 2, label: 'F,', beats: 4 },
+      { slide: 1, partial: 7, label: 'G#', beats: 1 },
+      { slide: 2, partial: 8, label: 'A', beats: 1 },
+      { slide: 2, partial: 6, label: 'E', beats: 1 },
+      { slide: 3, partial: 7, label: 'F#', beats: 0.5 },
+      { slide: 2, partial: 6, label: 'E', beats: 1 },
+      { slide: 2, partial: 8, label: 'A', beats: 2 },
     ],
   },
 ];
@@ -297,6 +290,7 @@ const PARTIAL_COLOR: Record<number, string> = {
   5: '#f97316',
   6: '#ef4444',
   7: '#ec4899',
+  8: '#6d28d9', // very high register
 };
 
 
@@ -310,9 +304,11 @@ const PARTIAL_BASE_FREQ: Record<number, number> = {
   5: 293.66,  // D4
   6: 349.23,  // F4
   7: 415.30,  // Ab4
+  8: 466.16,  // Bb4
 };
 
 function getNoteFreq(note: TromboneNote): number {
+  if (note.freq) return note.freq;
   const base = PARTIAL_BASE_FREQ[note.partial] ?? 174.61;
   // Each slide position lowers by ~1 semitone
   const semitones = note.slide - 1;
@@ -652,6 +648,7 @@ function PartialDiagram() {
     { p: 5, name: 'Medio-alto', desc: 'Más firmes, aire rápido', lip: 2.2 },
     { p: 6, name: 'Alto', desc: 'Apertura pequeña', lip: 1.6 },
     { p: 7, name: 'Muy alto', desc: 'Máxima firmeza', lip: 1.0 },
+    { p: 8, name: 'Extremo', desc: 'Profesional, máxima presión', lip: 0.6 },
   ];
 
   return (
