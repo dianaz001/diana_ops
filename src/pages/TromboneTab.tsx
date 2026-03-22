@@ -145,41 +145,74 @@ const SONGS: Song[] = [
     id: 'talento-tv',
     title: 'Talento de Televisión',
     artist: 'Willie Colón',
-    // Key: Bb major (2 flats: Bb, Eb). 4/4. Bass clef. MusicXML transcription.
+    // Key: G minor (2 flats: Bb, Eb). 4/4. Bass clef. ABC transcription.
     // G2=P2/4, Bb2=P2/1, D3=P3/4, F3=P3/1, G3=P4/4, A3=P4/2, Bb3=P4/1, C4=P5/3, D4=P5/1
     notes: [
-      // === m1: Salsa groove — G2-q R-q Bb2-q D3-q ===
+      // === INTRO / GROOVE ===
+      // m1: G2-q R-q Bb2-q D3-q
       { slide: 4, partial: 2, label: 'G,', beats: 1 },
       { slide: 0, partial: 0, beats: 1, rest: true },
       { slide: 1, partial: 2, label: 'Bb,', beats: 1 },
       { slide: 4, partial: 3, label: 'D', beats: 1 },
-      // === m2: F3-q G3-q F3-q D3-q ===
+      // m2: F3-q G3-q F3-q D3-q
       { slide: 1, partial: 3, label: 'F', beats: 1 },
       { slide: 4, partial: 4, label: 'G', beats: 1 },
       { slide: 1, partial: 3, label: 'F', beats: 1 },
       { slide: 4, partial: 3, label: 'D', beats: 1 },
-      // === m3: Verse (x2) — G2-h D3-h ===
+
+      // === VERSE (x2) ===
+      // m3: G2-h D3-h
       { slide: 4, partial: 2, label: 'G,', beats: 2 },
       { slide: 4, partial: 3, label: 'D', beats: 2 },
-      // === m4: F3-q G3-q A3-h ===
+      // m4: F3-q G3-q A3-q A3-q
       { slide: 1, partial: 3, label: 'F', beats: 1 },
       { slide: 4, partial: 4, label: 'G', beats: 1 },
-      { slide: 2, partial: 4, label: 'A', beats: 2 },
-      // === m5: Rest (repeat end) ===
-      { slide: 0, partial: 0, beats: 4, rest: true },
-      // === m6: Coro — Bb2-h D3-h ===
+      { slide: 2, partial: 4, label: 'A', beats: 1 },
+      { slide: 2, partial: 4, label: 'A', beats: 1 },
+      // m5: G3-h R-h (repeat end)
+      { slide: 4, partial: 4, label: 'G', beats: 2 },
+      { slide: 0, partial: 0, beats: 2, rest: true },
+
+      // === TRANSITION ===
+      // m6: Bb2-h D3-h
       { slide: 1, partial: 2, label: 'Bb,', beats: 2 },
       { slide: 4, partial: 3, label: 'D', beats: 2 },
-      // === m7: Mambo — R-q D4-q C4-q Bb3-q ===
+      // m7: F3-q G3-q F3-q D3-q
+      { slide: 1, partial: 3, label: 'F', beats: 1 },
+      { slide: 4, partial: 4, label: 'G', beats: 1 },
+      { slide: 1, partial: 3, label: 'F', beats: 1 },
+      { slide: 4, partial: 3, label: 'D', beats: 1 },
+
+      // === CORO ===
+      // m8: Bb2-q Bb2-q D3-q D3-q
+      { slide: 1, partial: 2, label: 'Bb,', beats: 1 },
+      { slide: 1, partial: 2, label: 'Bb,', beats: 1 },
+      { slide: 4, partial: 3, label: 'D', beats: 1 },
+      { slide: 4, partial: 3, label: 'D', beats: 1 },
+      // m9: F3-q G3-q A3-q G3-q
+      { slide: 1, partial: 3, label: 'F', beats: 1 },
+      { slide: 4, partial: 4, label: 'G', beats: 1 },
+      { slide: 2, partial: 4, label: 'A', beats: 1 },
+      { slide: 4, partial: 4, label: 'G', beats: 1 },
+
+      // === MAMBO ===
+      // m10: R-q D4-q C4-q Bb3-q
       { slide: 0, partial: 0, beats: 1, rest: true },
       { slide: 1, partial: 5, label: 'D\'', beats: 1 },
       { slide: 3, partial: 5, label: 'C\'', beats: 1 },
       { slide: 1, partial: 4, label: 'Bb', beats: 1 },
-      // === m8: Hits (tight) — G3-q^ F3-q^ D3-h ===
+      // m11: A3-q G3-q F3-q D3-q
+      { slide: 2, partial: 4, label: 'A', beats: 1 },
+      { slide: 4, partial: 4, label: 'G', beats: 1 },
+      { slide: 1, partial: 3, label: 'F', beats: 1 },
+      { slide: 4, partial: 3, label: 'D', beats: 1 },
+
+      // === HITS ===
+      // m12: G3-q(accent) F3-q(accent) D3-h
       { slide: 4, partial: 4, label: 'G', beats: 1 },
       { slide: 1, partial: 3, label: 'F', beats: 1 },
       { slide: 4, partial: 3, label: 'D', beats: 2 },
-      // === m9: D.S. al Mambo — rest ===
+      // m13: R-w (D.S. al Mambo)
       { slide: 0, partial: 0, beats: 4, rest: true },
     ],
   },
