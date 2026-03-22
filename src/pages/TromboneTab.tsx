@@ -216,6 +216,64 @@ const SONGS: Song[] = [
       { slide: 0, partial: 0, beats: 4, rest: true },
     ],
   },
+  {
+    id: 'pollitos',
+    title: 'Los Pollitos Dicen',
+    // Key: F major. 4/4. Comfortable mid-range: E3-A3.
+    // E3=P3/2, F3=P3/1, G3=P4/4, A3=P4/2
+    notes: [
+      // === Verse 1: Los pollitos dicen pío pío pío ===
+      // m1: A-e A-e A-e A-e G-q F-q (Los po-lli-tos di-cen)
+      { slide: 2, partial: 4, label: 'A', beats: 0.5 },
+      { slide: 2, partial: 4, label: 'A', beats: 0.5 },
+      { slide: 2, partial: 4, label: 'A', beats: 0.5 },
+      { slide: 2, partial: 4, label: 'A', beats: 0.5 },
+      { slide: 4, partial: 4, label: 'G', beats: 1 },
+      { slide: 1, partial: 3, label: 'F', beats: 1 },
+      // m2: G-e G-e G-e G-e F-q E-q (pí-o pí-o pí-o)
+      { slide: 4, partial: 4, label: 'G', beats: 0.5 },
+      { slide: 4, partial: 4, label: 'G', beats: 0.5 },
+      { slide: 4, partial: 4, label: 'G', beats: 0.5 },
+      { slide: 4, partial: 4, label: 'G', beats: 0.5 },
+      { slide: 1, partial: 3, label: 'F', beats: 1 },
+      { slide: 2, partial: 3, label: 'E', beats: 1 },
+      // m3: F-q F-q F-q F-q (cuan-do tie-nen ham-bre)
+      { slide: 1, partial: 3, label: 'F', beats: 1 },
+      { slide: 1, partial: 3, label: 'F', beats: 1 },
+      { slide: 1, partial: 3, label: 'F', beats: 1 },
+      { slide: 1, partial: 3, label: 'F', beats: 1 },
+      // m4: G-q A-q G-q F-q (cuan-do tie-nen frí-o)
+      { slide: 4, partial: 4, label: 'G', beats: 1 },
+      { slide: 2, partial: 4, label: 'A', beats: 1 },
+      { slide: 4, partial: 4, label: 'G', beats: 1 },
+      { slide: 1, partial: 3, label: 'F', beats: 1 },
+
+      // === Verse 2: La gallina busca el maíz y el trigo ===
+      // m5: A-e A-e A-e A-e G-q F-q (la ga-lli-na bus-ca)
+      { slide: 2, partial: 4, label: 'A', beats: 0.5 },
+      { slide: 2, partial: 4, label: 'A', beats: 0.5 },
+      { slide: 2, partial: 4, label: 'A', beats: 0.5 },
+      { slide: 2, partial: 4, label: 'A', beats: 0.5 },
+      { slide: 4, partial: 4, label: 'G', beats: 1 },
+      { slide: 1, partial: 3, label: 'F', beats: 1 },
+      // m6: G-e G-e G-e G-e F-q E-q (el ma-íz y el tri-go)
+      { slide: 4, partial: 4, label: 'G', beats: 0.5 },
+      { slide: 4, partial: 4, label: 'G', beats: 0.5 },
+      { slide: 4, partial: 4, label: 'G', beats: 0.5 },
+      { slide: 4, partial: 4, label: 'G', beats: 0.5 },
+      { slide: 1, partial: 3, label: 'F', beats: 1 },
+      { slide: 2, partial: 3, label: 'E', beats: 1 },
+      // m7: F-q F-q G-q A-q (les da la co-mi-da)
+      { slide: 1, partial: 3, label: 'F', beats: 1 },
+      { slide: 1, partial: 3, label: 'F', beats: 1 },
+      { slide: 4, partial: 4, label: 'G', beats: 1 },
+      { slide: 2, partial: 4, label: 'A', beats: 1 },
+      // m8: G-q G-q F-h (y les da a-bri-go)
+      { slide: 4, partial: 4, label: 'G', beats: 1 },
+      { slide: 4, partial: 4, label: 'G', beats: 1 },
+      { slide: 1, partial: 3, label: 'F', beats: 2 },
+    ],
+  },
 ];
 
 // --- Staff Constants ---
