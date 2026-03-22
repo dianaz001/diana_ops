@@ -145,169 +145,24 @@ const SONGS: Song[] = [
     id: 'talento-tv',
     title: 'Talento de Televisión',
     artist: 'Willie Colón',
-    // Key: E major (F#, C#, G#, D#). 4/4. Transcription: Germán Ruiz.
-    // Trombone 1. Slide positions verified against harmonic series.
-    // B3=P5/4, C#4=P5/2, D#4=P6/3, E4=P6/2, F#4=P7/3, G4=P7/2, G#4=P7/1, A4=P8/2, A3=P4/2, Bb3=P4/1
+    // Key: F major (1 flat: Bb). 4/4. Bass clef. From MusicXML transcription.
+    // C3=P3/6, D3=P3/4, F3=P3/1, G3=P4/4, A3=P4/2, Bb3=P4/1, C4=P5/3
     notes: [
-      // === [A] MAIN RIFF (Segno %) — m1-m8, with repeat ===
-      // m1-m2: B3-e C#4-q B3-e C#4-q D#4-q E4-w
-      { slide: 4, partial: 5, label: 'B', beats: 0.5 },
-      { slide: 2, partial: 5, label: 'C#', beats: 1 },
-      { slide: 4, partial: 5, label: 'B', beats: 0.5 },
-      { slide: 2, partial: 5, label: 'C#', beats: 1 },
-      { slide: 3, partial: 6, label: 'D#', beats: 1 },
-      { slide: 2, partial: 6, label: 'E', beats: 4 },
-      // m3-m4: G#4-e A4-q F#4-e G#4-q B3-q Bb3-w
-      { slide: 1, partial: 7, label: 'G#', beats: 0.5 },
-      { slide: 2, partial: 8, label: 'A', beats: 1 },
-      { slide: 3, partial: 7, label: 'F#', beats: 0.5 },
-      { slide: 1, partial: 7, label: 'G#', beats: 1 },
-      { slide: 4, partial: 5, label: 'B', beats: 1 },
-      { slide: 1, partial: 4, label: 'Bb', beats: 4 },
-      // m5-m6 (repeat): B3-e C#4-q B3-e C#4-q D#4-q E4-w
-      { slide: 4, partial: 5, label: 'B', beats: 0.5 },
-      { slide: 2, partial: 5, label: 'C#', beats: 1 },
-      { slide: 4, partial: 5, label: 'B', beats: 0.5 },
-      { slide: 2, partial: 5, label: 'C#', beats: 1 },
-      { slide: 3, partial: 6, label: 'D#', beats: 1 },
-      { slide: 2, partial: 6, label: 'E', beats: 4 },
-      // m7-m8 (repeat): G#4-e A4-q F#4-e G#4-q B3-q Bb3-w
-      { slide: 1, partial: 7, label: 'G#', beats: 0.5 },
-      { slide: 2, partial: 8, label: 'A', beats: 1 },
-      { slide: 3, partial: 7, label: 'F#', beats: 0.5 },
-      { slide: 1, partial: 7, label: 'G#', beats: 1 },
-      { slide: 4, partial: 5, label: 'B', beats: 1 },
-      { slide: 1, partial: 4, label: 'Bb', beats: 4 },
-
-      // === [B] CORO — TACET 1st time, PLAY 2nd ===
-      // m9-m10: R-w R-w
-      { slide: 0, partial: 0, beats: 8, rest: true },
-      // m11-m12: A3-h A3-h | R-w
-      { slide: 2, partial: 4, label: 'A,', beats: 2 },
-      { slide: 2, partial: 4, label: 'A,', beats: 2 },
-      { slide: 0, partial: 0, beats: 4, rest: true },
-      // m13: R-w
-      { slide: 0, partial: 0, beats: 4, rest: true },
-      // 1st ending: R-h R-q C#4-q | C#4-e R-e
-      { slide: 0, partial: 0, beats: 3, rest: true },
-      { slide: 2, partial: 5, label: 'C#', beats: 1 },
-      { slide: 2, partial: 5, label: 'C#', beats: 0.5 },
-      { slide: 0, partial: 0, beats: 0.5, rest: true },
-
-      // === [C] VOZ x3 — SOLO 1st time ===
-      // m16: C#4-e D#4-e E4-e G(n)4-q G#4-e A4-e
-      { slide: 2, partial: 5, label: 'C#', beats: 0.5 },
-      { slide: 3, partial: 6, label: 'D#', beats: 0.5 },
-      { slide: 2, partial: 6, label: 'E', beats: 0.5 },
-      { slide: 2, partial: 7, label: 'Gn', beats: 1 },
-      { slide: 1, partial: 7, label: 'G#', beats: 0.5 },
-      { slide: 2, partial: 8, label: 'A', beats: 0.5 },
-      // m17-m19: [3] bars rest
-      { slide: 0, partial: 0, beats: 12, rest: true },
-      // m20-m21: [2] bars rest
-      { slide: 0, partial: 0, beats: 8, rest: true },
-
-      // === [D] VOZ x3 — SOLO 1st time ===
-      // m22: C#4-e D#4-e E4-e G(n)4-e G#4-e A4-e
-      { slide: 2, partial: 5, label: 'C#', beats: 0.5 },
-      { slide: 3, partial: 6, label: 'D#', beats: 0.5 },
-      { slide: 2, partial: 6, label: 'E', beats: 0.5 },
-      { slide: 2, partial: 7, label: 'Gn', beats: 0.5 },
-      { slide: 1, partial: 7, label: 'G#', beats: 0.5 },
-      { slide: 2, partial: 8, label: 'A', beats: 0.5 },
-      // m23-m25: [3] bars rest
-      { slide: 0, partial: 0, beats: 12, rest: true },
-      // m26-m27: [2] bars rest → AL % Y SIGUE
-      { slide: 0, partial: 0, beats: 8, rest: true },
-
-      // === [A'] SIGUE — back from Segno ===
-      // m28-m29: B3-e C#4-q B3-e C#4-q D#4-q E4-w
-      { slide: 4, partial: 5, label: 'B', beats: 0.5 },
-      { slide: 2, partial: 5, label: 'C#', beats: 1 },
-      { slide: 4, partial: 5, label: 'B', beats: 0.5 },
-      { slide: 2, partial: 5, label: 'C#', beats: 1 },
-      { slide: 3, partial: 6, label: 'D#', beats: 1 },
-      { slide: 2, partial: 6, label: 'E', beats: 4 },
-      // m30-m31: G#4-e A4-q F#4-e G#4-q B3-q Bb3-w
-      { slide: 1, partial: 7, label: 'G#', beats: 0.5 },
-      { slide: 2, partial: 8, label: 'A', beats: 1 },
-      { slide: 3, partial: 7, label: 'F#', beats: 0.5 },
-      { slide: 1, partial: 7, label: 'G#', beats: 1 },
-      { slide: 4, partial: 5, label: 'B', beats: 1 },
-      { slide: 1, partial: 4, label: 'Bb', beats: 4 },
-      // m32-m33: B3-e C#4-q B3-e C#4-q D#4-q E4-w
-      { slide: 4, partial: 5, label: 'B', beats: 0.5 },
-      { slide: 2, partial: 5, label: 'C#', beats: 1 },
-      { slide: 4, partial: 5, label: 'B', beats: 0.5 },
-      { slide: 2, partial: 5, label: 'C#', beats: 1 },
-      { slide: 3, partial: 6, label: 'D#', beats: 1 },
-      { slide: 2, partial: 6, label: 'E', beats: 4 },
-      // m34-m35: B3-e C#4-q B3-e C#4-q D#4-q E4-h
-      { slide: 4, partial: 5, label: 'B', beats: 0.5 },
-      { slide: 2, partial: 5, label: 'C#', beats: 1 },
-      { slide: 4, partial: 5, label: 'B', beats: 0.5 },
-      { slide: 2, partial: 5, label: 'C#', beats: 1 },
-      { slide: 3, partial: 6, label: 'D#', beats: 1 },
-      { slide: 2, partial: 6, label: 'E', beats: 2 },
-
-      // === [E] PREGÓN CORO — 4 bars rest ===
-      { slide: 0, partial: 0, beats: 16, rest: true },
-
-      // === [F] MAMBO — 4 veces ===
-      // m40-m41: [2] bars rest
-      { slide: 0, partial: 0, beats: 8, rest: true },
-      // m42: R-h R-q E4-q
-      { slide: 0, partial: 0, beats: 3, rest: true },
-      { slide: 2, partial: 6, label: 'E', beats: 1 },
-      // m43: E4-q F#4-e E4-q E4-q F#4-q E4-q R-e
-      { slide: 2, partial: 6, label: 'E', beats: 1 },
-      { slide: 3, partial: 7, label: 'F#', beats: 0.5 },
-      { slide: 2, partial: 6, label: 'E', beats: 1 },
-      { slide: 2, partial: 6, label: 'E', beats: 1 },
-      { slide: 3, partial: 7, label: 'F#', beats: 1 },
-      { slide: 2, partial: 6, label: 'E', beats: 1 },
-      { slide: 0, partial: 0, beats: 0.5, rest: true },
-
-      // === [E'] PREGÓN CORO — 4 bars rest ===
-      { slide: 0, partial: 0, beats: 16, rest: true },
-
-      // === [A''] SIGUE / OUTRO ===
-      // m48-m49: B3-e C#4-q B3-e C#4-q D#4-q E4-w
-      { slide: 4, partial: 5, label: 'B', beats: 0.5 },
-      { slide: 2, partial: 5, label: 'C#', beats: 1 },
-      { slide: 4, partial: 5, label: 'B', beats: 0.5 },
-      { slide: 2, partial: 5, label: 'C#', beats: 1 },
-      { slide: 3, partial: 6, label: 'D#', beats: 1 },
-      { slide: 2, partial: 6, label: 'E', beats: 4 },
-      // m50-m51: G#4-e A4-q F#4-e G#4-q B3-q Bb3-w
-      { slide: 1, partial: 7, label: 'G#', beats: 0.5 },
-      { slide: 2, partial: 8, label: 'A', beats: 1 },
-      { slide: 3, partial: 7, label: 'F#', beats: 0.5 },
-      { slide: 1, partial: 7, label: 'G#', beats: 1 },
-      { slide: 4, partial: 5, label: 'B', beats: 1 },
-      { slide: 1, partial: 4, label: 'Bb', beats: 4 },
-      // m52-m53: B3-e C#4-q B3-e C#4-q D#4-q E4-w
-      { slide: 4, partial: 5, label: 'B', beats: 0.5 },
-      { slide: 2, partial: 5, label: 'C#', beats: 1 },
-      { slide: 4, partial: 5, label: 'B', beats: 0.5 },
-      { slide: 2, partial: 5, label: 'C#', beats: 1 },
-      { slide: 3, partial: 6, label: 'D#', beats: 1 },
-      { slide: 2, partial: 6, label: 'E', beats: 4 },
-      // m54: A3-h
-      { slide: 2, partial: 4, label: 'A,', beats: 2 },
-
-      // === [G] ENDING ===
-      { slide: 0, partial: 0, beats: 4, rest: true },
-      // m55: G#4-q A4-q | E4-e F#4-e E4-q
-      { slide: 1, partial: 7, label: 'G#', beats: 1 },
-      { slide: 2, partial: 8, label: 'A', beats: 1 },
-      { slide: 2, partial: 6, label: 'E', beats: 0.5 },
-      { slide: 3, partial: 7, label: 'F#', beats: 0.5 },
-      { slide: 2, partial: 6, label: 'E', beats: 1 },
-      // m56: A4-q | R-w | R-h R-q
-      { slide: 2, partial: 8, label: 'A', beats: 1 },
-      { slide: 0, partial: 0, beats: 4, rest: true },
-      { slide: 0, partial: 0, beats: 3, rest: true },
+      // === m1: C3-q D3-q F3-q G3-q ===
+      { slide: 6, partial: 3, label: 'C', beats: 1 },
+      { slide: 4, partial: 3, label: 'D', beats: 1 },
+      { slide: 1, partial: 3, label: 'F', beats: 1 },
+      { slide: 4, partial: 4, label: 'G', beats: 1 },
+      // === m2: A3-h G3-h ===
+      { slide: 2, partial: 4, label: 'A', beats: 2 },
+      { slide: 4, partial: 4, label: 'G', beats: 2 },
+      // === m3: Chorus — F3-w ===
+      { slide: 1, partial: 3, label: 'F', beats: 4 },
+      // === m4: Mambo — R-q C4-q Bb3-q A3-q ===
+      { slide: 0, partial: 0, beats: 1, rest: true },
+      { slide: 3, partial: 5, label: 'C', beats: 1 },
+      { slide: 1, partial: 4, label: 'Bb', beats: 1 },
+      { slide: 2, partial: 4, label: 'A', beats: 1 },
     ],
   },
 ];
