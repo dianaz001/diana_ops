@@ -35,7 +35,7 @@ export function Sidebar({ selectedCategory, onCategorySelect }: SidebarProps) {
       {/* Brand */}
       <div className="px-8 py-10">
         <span className="text-xs uppercase tracking-[0.3em] font-light text-[#195de6]">
-          JULIZ
+          DIANA
         </span>
       </div>
 

@@ -27,8 +27,9 @@
       "WebFetch(domain:tanstack.com)",
       "WebFetch(domain:zustand-demo.pmnd.rs)",
       "WebFetch(domain:recharts.org)",
-      "WebFetch(domain:juliz.treedigits.ca)",
-      "mcp__plugin_supabase_supabase__*"
+      "WebFetch(domain:diana.treedigits.ca)",
+      "mcp__plugin_supabase_supabase__*",
+      "mcp__plugin_vercel_vercel__list_teams"
     ],
     "deny": [
       "WebFetch(domain:*.ru)",

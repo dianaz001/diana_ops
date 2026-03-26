@@ -30,7 +30,7 @@ export const useHealthStore = create<HealthState>((set, get) => ({
     set({ isLoading: true });
     try {
       const { data, error } = await supabase
-        .from('juliz_health_reports')
+        .from('diana_health_reports')
         .select('*')
         .order('date', { ascending: false });
 
@@ -50,7 +50,7 @@ export const useHealthStore = create<HealthState>((set, get) => ({
       }
 
       // Migrate any localStorage data that isn't in DB yet
-      const localData = localStorage.getItem('juliz-portal-health');
+      const localData = localStorage.getItem('diana-portal-health');
       if (localData) {
         try {
           const parsed = JSON.parse(localData);
@@ -71,7 +71,7 @@ export const useHealthStore = create<HealthState>((set, get) => ({
               is_archived: localArchived.includes(r.id),
             }));
 
-            await supabase.from('juliz_health_reports').upsert(rows);
+            await supabase.from('diana_health_reports').upsert(rows);
 
             for (const r of toMigrate) {
               r.source = 'uploaded';
@@ -91,7 +91,7 @@ export const useHealthStore = create<HealthState>((set, get) => ({
 
           for (const id of seedHidden) {
             if (!hidden.includes(id)) hidden.push(id);
-            await supabase.from('juliz_health_reports').upsert({
+            await supabase.from('diana_health_reports').upsert({
               id,
               person: 'julian',
               date: '1970-01-01',
@@ -103,7 +103,7 @@ export const useHealthStore = create<HealthState>((set, get) => ({
           for (const id of seedArchived) {
             if (!archived.includes(id)) archived.push(id);
             if (!seedHidden.includes(id)) {
-              await supabase.from('juliz_health_reports').upsert({
+              await supabase.from('diana_health_reports').upsert({
                 id,
                 person: 'julian',
                 date: '1970-01-01',
@@ -115,7 +115,7 @@ export const useHealthStore = create<HealthState>((set, get) => ({
           }
 
           // Clear localStorage after successful migration
-          localStorage.removeItem('juliz-portal-health');
+          localStorage.removeItem('diana-portal-health');
         } catch {
           // localStorage parse failed, ignore
         }
@@ -151,7 +151,7 @@ export const useHealthStore = create<HealthState>((set, get) => ({
       is_archived: false,
     }));
 
-    const { error } = await supabase.from('juliz_health_reports').upsert(rows);
+    const { error } = await supabase.from('diana_health_reports').upsert(rows);
     if (error) console.error('Failed to save health reports:', error);
   },
 
@@ -165,16 +165,16 @@ export const useHealthStore = create<HealthState>((set, get) => ({
 
     // Check if row exists in DB
     const { data } = await supabase
-      .from('juliz_health_reports')
+      .from('diana_health_reports')
       .select('id')
       .eq('id', id)
       .single();
 
     if (data) {
-      await supabase.from('juliz_health_reports').update({ is_hidden: true }).eq('id', id);
+      await supabase.from('diana_health_reports').update({ is_hidden: true }).eq('id', id);
     } else {
       // Seed report — create a flag row
-      await supabase.from('juliz_health_reports').upsert({
+      await supabase.from('diana_health_reports').upsert({
         id,
         person: 'julian',
         date: '1970-01-01',
@@ -193,15 +193,15 @@ export const useHealthStore = create<HealthState>((set, get) => ({
     }));
 
     const { data } = await supabase
-      .from('juliz_health_reports')
+      .from('diana_health_reports')
       .select('id')
       .eq('id', id)
       .single();
 
     if (data) {
-      await supabase.from('juliz_health_reports').update({ is_archived: true }).eq('id', id);
+      await supabase.from('diana_health_reports').update({ is_archived: true }).eq('id', id);
     } else {
-      await supabase.from('juliz_health_reports').upsert({
+      await supabase.from('diana_health_reports').upsert({
         id,
         person: 'julian',
         date: '1970-01-01',
@@ -217,7 +217,7 @@ export const useHealthStore = create<HealthState>((set, get) => ({
       archivedReportIds: state.archivedReportIds.filter((rid) => rid !== id),
     }));
 
-    await supabase.from('juliz_health_reports').update({ is_archived: false }).eq('id', id);
+    await supabase.from('diana_health_reports').update({ is_archived: false }).eq('id', id);
   },
 }));
 

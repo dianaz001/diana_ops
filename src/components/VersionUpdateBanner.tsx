@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { RefreshCw } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
-const SESSION_KEY = 'juliz-version-shown';
+const SESSION_KEY = 'diana-version-shown';
 const POLL_INTERVAL = 60_000;
 
 interface VersionData {
@@ -42,8 +42,8 @@ export function VersionUpdateBanner() {
       const detail = (e as CustomEvent<VersionData>).detail;
       handleVersionDetected(detail);
     };
-    window.addEventListener('juliz-version-update', handler);
-    return () => window.removeEventListener('juliz-version-update', handler);
+    window.addEventListener('diana-version-update', handler);
+    return () => window.removeEventListener('diana-version-update', handler);
   }, [handleVersionDetected]);
 
   // Listen for SW postMessage directly

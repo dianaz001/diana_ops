@@ -36,7 +36,7 @@ export const useEntriesStore = create<EntriesState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       let query = supabase
-        .from('juliz_portal_entries')
+        .from('diana_portal_entries')
         .select('*')
         .order('updated_at', { ascending: false });
 
@@ -64,7 +64,7 @@ export const useEntriesStore = create<EntriesState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const { data, error } = await supabase
-        .from('juliz_portal_entries')
+        .from('diana_portal_entries')
         .select('*')
         .eq('id', id)
         .single();
@@ -80,7 +80,7 @@ export const useEntriesStore = create<EntriesState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const { data, error } = await supabase
-        .from('juliz_portal_entries')
+        .from('diana_portal_entries')
         .insert({
           title: entry.title || 'Untitled',
           content: entry.content || '',
@@ -109,7 +109,7 @@ export const useEntriesStore = create<EntriesState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const { error } = await supabase
-        .from('juliz_portal_entries')
+        .from('diana_portal_entries')
         .update({
           ...updates,
           updated_at: new Date().toISOString(),
@@ -135,7 +135,7 @@ export const useEntriesStore = create<EntriesState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const { error } = await supabase
-        .from('juliz_portal_entries')
+        .from('diana_portal_entries')
         .delete()
         .eq('id', id);
 
@@ -172,7 +172,7 @@ export const useEntriesStore = create<EntriesState>((set, get) => ({
     try {
       // Full-text search using the fts column
       const { data, error } = await supabase
-        .from('juliz_portal_entries')
+        .from('diana_portal_entries')
         .select('*')
         .textSearch('fts', query, { type: 'websearch' })
         .order('updated_at', { ascending: false })
@@ -181,7 +181,7 @@ export const useEntriesStore = create<EntriesState>((set, get) => ({
       if (error) {
         // Fallback to simple ILIKE search
         const { data: fallbackData } = await supabase
-          .from('juliz_portal_entries')
+          .from('diana_portal_entries')
           .select('*')
           .or(`title.ilike.%${query}%,content.ilike.%${query}%`)
           .order('updated_at', { ascending: false })

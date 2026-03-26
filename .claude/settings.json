@@ -27,12 +27,12 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cd C:/Users/JZ/git/juliz-portal-web && bash .claude/hooks/pre-commit-build-check.sh",
+            "command": "cd C:/Users/diana/git/diana_ops && bash .claude/hooks/pre-commit-build-check.sh",
             "description": "Verify build passes before committing"
           },
           {
             "type": "command",
-            "command": "cd C:/Users/JZ/git/juliz-portal-web && python .claude/hooks/commit-message-format.py",
+            "command": "cd C:/Users/diana/git/diana_ops && python .claude/hooks/commit-message-format.py",
             "description": "Block commits with AI attribution in message"
           }
         ]
@@ -43,7 +43,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cd C:/Users/JZ/git/juliz-portal-web && node .claude/scripts/set-tab-title.js"
+            "command": "cd C:/Users/diana/git/diana_ops && node .claude/scripts/set-tab-title.js"
           }
         ]
       }
@@ -54,8 +54,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cd C:/Users/JZ/git/juliz-portal-web && python .claude/hooks/screenshot-naming-validator.py",
-            "description": "Validate screenshot filename matches YYMMDD-juliz-description.png"
+            "command": "cd C:/Users/diana/git/diana_ops && python .claude/hooks/screenshot-naming-validator.py",
+            "description": "Validate screenshot filename matches YYMMDD-diana-description.png"
           }
         ]
       },
@@ -64,7 +64,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cd C:/Users/JZ/git/juliz-portal-web && python .claude/hooks/grep-before-fix-reminder.py",
+            "command": "cd C:/Users/diana/git/diana_ops && python .claude/hooks/grep-before-fix-reminder.py",
             "description": "Remind to grep for all instances before committing"
           }
         ]

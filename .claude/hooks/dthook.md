@@ -1,4 +1,4 @@
-# DT Hooks — Juliz Portal Web Guardrails
+# DT Hooks — Diana Portal Web Guardrails
 
 > **Note**: The actual hooks are configured in `.claude/settings.json` under `hooks.PreToolUse` and `hooks.PostToolUse`.
 > This file serves as documentation.
@@ -7,7 +7,7 @@
 
 ```
 +-----------------------------------------------------------------------+
-|                     JULIZ PORTAL HOOK SYSTEM                          |
+|                     DIANA PORTAL HOOK SYSTEM                          |
 +-----------------------------------------------------------------------+
 |                                                                       |
 |  PreToolUse (BLOCKING - prevents bad actions)                         |

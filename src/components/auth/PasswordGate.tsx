@@ -44,7 +44,7 @@ export function PasswordGate({ children }: { children: React.ReactNode }) {
               <Lock className="w-6 h-6 text-[#195de6]" />
             </div>
             <h1 className="text-xs tracking-[0.3em] uppercase font-light text-[#195de6] mb-2">
-              JULIZ
+              DIANA
             </h1>
             <p className="text-sm font-light text-slate-400">
               Sign in to continue

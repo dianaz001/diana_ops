@@ -1,12 +1,12 @@
-Follow the dtverify workflow for Juliz Portal Web.
+Follow the dtverify workflow for Diana Portal Web.
 
 ## Verification Process
 
-1. **Navigate to live site**: `https://juliz.treedigits.ca`
+1. **Navigate to live site**: `https://diana.treedigits.ca`
    - ALWAYS test on the live deployed site, never localhost
 2. **Pass the password gate** if present
 3. **Test all interactive elements systematically**
-4. **Save screenshots** with format `YYMMDD-juliz-description.png` to `docs/reports/screenshots/`
+4. **Save screenshots** with format `YYMMDD-diana-description.png` to `docs/reports/screenshots/`
 5. **Fix issues immediately** when found — stop, fix, verify, continue
 6. **Write report** to `docs/reports/dtverify-{date}-{scope}.md`
 7. **Commit and push** the report

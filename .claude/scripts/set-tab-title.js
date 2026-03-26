@@ -32,7 +32,7 @@ const STOP_WORDS = new Set([
 ]);
 
 function condense(prompt) {
-  if (!prompt || typeof prompt !== 'string') return 'Juliz Portal Task';
+  if (!prompt || typeof prompt !== 'string') return 'Diana Portal Task';
 
   let text = prompt.trim().toLowerCase();
 
@@ -58,7 +58,7 @@ function condense(prompt) {
     .split(/\s+/)
     .filter(w => w.length > 1 && !STOP_WORDS.has(w));
 
-  if (words.length === 0) return 'Juliz Portal Task';
+  if (words.length === 0) return 'Diana Portal Task';
 
   const count = Math.min(5, Math.max(3, words.length));
   const selected = words.slice(0, count);

@@ -239,7 +239,7 @@ describe('CRUD Operations', () => {
         });
       });
 
-      expect(mockSupabase.from).toHaveBeenCalledWith('juliz_portal_entries');
+      expect(mockSupabase.from).toHaveBeenCalledWith('diana_portal_entries');
     });
   });
 

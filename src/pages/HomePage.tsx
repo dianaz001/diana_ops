@@ -28,7 +28,7 @@ export function HomePage() {
 
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     () => {
-      const saved = localStorage.getItem('juliz-portal-nav');
+      const saved = localStorage.getItem('diana-portal-nav');
       return saved ? (JSON.parse(saved) as Category) : null;
     }
   );
@@ -51,10 +51,10 @@ export function HomePage() {
     setSearchQuery('');
     setSearchResults([]);
     if (category) {
-      localStorage.setItem('juliz-portal-nav', JSON.stringify(category));
+      localStorage.setItem('diana-portal-nav', JSON.stringify(category));
       setFilters({ category });
     } else {
-      localStorage.removeItem('juliz-portal-nav');
+      localStorage.removeItem('diana-portal-nav');
       clearFilters();
     }
   };

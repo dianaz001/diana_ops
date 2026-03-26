@@ -19,13 +19,13 @@ interface GitHubConfig {
 async function getGitHubConfig(): Promise<GitHubConfig | null> {
   try {
     const { data: tokenData } = await supabase
-      .from('juliz_portal_config')
+      .from('diana_portal_config')
       .select('value')
       .eq('key', 'github_pat')
       .single();
 
     const { data: repoData } = await supabase
-      .from('juliz_portal_config')
+      .from('diana_portal_config')
       .select('value')
       .eq('key', 'github_repo')
       .single();
@@ -197,7 +197,7 @@ export async function pullFromGitHub(): Promise<{
 
         // Check if entry exists
         const { data: existingEntry } = await supabase
-          .from('juliz_portal_entries')
+          .from('diana_portal_entries')
           .select('id, updated_at')
           .eq('github_path', file.path)
           .single();
@@ -233,13 +233,13 @@ export async function pullFromGitHub(): Promise<{
 
         if (existingEntry) {
           await supabase
-            .from('juliz_portal_entries')
+            .from('diana_portal_entries')
             .update(entryData)
             .eq('id', existingEntry.id);
           result.updated++;
         } else {
           await supabase
-            .from('juliz_portal_entries')
+            .from('diana_portal_entries')
             .insert(entryData);
           result.created++;
         }
@@ -305,7 +305,7 @@ export async function pushToGitHub(entry: Entry): Promise<boolean> {
     if (response.ok) {
       // Update entry with github_path
       await supabase
-        .from('juliz_portal_entries')
+        .from('diana_portal_entries')
         .update({ github_path: path })
         .eq('id', entry.id);
       return true;

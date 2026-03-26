@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Hook: Validate screenshot filenames match YYMMDD-juliz-description.png format.
+"""Hook: Validate screenshot filenames match YYMMDD-diana-description.png format.
 Trigger: PostToolUse on mcp__playwright__browser_take_screenshot
 """
 import json
@@ -23,8 +23,8 @@ def main():
 
     if not re.match(pattern, filename):
         print(f"BLOCKED: Screenshot filename '{filename}' doesn't match required format.", file=sys.stderr)
-        print(f"Required format: YYMMDD-juliz-description.png", file=sys.stderr)
-        print(f"Example: 260320-juliz-dashboard-home.png", file=sys.stderr)
+        print(f"Required format: YYMMDD-diana-description.png", file=sys.stderr)
+        print(f"Example: 260320-diana-dashboard-home.png", file=sys.stderr)
         sys.exit(2)
 
 if __name__ == "__main__":

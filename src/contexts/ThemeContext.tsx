@@ -14,12 +14,12 @@ const ThemeContext = createContext<ThemeContextValue>({
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>(() => {
-    const saved = localStorage.getItem('juliz-theme');
+    const saved = localStorage.getItem('diana-theme');
     return (saved === 'dark' ? 'dark' : 'light') as Theme;
   });
 
   useEffect(() => {
-    localStorage.setItem('juliz-theme', theme);
+    localStorage.setItem('diana-theme', theme);
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
     } else {

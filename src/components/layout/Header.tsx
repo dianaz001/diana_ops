@@ -33,7 +33,7 @@ export function Header({ onSearch, onQuickCapture, onSync, isSyncing }: HeaderPr
           {/* Mobile brand */}
           <div className="lg:hidden flex items-center">
             <span className="text-xs uppercase tracking-[0.3em] font-light text-[#195de6]">
-              JULIZ
+              DIANA
             </span>
           </div>
 

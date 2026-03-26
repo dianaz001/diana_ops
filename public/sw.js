@@ -1,7 +1,7 @@
 /// Service Worker — version detection + basic caching
 /* eslint-disable no-restricted-globals */
 
-const CACHE_NAME = 'juliz-v1';
+const CACHE_NAME = 'diana-v1';
 const VERSION_URL = '/version.json';
 const POLL_INTERVAL = 60_000; // 60 seconds
 
