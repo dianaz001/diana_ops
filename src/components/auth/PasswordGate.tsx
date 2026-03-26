@@ -40,10 +40,10 @@ export function PasswordGate({ children }: { children: React.ReactNode }) {
       <div className="max-w-sm w-full">
         <div className="bg-white/50 dark:bg-slate-800/50 backdrop-blur-xl one-pixel-border rounded-2xl p-10">
           <div className="text-center mb-10">
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#195de6]/5 one-pixel-border mb-6">
-              <Lock className="w-6 h-6 text-[#195de6]" />
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#1a1a1a]/5 one-pixel-border mb-6">
+              <Lock className="w-6 h-6 text-[#1a1a1a]" />
             </div>
-            <h1 className="text-xs tracking-[0.3em] uppercase font-light text-[#195de6] mb-2">
+            <h1 className="text-xs tracking-[0.3em] uppercase font-light text-[#1a1a1a] mb-2">
               DIANA
             </h1>
             <p className="text-sm font-light text-slate-400">
@@ -64,7 +64,7 @@ export function PasswordGate({ children }: { children: React.ReactNode }) {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Email"
-                  className="w-full bg-[#195de6]/5 border-none rounded-full py-3 pl-12 pr-4 text-sm font-light text-slate-700 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-[#195de6]/30 transition-all"
+                  className="w-full bg-[#1a1a1a]/5 border-none rounded-full py-3 pl-12 pr-4 text-sm font-light text-slate-700 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-[#1a1a1a]/30 transition-all"
                   disabled={isSubmitting}
                   autoFocus
                   autoComplete="email"
@@ -82,7 +82,7 @@ export function PasswordGate({ children }: { children: React.ReactNode }) {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Password"
-                  className="w-full bg-[#195de6]/5 border-none rounded-full py-3 pl-12 pr-4 text-sm font-light text-slate-700 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-[#195de6]/30 transition-all"
+                  className="w-full bg-[#1a1a1a]/5 border-none rounded-full py-3 pl-12 pr-4 text-sm font-light text-slate-700 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-[#1a1a1a]/30 transition-all"
                   disabled={isSubmitting}
                   autoComplete="current-password"
                 />
@@ -97,7 +97,7 @@ export function PasswordGate({ children }: { children: React.ReactNode }) {
               <button
                 type="submit"
                 disabled={isSubmitting || !email.trim() || !password.trim()}
-                className="w-full bg-[#195de6] text-white py-3 rounded-xl text-[11px] uppercase tracking-[0.2em] font-medium hover:bg-[#195de6]/90 focus:outline-none focus:ring-1 focus:ring-[#195de6]/30 focus:ring-offset-2 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                className="w-full bg-[#1a1a1a] text-white py-3 rounded-xl text-[11px] uppercase tracking-[0.2em] font-medium hover:bg-[#1a1a1a]/90 focus:outline-none focus:ring-1 focus:ring-[#1a1a1a]/30 focus:ring-offset-2 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
               >
                 {isSubmitting ? 'Signing in...' : 'Sign in'}
               </button>
