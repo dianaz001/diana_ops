@@ -42,13 +42,24 @@ export function GroceryCategoryDonut() {
                   outerRadius="75%"
                   paddingAngle={2}
                   dataKey="value"
-                  label={({ percent }: { percent?: number }) => {
-                    const p = (percent ?? 0) * 100;
-                    if (p < 5) return '';
-                    return `${p.toFixed(0)}%`;
-                  }}
                   labelLine={false}
-                  style={{ fontSize: '0.6rem', fontFamily: "'SF Mono', monospace", fill: gc.text }}
+                  label={({ percent, cx, cy, midAngle, innerRadius, outerRadius }: {
+                    percent?: number; cx?: number; cy?: number; midAngle?: number;
+                    innerRadius?: number; outerRadius?: number;
+                  }) => {
+                    const p = (percent ?? 0) * 100;
+                    if (p < 5) return null;
+                    const RADIAN = Math.PI / 180;
+                    const radius = (innerRadius ?? 0) + ((outerRadius ?? 0) - (innerRadius ?? 0)) * 0.5;
+                    const x = (cx ?? 0) + radius * Math.cos(-(midAngle ?? 0) * RADIAN);
+                    const y = (cy ?? 0) + radius * Math.sin(-(midAngle ?? 0) * RADIAN);
+                    return (
+                      <text x={x} y={y} fill="#fff" textAnchor="middle" dominantBaseline="central"
+                        style={{ fontSize: '0.6rem', fontFamily: "'SF Mono', monospace", fontWeight: 600 }}>
+                        {`${p.toFixed(0)}%`}
+                      </text>
+                    );
+                  }}
                 >
                   {breakdown.map((entry) => (
                     <Cell key={entry.category} fill={getCategoryColor(entry.category as GroceryCategory)} />
