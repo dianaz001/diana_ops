@@ -6,7 +6,7 @@ export const GROCERY_CATEGORIES: GroceryCategoryInfo[] = [
   {
     id: 'fruits_veggies',
     label: 'Fruits & Vegetables',
-    color: '#4A3728',
+    color: '#10B981',
     keywords: [
       'apple', 'banana', 'orange', 'grape', 'strawberry', 'blueberry', 'raspberry',
       'mango', 'pineapple', 'watermelon', 'peach', 'pear', 'plum', 'cherry', 'kiwi',
@@ -24,7 +24,7 @@ export const GROCERY_CATEGORIES: GroceryCategoryInfo[] = [
   {
     id: 'legumes_grains',
     label: 'Legumes & Grains',
-    color: '#9DAFD0',
+    color: '#3B82F6',
     keywords: [
       'bean', 'lentil', 'chickpea', 'rice', 'quinoa', 'oat', 'oatmeal', 'barley',
       'pasta', 'noodle', 'spaghetti', 'penne', 'macaroni', 'farro', 'couscous',
@@ -37,7 +37,7 @@ export const GROCERY_CATEGORIES: GroceryCategoryInfo[] = [
   {
     id: 'dairy',
     label: 'Dairy & Cheese',
-    color: '#C4A882',
+    color: '#A855F7',
     keywords: [
       'milk', 'cheese', 'yogurt', 'yoghurt', 'butter', 'cream', 'sour cream',
       'cream cheese', 'cottage cheese', 'ricotta', 'mozzarella', 'cheddar',
@@ -51,7 +51,7 @@ export const GROCERY_CATEGORIES: GroceryCategoryInfo[] = [
   {
     id: 'meats_seafood',
     label: 'Meats & Seafood',
-    color: '#D4763C',
+    color: '#EC4899',
     keywords: [
       'chicken', 'beef', 'pork', 'turkey', 'lamb', 'veal', 'duck', 'bison',
       'steak', 'ground beef', 'ground turkey', 'ground pork', 'ground chicken',
@@ -67,7 +67,7 @@ export const GROCERY_CATEGORIES: GroceryCategoryInfo[] = [
   {
     id: 'cleaning_household',
     label: 'Cleaning & Household',
-    color: '#282627',
+    color: '#6366F1',
     keywords: [
       'dish soap', 'dishwasher', 'detergent', 'laundry', 'fabric softener',
       'bleach', 'cleaner', 'cleaning', 'wipe', 'sponge', 'mop',
@@ -82,7 +82,7 @@ export const GROCERY_CATEGORIES: GroceryCategoryInfo[] = [
   {
     id: 'protein_supplements',
     label: 'Protein & Supplements',
-    color: '#4A6FA5',
+    color: '#14B8A6',
     keywords: [
       'protein', 'whey', 'casein', 'creatine', 'bcaa', 'pre-workout',
       'preworkout', 'supplement', 'vitamin', 'multivitamin',
@@ -96,7 +96,7 @@ export const GROCERY_CATEGORIES: GroceryCategoryInfo[] = [
   {
     id: 'beverages',
     label: 'Beverages',
-    color: '#3D5A80',
+    color: '#0EA5E9',
     keywords: [
       'water', 'juice', 'soda', 'pop', 'cola', 'sprite', 'fanta',
       'coffee', 'tea', 'energy drink', 'gatorade', 'powerade',
@@ -109,7 +109,7 @@ export const GROCERY_CATEGORIES: GroceryCategoryInfo[] = [
   {
     id: 'snacks_sweets',
     label: 'Snacks & Sweets',
-    color: '#8B7355',
+    color: '#F472B6',
     keywords: [
       'chip', 'crisp', 'cracker', 'pretzel', 'popcorn', 'nut', 'almond',
       'cashew', 'peanut', 'walnut', 'pistachio', 'pecan', 'trail mix',
@@ -124,7 +124,7 @@ export const GROCERY_CATEGORIES: GroceryCategoryInfo[] = [
   {
     id: 'bakery_bread',
     label: 'Bakery & Bread',
-    color: '#B89660',
+    color: '#8B5CF6',
     keywords: [
       'bread', 'bagel', 'baguette', 'roll', 'bun', 'croissant', 'pita',
       'tortilla', 'wrap', 'naan', 'flatbread', 'sourdough', 'rye',
@@ -136,7 +136,7 @@ export const GROCERY_CATEGORIES: GroceryCategoryInfo[] = [
   {
     id: 'frozen_prepared',
     label: 'Frozen & Prepared',
-    color: '#9CB5A4',
+    color: '#22D3EE',
     keywords: [
       'frozen', 'pizza', 'burrito', 'lasagna', 'dinner', 'meal', 'entree',
       'pot pie', 'corn dog', 'nugget', 'fish stick', 'waffle', 'pancake',
@@ -149,7 +149,7 @@ export const GROCERY_CATEGORIES: GroceryCategoryInfo[] = [
   {
     id: 'condiments_spices',
     label: 'Condiments & Spices',
-    color: '#E8DED1',
+    color: '#34D399',
     keywords: [
       'ketchup', 'mustard', 'mayo', 'mayonnaise', 'hot sauce', 'soy sauce',
       'worcestershire', 'vinegar', 'olive oil', 'vegetable oil', 'canola oil',
@@ -166,7 +166,7 @@ export const GROCERY_CATEGORIES: GroceryCategoryInfo[] = [
   {
     id: 'personal_care',
     label: 'Personal Care',
-    color: '#1A1A1A',
+    color: '#C084FC',
     keywords: [
       'shampoo', 'conditioner', 'body wash', 'soap', 'hand soap',
       'toothpaste', 'toothbrush', 'mouthwash', 'floss', 'deodorant',
@@ -180,7 +180,7 @@ export const GROCERY_CATEGORIES: GroceryCategoryInfo[] = [
   {
     id: 'other',
     label: 'Other',
-    color: '#6B5B4F',
+    color: '#818CF8',
     keywords: [],
   },
 ];

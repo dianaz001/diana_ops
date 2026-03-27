@@ -42,7 +42,7 @@ export function GroceryTrendChart() {
     <div className="rounded-xl border p-4" style={{ background: gc.bgCard, borderColor: gc.borderCard }}>
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-[12px] font-semibold" style={{ color: gc.text }}>
-          Spend by Month ({filters.year})
+          Spent by Month ({filters.year})
         </h2>
         <span className="text-[9px] uppercase tracking-[0.1em]" style={{ color: gc.textMuted }}>
           Stacked by category
@@ -114,7 +114,7 @@ export function GroceryTrendChart() {
             <Line
               type="monotone"
               dataKey="trend"
-              stroke="#4A6FA5"
+              stroke="#7C3AED"
               strokeWidth={2}
               strokeDasharray="6 3"
               dot={false}
