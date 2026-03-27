@@ -1,4 +1,4 @@
-export type Category = 'finance' | 'taxes' | 'health' | 'social' | 'ideas' | 'goals' | 'spiritual' | 'music';
+export type Category = 'finance' | 'taxes' | 'health' | 'social' | 'ideas' | 'goals' | 'spiritual' | 'music' | 'rentals';
 export type Owner = 'diana' | 'shared';
 
 export interface Entry {
@@ -130,6 +130,13 @@ export const CATEGORIES: CategoryInfo[] = [
     icon: '🎵',
     color: 'bg-indigo-50/80 text-indigo-700',
     subcategories: ['trombone', 'practice', 'theory'],
+  },
+  {
+    name: 'rentals',
+    label: 'Rentals',
+    icon: '🏠',
+    color: 'bg-orange-50/80 text-orange-700',
+    subcategories: ['toronto', 'visited', 'favorites'],
   },
 ];
 

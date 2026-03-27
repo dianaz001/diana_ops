@@ -11,6 +11,7 @@ import { HealthDashboard } from '../components/health/HealthDashboard';
 import { SpiritualDashboard } from '../components/spiritual/SpiritualDashboard';
 import { GroceryDashboard } from '../components/grocery/GroceryDashboard';
 import { TromboneTab } from './TromboneTab';
+import { RentalsDashboard } from '../components/rentals/RentalsDashboard';
 import { useEntriesStore } from '../stores/entriesStore';
 import { pullFromGitHub, pushToGitHub } from '../lib/github';
 import type { Entry, Category } from '../types';
@@ -41,7 +42,7 @@ export function HomePage() {
 
   useEffect(() => {
     fetchEntries();
-    if (selectedCategory && selectedCategory !== 'finance' && selectedCategory !== 'health' && selectedCategory !== 'spiritual' && selectedCategory !== 'music') {
+    if (selectedCategory && selectedCategory !== 'finance' && selectedCategory !== 'health' && selectedCategory !== 'spiritual' && selectedCategory !== 'music' && selectedCategory !== 'rentals') {
       setFilters({ category: selectedCategory });
     }
   }, [fetchEntries]);
@@ -143,6 +144,8 @@ export function HomePage() {
             <HealthDashboard onBack={() => handleCategorySelect(null)} />
           ) : selectedCategory === 'spiritual' ? (
             <SpiritualDashboard onBack={() => handleCategorySelect(null)} />
+          ) : selectedCategory === 'rentals' ? (
+            <RentalsDashboard onBack={() => handleCategorySelect(null)} />
           ) : selectedCategory === 'music' ? (
             <TromboneTab />
           ) : (

@@ -8,6 +8,7 @@ import {
   Target,
   Cross,
   Music,
+  Building2,
 } from 'lucide-react';
 import { CATEGORIES, type Category, type CategoryInfo } from '../../types';
 
@@ -25,6 +26,7 @@ const CATEGORY_ICONS: Record<string, React.ReactNode> = {
   goals: <Target className="w-[18px] h-[18px]" />,
   spiritual: <Cross className="w-[18px] h-[18px]" />,
   music: <Music className="w-[18px] h-[18px]" />,
+  rentals: <Building2 className="w-[18px] h-[18px]" />,
 };
 
 export function Sidebar({ selectedCategory, onCategorySelect }: SidebarProps) {
