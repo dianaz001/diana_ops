@@ -8,8 +8,6 @@ import {
   Target,
   Cross,
   Music,
-  User,
-  UsersRound,
 } from 'lucide-react';
 import { CATEGORIES, type Category, type CategoryInfo } from '../../types';
 
@@ -67,32 +65,6 @@ export function Sidebar({ selectedCategory, onCategorySelect }: SidebarProps) {
                 onSelect={() => onCategorySelect(cat.name)}
               />
             ))}
-          </ul>
-        </div>
-
-        <div className="border-t border-[#195de6]/5 pt-6">
-          <h2 className="text-[10px] uppercase tracking-[0.3em] font-light text-slate-400 dark:text-slate-500 px-4 mb-4">
-            Quick Filters
-          </h2>
-          <ul className="space-y-1">
-            <li>
-              <button className="w-full flex items-center space-x-4 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-[#195de6] rounded-xl transition-colors">
-                <User className="w-[18px] h-[18px]" />
-                <span className="text-[11px] uppercase tracking-widest">Julian's items</span>
-              </button>
-            </li>
-            <li>
-              <button className="w-full flex items-center space-x-4 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-[#195de6] rounded-xl transition-colors">
-                <User className="w-[18px] h-[18px]" />
-                <span className="text-[11px] uppercase tracking-widest">Liz's items</span>
-              </button>
-            </li>
-            <li>
-              <button className="w-full flex items-center space-x-4 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-[#195de6] rounded-xl transition-colors">
-                <UsersRound className="w-[18px] h-[18px]" />
-                <span className="text-[11px] uppercase tracking-widest">Shared items</span>
-              </button>
-            </li>
           </ul>
         </div>
       </nav>
