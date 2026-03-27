@@ -55,7 +55,7 @@ describe('Authentication', () => {
   it('should authenticate with valid credentials', async () => {
     mockSignInWithPassword.mockResolvedValue({
       data: {
-        user: { email: 'julian@treedigits.ca' },
+        user: { email: 'diana@treedigits.ca' },
         session: { access_token: 'token' },
       },
       error: null,
@@ -64,12 +64,12 @@ describe('Authentication', () => {
     const { result } = renderHook(() => useAuthStore());
 
     await act(async () => {
-      const success = await result.current.login('julian@treedigits.ca', 'password');
+      const success = await result.current.login('diana@treedigits.ca', 'password');
       expect(success).toBe(true);
     });
 
     expect(result.current.isAuthenticated).toBe(true);
-    expect(result.current.userEmail).toBe('julian@treedigits.ca');
+    expect(result.current.userEmail).toBe('diana@treedigits.ca');
   });
 
   it('should clear state on logout', async () => {
@@ -77,7 +77,7 @@ describe('Authentication', () => {
 
     useAuthStore.setState({
       isAuthenticated: true,
-      userEmail: 'julian@treedigits.ca',
+      userEmail: 'diana@treedigits.ca',
     });
 
     const { result } = renderHook(() => useAuthStore());
@@ -94,7 +94,7 @@ describe('Authentication', () => {
     mockGetSession.mockResolvedValue({
       data: {
         session: {
-          user: { email: 'liz@treedigits.ca' },
+          user: { email: 'diana@treedigits.ca' },
         },
       },
     });
@@ -107,7 +107,7 @@ describe('Authentication', () => {
     });
 
     expect(result.current.isAuthenticated).toBe(true);
-    expect(result.current.userEmail).toBe('liz@treedigits.ca');
+    expect(result.current.userEmail).toBe('diana@treedigits.ca');
   });
 
   it('should handle no active session', async () => {

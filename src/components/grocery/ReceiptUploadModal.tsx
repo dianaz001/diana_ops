@@ -23,7 +23,7 @@ export function ReceiptUploadModal({ onClose }: Props) {
   const [storeName, setStoreName] = useState('');
   const [receiptDate, setReceiptDate] = useState('');
   const [tax, setTax] = useState(0);
-  const [owner, setOwner] = useState<'julian' | 'liz' | 'shared'>('shared');
+  const [owner, setOwner] = useState<'diana' | 'shared'>('diana');
   const [error, setError] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
@@ -181,9 +181,8 @@ export function ReceiptUploadModal({ onClose }: Props) {
                   <select value={owner} onChange={(e) => setOwner(e.target.value as typeof owner)}
                     className="w-full px-2.5 py-1.5 rounded-lg border text-[11px] focus:outline-none"
                     style={{ borderColor: gc.borderInput, color: gc.text, background: gc.bgCard }}>
+                    <option value="diana">Diana</option>
                     <option value="shared">Shared</option>
-                    <option value="julian">Julian</option>
-                    <option value="liz">Liz</option>
                   </select>
                 </div>
               </div>

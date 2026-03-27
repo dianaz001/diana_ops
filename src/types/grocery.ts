@@ -31,7 +31,7 @@ export interface GroceryItem {
   unit_price: number | null;
   category: GroceryCategory;
   tax_amount: number;
-  owner: 'julian' | 'liz' | 'shared';
+  owner: 'diana' | 'shared';
   item_date: string;   // YYYY-MM-DD
   is_manual: boolean;
   notes: string | null;
@@ -46,7 +46,7 @@ export interface GroceryReceipt {
   tax: number;
   total: number;
   raw_text: string | null;
-  owner: 'julian' | 'liz' | 'shared';
+  owner: 'diana' | 'shared';
   created_at: string;
   updated_at: string;
   items?: GroceryItem[];
@@ -101,7 +101,7 @@ export interface GroceryFilters {
   year: number;
   month: number | null;      // null = all months
   category: GroceryCategory | null;
-  owner: 'julian' | 'liz' | 'shared' | null;
+  owner: 'diana' | 'shared' | null;
   store: string | null;
   granularity: 'monthly' | 'quarterly' | 'annual';
   viewMode: 'category' | 'store';

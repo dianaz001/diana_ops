@@ -152,8 +152,7 @@ export function EntryDetail({ entry, onClose, onDelete }: EntryDetailProps) {
                       onChange={(e) => setEditedEntry({ ...editedEntry, owner: e.target.value as Owner })}
                       className="w-full px-3 py-2 bg-[#195de6]/5 border-none rounded-xl focus:outline-none focus:ring-1 focus:ring-[#195de6]/30 text-sm"
                     >
-                      <option value="julian">Julian</option>
-                      <option value="liz">Liz</option>
+                      <option value="diana">Diana</option>
                       <option value="shared">Shared</option>
                     </select>
                   </div>

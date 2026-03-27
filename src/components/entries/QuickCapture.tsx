@@ -165,7 +165,7 @@ export function QuickCapture({ isOpen, onClose, onCreated }: QuickCaptureProps) 
                       Owner
                     </label>
                     <div className="flex gap-2">
-                      {(['julian', 'liz', 'shared'] as Owner[]).map((o) => (
+                      {(['diana', 'shared'] as Owner[]).map((o) => (
                         <button
                           key={o}
                           type="button"
@@ -177,7 +177,7 @@ export function QuickCapture({ isOpen, onClose, onCreated }: QuickCaptureProps) 
                           }`}
                           disabled={isSubmitting}
                         >
-                          {o === 'julian' ? 'Julian' : o === 'liz' ? 'Liz' : 'Shared'}
+                          {o === 'diana' ? 'Diana' : 'Shared'}
                         </button>
                       ))}
                     </div>

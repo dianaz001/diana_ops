@@ -1,5 +1,5 @@
 export type Category = 'finance' | 'taxes' | 'health' | 'social' | 'ideas' | 'goals' | 'spiritual' | 'music';
-export type Owner = 'julian' | 'liz' | 'shared';
+export type Owner = 'diana' | 'shared';
 
 export interface Entry {
   id: string;
@@ -94,7 +94,7 @@ export const CATEGORIES: CategoryInfo[] = [
     label: 'Health',
     icon: '❤️',
     color: 'bg-rose-50/80 text-rose-700',
-    subcategories: ['julian', 'liz', 'shared', 'fitness', 'nutrition', 'appointments'],
+    subcategories: ['diana', 'shared', 'fitness', 'nutrition', 'appointments'],
   },
   {
     name: 'social',
@@ -115,7 +115,7 @@ export const CATEGORIES: CategoryInfo[] = [
     label: 'Goals',
     icon: '🎯',
     color: 'bg-blue-50/80 text-blue-700',
-    subcategories: ['julian', 'liz', 'shared', 'yearly', 'habits', 'reviews'],
+    subcategories: ['diana', 'shared', 'yearly', 'habits', 'reviews'],
   },
   {
     name: 'spiritual',

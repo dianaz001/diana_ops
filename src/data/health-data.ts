@@ -4,7 +4,7 @@ export const healthReports: LabReport[] = [
   {
     id: '2026-JS6430026',
     date: '2026-02-12',
-    person: 'liz',
+    person: 'diana',
     reportId: '2026-JS6430026',
     provider: 'LifeLabs',
     orderedBy: 'FARJAD ZAFAR (HPV by SAQFIA SAQIB)',

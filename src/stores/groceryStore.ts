@@ -26,7 +26,7 @@ interface GroceryState {
   // Actions
   fetchItems: () => Promise<void>;
   fetchReceipts: () => Promise<void>;
-  saveReceipt: (parsed: ParsedReceipt, owner: 'julian' | 'liz' | 'shared') => Promise<string | null>;
+  saveReceipt: (parsed: ParsedReceipt, owner: 'diana' | 'shared') => Promise<string | null>;
   addManualItem: (item: Omit<GroceryItem, 'id' | 'created_at'>) => Promise<void>;
   updateItem: (id: string, updates: Partial<GroceryItem>) => Promise<void>;
   deleteItem: (id: string) => Promise<void>;

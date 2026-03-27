@@ -20,7 +20,7 @@ export function ManualItemModal({ onClose }: Props) {
   const [category, setCategory] = useState<GroceryCategory>('other');
   const [taxAmount, setTaxAmount] = useState('0');
   const [itemDate, setItemDate] = useState(new Date().toISOString().slice(0, 10));
-  const [owner, setOwner] = useState<'julian' | 'liz' | 'shared'>('shared');
+  const [owner, setOwner] = useState<'diana' | 'shared'>('diana');
   const [notes, setNotes] = useState('');
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -172,7 +172,7 @@ export function ManualItemModal({ onClose }: Props) {
               Owner
             </label>
             <div className="inline-flex rounded-lg overflow-hidden border" style={{ borderColor: gc.border }}>
-              {(['shared', 'julian', 'liz'] as const).map((o) => (
+              {(['diana', 'shared'] as const).map((o) => (
                 <button key={o}
                   onClick={() => setOwner(o)}
                   className="px-3 py-1.5 text-[10px] font-medium capitalize transition-colors"

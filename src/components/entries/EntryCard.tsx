@@ -12,9 +12,7 @@ export function EntryCard({ entry, onClick }: EntryCardProps) {
 
   const getOwnerIcon = () => {
     switch (entry.owner) {
-      case 'julian':
-        return <User className="w-3.5 h-3.5" />;
-      case 'liz':
+      case 'diana':
         return <User className="w-3.5 h-3.5" />;
       case 'shared':
         return <Users className="w-3.5 h-3.5" />;
@@ -23,10 +21,8 @@ export function EntryCard({ entry, onClick }: EntryCardProps) {
 
   const getOwnerLabel = () => {
     switch (entry.owner) {
-      case 'julian':
-        return 'Julian';
-      case 'liz':
-        return 'Liz';
+      case 'diana':
+        return 'Diana';
       case 'shared':
         return 'Shared';
     }

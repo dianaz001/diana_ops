@@ -307,11 +307,8 @@ function extractUnit(valueStr: string): string {
 
 function detectPerson(text: string): Person | undefined {
   const upper = text.toUpperCase();
-  if (upper.includes('ELIZABETH') || upper.includes(' LIZ ') || upper.includes('ZARAZA, LIZ') || upper.includes('LIZ ZARAZA') || upper.includes('MIRYAM') || upper.includes('RIVERA')) {
-    return 'liz';
-  }
-  if (upper.includes('JULIAN') || upper.includes('ZARAZA, JULIAN')) {
-    return 'julian';
+  if (upper.includes('DIANA') || upper.includes('ZARAZA')) {
+    return 'diana';
   }
   return undefined;
 }
@@ -602,7 +599,7 @@ export function parseLifeLabsReport(text: string, fileName: string): LabReport |
   return {
     id: `${date}-${reportId}`,
     date,
-    person: person || 'liz', // default, user can change in preview
+    person: person || 'diana', // default, user can change in preview
     reportId,
     provider,
     orderedBy,

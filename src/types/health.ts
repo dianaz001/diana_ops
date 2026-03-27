@@ -1,5 +1,5 @@
 export type LabStatus = 'optimal' | 'normal' | 'note' | 'warning' | 'danger';
-export type Person = 'liz' | 'julian';
+export type Person = 'diana';
 
 export interface LabResult {
   testName: string;

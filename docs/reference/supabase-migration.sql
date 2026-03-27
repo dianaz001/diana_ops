@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS diana_portal_entries (
                    )),
   subcategory      TEXT,
   tags             TEXT[] DEFAULT '{}',
-  owner            TEXT NOT NULL DEFAULT 'shared' CHECK (owner IN ('julian','liz','shared')),
+  owner            TEXT NOT NULL DEFAULT 'shared' CHECK (owner IN ('diana','shared')),
   created_at       TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at       TIMESTAMPTZ NOT NULL DEFAULT now(),
   github_path      TEXT,
@@ -110,7 +110,7 @@ CREATE TABLE IF NOT EXISTS grocery_receipts (
   tax          NUMERIC NOT NULL DEFAULT 0,
   total        NUMERIC NOT NULL DEFAULT 0,
   raw_text     TEXT,
-  owner        TEXT NOT NULL DEFAULT 'shared' CHECK (owner IN ('julian','liz','shared')),
+  owner        TEXT NOT NULL DEFAULT 'shared' CHECK (owner IN ('diana','shared')),
   created_at   TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at   TIMESTAMPTZ NOT NULL DEFAULT now()
 );
@@ -140,7 +140,7 @@ CREATE TABLE IF NOT EXISTS grocery_items (
                 'condiments_spices','personal_care','other'
               )),
   tax_amount  NUMERIC NOT NULL DEFAULT 0,
-  owner       TEXT NOT NULL DEFAULT 'shared' CHECK (owner IN ('julian','liz','shared')),
+  owner       TEXT NOT NULL DEFAULT 'shared' CHECK (owner IN ('diana','shared')),
   item_date   DATE NOT NULL DEFAULT CURRENT_DATE,
   is_manual   BOOLEAN NOT NULL DEFAULT false,
   notes       TEXT,
