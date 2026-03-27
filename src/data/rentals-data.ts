@@ -1,14 +1,5 @@
 import type { RentalListing } from '../types/rentals';
 
-export const ADDITIONAL_COSTS = {
-  water: 60,
-  hydro: 80,
-  internet: 60,
-  laundry: 25,
-  insurance: 20,
-  total: 185,
-};
-
 export const RENTAL_LISTINGS: RentalListing[] = [
   {
     id: 'r1',
@@ -38,6 +29,8 @@ export const RENTAL_LISTINGS: RentalListing[] = [
     makeOffer: '',
     rank: 1,
     rejected: false,
+    lat: 43.6878,
+    lng: -79.3932,
   },
   {
     id: 'r2',
@@ -67,6 +60,8 @@ export const RENTAL_LISTINGS: RentalListing[] = [
     makeOffer: '',
     rank: 2,
     rejected: false,
+    lat: 43.6812,
+    lng: -79.3935,
   },
   {
     id: 'r3',
@@ -96,6 +91,8 @@ export const RENTAL_LISTINGS: RentalListing[] = [
     makeOffer: '',
     rank: 3,
     rejected: false,
+    lat: 43.6795,
+    lng: -79.3950,
   },
   {
     id: 'r4',
@@ -125,6 +122,8 @@ export const RENTAL_LISTINGS: RentalListing[] = [
     makeOffer: '',
     rank: 4,
     rejected: false,
+    lat: 43.7065,
+    lng: -79.3985,
   },
   {
     id: 'r5',
@@ -154,6 +153,8 @@ export const RENTAL_LISTINGS: RentalListing[] = [
     makeOffer: '',
     rank: 5,
     rejected: false,
+    lat: 43.7225,
+    lng: -79.4050,
   },
   {
     id: 'r6',
@@ -183,6 +184,8 @@ export const RENTAL_LISTINGS: RentalListing[] = [
     makeOffer: '',
     rank: 6,
     rejected: false,
+    lat: 43.6700,
+    lng: -79.3830,
   },
   {
     id: 'r7',
@@ -212,6 +215,8 @@ export const RENTAL_LISTINGS: RentalListing[] = [
     makeOffer: '',
     rank: 7,
     rejected: false,
+    lat: 43.6655,
+    lng: -79.3845,
   },
   {
     id: 'r8',
@@ -241,6 +246,8 @@ export const RENTAL_LISTINGS: RentalListing[] = [
     makeOffer: '',
     rank: 99,
     rejected: true,
+    lat: 43.6870,
+    lng: -79.3960,
   },
   {
     id: 'r9',
@@ -270,5 +277,7 @@ export const RENTAL_LISTINGS: RentalListing[] = [
     makeOffer: '',
     rank: 99,
     rejected: true,
+    lat: 43.7050,
+    lng: -79.3980,
   },
 ];

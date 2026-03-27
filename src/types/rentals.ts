@@ -27,6 +27,8 @@ export interface RentalListing {
   rank: number;
   rejected: boolean;
   imageUrl?: string;
+  lat: number;
+  lng: number;
 }
 
 export type RentalViewMode = 'cards' | 'table';

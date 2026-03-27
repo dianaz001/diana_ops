@@ -9,10 +9,11 @@ import {
   TrendingDown,
   Home,
 } from 'lucide-react';
-import { RENTAL_LISTINGS, ADDITIONAL_COSTS } from '../../data/rentals-data';
+import { RENTAL_LISTINGS } from '../../data/rentals-data';
 import type { RentalListing, RentalViewMode } from '../../types/rentals';
 import { RentalCard } from './RentalCard';
 import { RentalTable } from './RentalTable';
+import { RentalMap } from './RentalMap';
 
 interface RentalsDashboardProps {
   onBack: () => void;
@@ -150,21 +151,9 @@ export function RentalsDashboard({ onBack }: RentalsDashboardProps) {
           />
         </div>
 
-        {/* Additional costs info */}
-        <div className="mb-6 bg-orange-50/60 dark:bg-orange-900/10 rounded-xl px-4 py-3 one-pixel-border">
-          <p className="text-[10px] uppercase tracking-wider text-orange-600/70 dark:text-orange-400/70 font-medium mb-1">
-            Estimated Additional Monthly Costs
-          </p>
-          <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-slate-600 dark:text-slate-400">
-            <span>Water: ${ADDITIONAL_COSTS.water}</span>
-            <span>Hydro: ${ADDITIONAL_COSTS.hydro}</span>
-            <span>Internet: ${ADDITIONAL_COSTS.internet}</span>
-            <span>Laundry: ${ADDITIONAL_COSTS.laundry}</span>
-            <span>Insurance: ${ADDITIONAL_COSTS.insurance}</span>
-            <span className="font-semibold text-slate-800 dark:text-slate-200">
-              Total: ${ADDITIONAL_COSTS.total}/mo
-            </span>
-          </div>
+        {/* Map */}
+        <div className="mb-6">
+          <RentalMap listings={displayedListings} />
         </div>
 
         {/* Listings */}
