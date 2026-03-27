@@ -19,7 +19,7 @@ const mockEntry: Entry = {
   category: 'ideas' as Category,
   subcategory: 'projects',
   tags: ['test', 'demo'],
-  owner: 'julian' as Owner,
+  owner: 'diana' as Owner,
   created_at: '2024-01-15T10:00:00Z',
   updated_at: '2024-01-15T12:00:00Z',
   idea_status: 'new',
@@ -64,7 +64,7 @@ describe('CRUD Operations', () => {
           title: 'Test Entry',
           content: 'Test content',
           category: 'ideas',
-          owner: 'julian',
+          owner: 'diana',
         });
       });
 
@@ -159,7 +159,7 @@ describe('CRUD Operations', () => {
       expect(entry?.category).toBe('ideas');
       expect(entry?.subcategory).toBe('projects');
       expect(entry?.tags).toEqual(['test', 'demo']);
-      expect(entry?.owner).toBe('julian');
+      expect(entry?.owner).toBe('diana');
       expect(entry?.idea_status).toBe('new');
     });
   });

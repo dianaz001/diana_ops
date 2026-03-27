@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Calendar, User, FileText, ArrowLeft, Upload, Trash2, Archive, RotateCcw, ClipboardList, TrendingUp } from 'lucide-react';
+import { Calendar, FileText, ArrowLeft, Upload, Trash2, Archive, RotateCcw, ClipboardList, TrendingUp } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import {
   useHealthStore,
@@ -25,7 +25,7 @@ export function HealthDashboard({ onBack }: HealthDashboardProps) {
 
   useEffect(() => { fetchReports(); }, [fetchReports]);
 
-  const [selectedPerson, setSelectedPerson] = useState<Person>('liz');
+  const selectedPerson: Person = 'diana';
   const [showUpload, setShowUpload] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [viewingArchive, setViewingArchive] = useState(false);
@@ -38,12 +38,6 @@ export function HealthDashboard({ onBack }: HealthDashboardProps) {
   const reports = getReportsForPerson(uploadedReports, selectedPerson, hiddenReportIds, archivedReportIds, viewingArchive);
   const archivedCount = getReportsForPerson(uploadedReports, selectedPerson, hiddenReportIds, archivedReportIds, true).length;
   const trendData = buildTrendData(reports);
-
-  const handlePersonSwitch = (person: Person) => {
-    setSelectedPerson(person);
-    const personDates = getTestDates(uploadedReports, person, hiddenReportIds, archivedReportIds, viewingArchive);
-    setSelectedDate(personDates[0] || '');
-  };
 
   const handleToggleArchiveView = () => {
     const next = !viewingArchive;
@@ -140,31 +134,6 @@ export function HealthDashboard({ onBack }: HealthDashboardProps) {
             </button>
           )}
 
-          {/* Person toggle */}
-          <div className="flex bg-[#195de6]/5 rounded-lg p-1">
-            <button
-              onClick={() => handlePersonSwitch('liz')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-md text-[10px] tracking-widest uppercase transition-all ${
-                selectedPerson === 'liz'
-                  ? 'bg-white shadow-sm text-[#195de6] font-medium'
-                  : 'text-slate-400 hover:text-slate-600'
-              }`}
-            >
-              <User className="w-3.5 h-3.5" />
-              Liz
-            </button>
-            <button
-              onClick={() => handlePersonSwitch('julian')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-md text-[10px] tracking-widest uppercase transition-all ${
-                selectedPerson === 'julian'
-                  ? 'bg-white shadow-sm text-[#195de6] font-medium'
-                  : 'text-slate-400 hover:text-slate-600'
-              }`}
-            >
-              <User className="w-3.5 h-3.5" />
-              Julian
-            </button>
-          </div>
         </div>
       </div>
 
@@ -352,9 +321,7 @@ export function HealthDashboard({ onBack }: HealthDashboardProps) {
               <div className="text-5xl opacity-30 mb-4">🏥</div>
               <p className="text-lg font-light text-slate-600">No lab results yet</p>
               <p className="text-sm font-light text-slate-400 mt-1">
-                {selectedPerson === 'julian'
-                  ? "Julian's results will appear here once added."
-                  : "No results found for this date."}
+                No results found for this date.
               </p>
               <button
                 onClick={() => setShowUpload(true)}
@@ -374,7 +341,7 @@ export function HealthDashboard({ onBack }: HealthDashboardProps) {
       {reports.length > 0 && (
         <div className="mt-10 pt-6 border-t border-[#195de6]/5 text-center text-[10px] tracking-widest uppercase text-slate-400">
           {reports.length} report{reports.length !== 1 ? 's' : ''} on file for{' '}
-          {selectedPerson === 'liz' ? 'Liz' : 'Julian'}
+          Diana
         </div>
       )}
 

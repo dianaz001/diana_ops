@@ -363,8 +363,7 @@ export function ReportUpload({ onClose }: ReportUploadProps) {
                           }
                           className="text-[10px] tracking-wider uppercase one-pixel-border rounded-lg px-2 py-1 bg-white/80 text-slate-500 focus:outline-none focus:ring-1 focus:ring-[#195de6]/20"
                         >
-                          <option value="liz">Liz</option>
-                          <option value="julian">Julian</option>
+                          <option value="diana">Diana</option>
                         </select>
                       </div>
 

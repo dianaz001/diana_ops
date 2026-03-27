@@ -93,7 +93,7 @@ export const useHealthStore = create<HealthState>((set, get) => ({
             if (!hidden.includes(id)) hidden.push(id);
             await supabase.from('diana_health_reports').upsert({
               id,
-              person: 'julian',
+              person: 'diana',
               date: '1970-01-01',
               report_data: {},
               is_hidden: true,
@@ -105,7 +105,7 @@ export const useHealthStore = create<HealthState>((set, get) => ({
             if (!seedHidden.includes(id)) {
               await supabase.from('diana_health_reports').upsert({
                 id,
-                person: 'julian',
+                person: 'diana',
                 date: '1970-01-01',
                 report_data: {},
                 is_hidden: false,
@@ -176,7 +176,7 @@ export const useHealthStore = create<HealthState>((set, get) => ({
       // Seed report — create a flag row
       await supabase.from('diana_health_reports').upsert({
         id,
-        person: 'julian',
+        person: 'diana',
         date: '1970-01-01',
         report_data: {},
         is_hidden: true,
@@ -203,7 +203,7 @@ export const useHealthStore = create<HealthState>((set, get) => ({
     } else {
       await supabase.from('diana_health_reports').upsert({
         id,
-        person: 'julian',
+        person: 'diana',
         date: '1970-01-01',
         report_data: {},
         is_hidden: false,
