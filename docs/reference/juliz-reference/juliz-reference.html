@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Soft Duality Health Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#195de6",
+              "background-light": "#f6f6f8",
+              "background-dark": "#111621",
+            },
+            fontFamily: {
+              "display": ["Inter", "serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style type="text/tailwindcss">
+      body {
+        background-color: #f9f8f6;
+        font-family: 'Inter', sans-serif;
+        color: #1a1a1a;
+      }
+      .blur-overlay {
+        backdrop-filter: blur(40px);
+        -webkit-backdrop-filter: blur(40px);
+      }
+      .one-pixel-border {
+        border: 1px solid rgba(25, 93, 230, 0.08);
+      }
+      .sidebar-link-active {
+        @apply text-primary font-medium;
+        border-right: 2px solid #195de6;
+      }
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+      .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display min-h-screen text-slate-900 dark:text-slate-100 flex">
+<aside class="w-64 h-screen sticky top-0 border-r border-primary/10 flex flex-col bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl z-50">
+<div class="px-8 py-10">
+<span class="text-xs uppercase tracking-[0.3em] font-light text-primary">Soft Duality</span>
+</div>
+<nav class="flex-1 px-4 space-y-2">
+<a class="flex items-center space-x-4 px-4 py-3 text-[11px] uppercase tracking-widest text-primary sidebar-link-active" href="#">
+<span class="material-symbols-outlined text-[18px]">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center space-x-4 px-4 py-3 text-[11px] uppercase tracking-widest text-slate-500 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">group</span>
+<span>Family Insights</span>
+</a>
+<a class="flex items-center space-x-4 px-4 py-3 text-[11px] uppercase tracking-widest text-slate-500 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">lab_research</span>
+<span>Lab Results</span>
+</a>
+<a class="flex items-center space-x-4 px-4 py-3 text-[11px] uppercase tracking-widest text-slate-500 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">devices_wearables</span>
+<span>Devices</span>
+</a>
+<a class="flex items-center space-x-4 px-4 py-3 text-[11px] uppercase tracking-widest text-slate-500 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<div class="p-8 border-t border-primary/5">
+<div class="flex items-center space-x-3">
+<div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[16px]">support_agent</span>
+</div>
+<span class="text-[10px] tracking-widest uppercase text-slate-400">Concierge Active</span>
+</div>
+</div>
+</aside>
+<div class="flex-1 flex flex-col min-w-0">
+<header class="sticky top-0 z-40 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-primary/5 px-8 py-4 flex items-center justify-between">
+<div class="flex-1 max-w-xl">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">search</span>
+<input class="w-full bg-primary/5 border-none rounded-full py-2 pl-10 pr-4 text-xs focus:ring-1 focus:ring-primary/30 placeholder:text-slate-400 transition-all" placeholder="Search biomarkers, family members, or trends..." type="text"/>
+</div>
+</div>
+<div class="flex items-center space-x-8">
+<div class="flex items-center space-x-4">
+<button class="relative p-2 text-slate-500 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[22px]">notifications</span>
+<span class="absolute top-2 right-2 w-1.5 h-1.5 bg-primary rounded-full"></span>
+</button>
+<button class="p-2 text-slate-500 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[22px]">calendar_today</span>
+</button>
+</div>
+<div class="flex items-center space-x-4 pl-8 border-l border-primary/10">
+<div class="flex -space-x-2 mr-4">
+<img alt="Marcus" class="w-8 h-8 rounded-full border-2 border-white dark:border-slate-800 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwPSAe8w1TMIg8_V4PBMgRimeLvgvwWM6MLqYYfjAoWrDDTybJ7BtIpwSApxsdwB6x9rMrSndWWD3sYf88T7rcVmAQZZBfDT1Cv72PigdKMNeHFxwr0IGmB9_Djm0TrcixP4t1LKO9cxHcZJ8aa67vcjaq4y1MfQb9ggaNUHHp4YgBxzPncIdMDWoPACfCVKfGlqLXvTh-rrJzu-0Za2Ksa9wKzjzgGrQpI7xs6wf8KQjTPTeIAaG-A2gl5zz9SZEtWs4rsObmbgI"/>
+<img alt="Elena" class="w-8 h-8 rounded-full border-2 border-white dark:border-slate-800 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBogr1LgqeYu0BcU87eEvbp2Fy4OUyRM7gjkUU6g5S1BgUWQHOfCjINEmgC5OCFTYw6geCxFxyBsznJQGkAzYhxgWcYx160y6n-pL0T5yFyHjQvrrayYvKHBYPVyZ8GdVay6H3_C18ti5WHfpaXptD2BDqk_8dT8qFLhYJNB9Ny95hLOhl4SKDuohNXrsj7gN8SsV98TD33CHZi5YOsXdQPklY_5KfPXXMxoWGZ0CgTA7LmXUmBtKI3QFhB9HUnu-SgoiD6mN9iXlg"/>
+<img alt="Maya" class="w-8 h-8 rounded-full border-2 border-white dark:border-slate-800 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7MlY_9051CDF88mSwxcC0WRHSSJCro594DJBinzE8I4i-f6Sa594mi_cvKyz8HXEbJ17naLLZPfYbQkkmMTGPOMxcQGn4oFW0Xngw8OM0afB2ui_C_mZf22eeqID9TE9fXGVCT1TN9qtbP5PVVgRLRxA7hIobJY9LFZpZv-Tk58G46NxhUT19w3Nf_LKSEg9ZIr33nB2gHN9bon79qudI7ou8fmPWM4dQ5zaJGHibWlgwI8Mef9Jek8riyssTiwRTpx1YnGsgL44"/>
+<div class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 border-2 border-white dark:border-slate-800 flex items-center justify-center text-[10px] font-medium">+1</div>
+</div>
+<button class="flex items-center space-x-2 bg-white dark:bg-slate-800 px-3 py-1.5 rounded-lg one-pixel-border hover:shadow-sm transition-all">
+<img alt="Marcus" class="w-6 h-6 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwPSAe8w1TMIg8_V4PBMgRimeLvgvwWM6MLqYYfjAoWrDDTybJ7BtIpwSApxsdwB6x9rMrSndWWD3sYf88T7rcVmAQZZBfDT1Cv72PigdKMNeHFxwr0IGmB9_Djm0TrcixP4t1LKO9cxHcZJ8aa67vcjaq4y1MfQb9ggaNUHHp4YgBxzPncIdMDWoPACfCVKfGlqLXvTh-rrJzu-0Za2Ksa9wKzjzgGrQpI7xs6wf8KQjTPTeIAaG-A2gl5zz9SZEtWs4rsObmbgI"/>
+<span class="text-[11px] font-medium tracking-wide">Marcus</span>
+<span class="material-symbols-outlined text-[14px] text-slate-400">expand_more</span>
+</button>
+</div>
+</div>
+</header>
+<main class="flex-1 p-8 space-y-12">
+<section class="space-y-8">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-l-2 border-primary/20 pl-6">
+<div>
+<h2 class="text-xs tracking-[0.4em] uppercase font-light text-slate-400 mb-1">Family Global Snapshot</h2>
+<p class="text-2xl font-light text-slate-600">Metric Correlation: HRV &amp; Recovery</p>
+</div>
+<div class="flex items-center space-x-6">
+<div class="flex bg-primary/5 rounded-lg p-1">
+<button class="px-4 py-1.5 text-[10px] tracking-widest uppercase text-slate-400 hover:text-primary transition-colors">1W</button>
+<button class="px-4 py-1.5 text-[10px] tracking-widest uppercase text-slate-400 hover:text-primary transition-colors">1M</button>
+<button class="px-4 py-1.5 text-[10px] tracking-widest uppercase bg-white dark:bg-slate-800 text-primary shadow-sm rounded-md">3M</button>
+<button class="px-4 py-1.5 text-[10px] tracking-widest uppercase text-slate-400 hover:text-primary transition-colors">1Y</button>
+</div>
+<select class="bg-transparent border-none text-[10px] tracking-widest uppercase font-medium text-primary focus:ring-0 cursor-pointer">
+<option>Heart Rate Variability</option>
+<option>Sleep Continuity</option>
+<option>Basal Metabolic Rate</option>
+</select>
+</div>
+</div>
+<div class="relative w-full aspect-[24/10] min-h-[400px] rounded-2xl bg-white/30 dark:bg-slate-900/30 overflow-hidden one-pixel-border p-10">
+<svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 1000 300">
+<line stroke="rgba(25, 93, 230, 0.05)" stroke-width="1" x1="0" x2="1000" y1="50" y2="50"></line>
+<line stroke="rgba(25, 93, 230, 0.05)" stroke-width="1" x1="0" x2="1000" y1="150" y2="150"></line>
+<line stroke="rgba(25, 93, 230, 0.05)" stroke-width="1" x1="0" x2="1000" y1="250" y2="250"></line>
+<path d="M0,220 Q150,230 250,180 T500,160 T750,190 T1000,140" fill="none" stroke="#195de6" stroke-width="2.5"></path>
+<path d="M0,180 Q200,140 400,190 T700,130 T1000,160" fill="none" opacity="0.4" stroke="#195de6" stroke-dasharray="4" stroke-width="1.5"></path>
+<path d="M0,150 Q250,120 500,140 T800,90 T1000,110" fill="none" opacity="0.2" stroke="#195de6" stroke-width="1"></path>
+<path d="M0,250 Q100,240 300,260 T600,220 T1000,240" fill="none" opacity="0.2" stroke="#195de6" stroke-width="1"></path>
+</svg>
+<div class="absolute bottom-10 right-10 flex space-x-8 bg-white/40 dark:bg-slate-900/40 backdrop-blur-md px-6 py-3 rounded-full border border-primary/5">
+<div class="flex items-center space-x-2"><div class="w-2.5 h-2.5 rounded-full bg-primary"></div><span class="text-[9px] uppercase tracking-widest font-medium">Marcus</span></div>
+<div class="flex items-center space-x-2"><div class="w-2.5 h-2.5 rounded-full bg-primary/40"></div><span class="text-[9px] uppercase tracking-widest opacity-60">Elena</span></div>
+<div class="flex items-center space-x-2"><div class="w-2.5 h-2.5 rounded-full bg-primary/20"></div><span class="text-[9px] uppercase tracking-widest opacity-40">Maya</span></div>
+<div class="flex items-center space-x-2"><div class="w-2.5 h-2.5 rounded-full bg-primary/20"></div><span class="text-[9px] uppercase tracking-widest opacity-40">Leo</span></div>
+</div>
+</div>
+</section>
+<div class="grid grid-cols-12 gap-8">
+<div class="col-span-12 lg:col-span-8 space-y-12">
+<section class="p-8 bg-white dark:bg-slate-900/40 rounded-2xl one-pixel-border">
+<div class="flex justify-between items-start mb-8">
+<div class="space-y-1">
+<h2 class="text-xs tracking-[0.4em] uppercase font-light text-slate-400">Individual Trend: Sleep Continuity</h2>
+<p class="text-[10px] text-primary tracking-widest uppercase">Marcus — Last 90 Days (Daily Granularity)</p>
+</div>
+<div class="text-right">
+<span class="text-3xl font-light tracking-tighter block">07:42</span>
+<span class="text-[10px] text-slate-400 uppercase tracking-widest">Avg Hours / Night</span>
+</div>
+</div>
+<div class="h-64 relative w-full mb-6">
+<svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 1000 250">
+<path d="M0,200 L50,180 L100,190 L150,150 L200,160 L250,140 L300,120 L350,145 L400,110 L450,130 L500,90 L550,105 L600,80 L650,95 L700,70 L750,85 L800,60 L850,75 L900,50 L950,65 L1000,40" fill="none" stroke="#195de6" stroke-opacity="0.8" stroke-width="2"></path>
+<path d="M0,200 L50,180 L100,190 L150,150 L200,160 L250,140 L300,120 L350,145 L400,110 L450,130 L500,90 L550,105 L600,80 L650,95 L700,70 L750,85 L800,60 L850,75 L900,50 L950,65 L1000,40 V250 H0 Z" fill="url(#grad2)" opacity="0.05"></path>
+<defs>
+<linearGradient id="grad2" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" style="stop-color:#195de6;stop-opacity:1"></stop>
+<stop offset="100%" style="stop-color:#195de6;stop-opacity:0"></stop>
+</linearGradient>
+</defs>
+</svg>
+</div>
+<p class="text-sm font-light leading-relaxed text-slate-500 italic max-w-2xl">
+                            "Over the past 12 weeks, your deep sleep cycles have stabilized with a 14% reduction in mid-cycle wake events. This suggests successful adaptation to your new environment."
+                        </p>
+</section>
+<section class="p-8 bg-white dark:bg-slate-900/40 rounded-2xl one-pixel-border">
+<div class="flex justify-between items-start mb-8">
+<div class="space-y-1">
+<h2 class="text-xs tracking-[0.4em] uppercase font-light text-slate-400">Metabolic Velocity</h2>
+<p class="text-[10px] text-primary tracking-widest uppercase">Marcus — 12 Week Efficiency Profile</p>
+</div>
+<div class="text-right">
+<span class="text-3xl font-light tracking-tighter block">1,940</span>
+<span class="text-[10px] text-slate-400 uppercase tracking-widest">Kcal / Base</span>
+</div>
+</div>
+<div class="flex items-end space-x-2 h-48 mb-8">
+<div class="flex-1 bg-primary/5 h-[30%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary/10 h-[45%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary/5 h-[40%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary/15 h-[60%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary/10 h-[55%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary/30 h-[75%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary/20 h-[65%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary/40 h-[85%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary/25 h-[70%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary/15 h-[60%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary/10 h-[50%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary/5 h-[40%] rounded-t-sm"></div>
+</div>
+<p class="text-sm font-light leading-relaxed text-slate-500 italic max-w-2xl">
+                            "Your metabolic rate shows a seasonal shift towards higher efficiency. The current 3% increase in resting burn corresponds with the increased aerobic load measured via your wearable devices."
+                        </p>
+</section>
+</div>
+<div class="col-span-12 lg:col-span-4 space-y-8">
+<div class="bg-slate-50/50 dark:bg-slate-900/20 rounded-2xl one-pixel-border flex flex-col h-[600px]">
+<div class="p-6 border-b border-primary/10">
+<h3 class="text-xs tracking-[0.3em] uppercase text-primary font-medium">AI Health Feed</h3>
+</div>
+<div class="flex-1 overflow-y-auto p-6 space-y-8 scrollbar-hide">
+<div class="space-y-3">
+<span class="text-[9px] tracking-widest uppercase text-slate-400">Today — 08:45 AM</span>
+<p class="text-sm font-light leading-relaxed">
+<span class="text-primary font-medium uppercase text-[10px] tracking-widest">Circadian Update:</span> 
+                                    Marcus's consistency score is at a 90-day high. This is the optimal window to introduce higher intensity cognitive tasks earlier in the morning.
+                                </p>
+</div>
+<div class="space-y-3">
+<span class="text-[9px] tracking-widest uppercase text-slate-400">Yesterday</span>
+<p class="text-sm font-light leading-relaxed">
+<span class="text-primary font-medium uppercase text-[10px] tracking-widest">Biomarker Alert:</span> 
+                                    Vitamin D levels are projected to dip below target based on local weather forecasts and recent activity data. Consider supplement adjustment.
+                                </p>
+</div>
+<div class="space-y-3 opacity-60">
+<span class="text-[9px] tracking-widest uppercase text-slate-400">Oct 24</span>
+<p class="text-sm font-light leading-relaxed">
+<span class="text-primary font-medium uppercase text-[10px] tracking-widest">Recovery Synthesis:</span> 
+                                    Elena’s HRV rebound suggests she has completed her recovery phase following the marathon last week.
+                                </p>
+</div>
+<div class="space-y-3 opacity-60">
+<span class="text-[9px] tracking-widest uppercase text-slate-400">Oct 23</span>
+<p class="text-sm font-light leading-relaxed">
+<span class="text-primary font-medium uppercase text-[10px] tracking-widest">New Device Found:</span> 
+                                    A new glucose monitoring patch has been detected. Syncing initial calibration data now.
+                                </p>
+</div>
+</div>
+</div>
+<div class="space-y-4">
+<button class="w-full bg-white dark:bg-slate-800 border border-primary/20 py-4 px-6 rounded-xl flex items-center justify-between group hover:border-primary transition-all">
+<div class="flex items-center space-x-4">
+<span class="material-symbols-outlined text-primary">upload_file</span>
+<span class="text-[11px] uppercase tracking-[0.2em] font-medium">Upload Lab Result</span>
+</div>
+<span class="material-symbols-outlined text-[18px] text-slate-300 group-hover:text-primary">chevron_right</span>
+</button>
+<button class="w-full bg-white dark:bg-slate-800 border border-primary/20 py-4 px-6 rounded-xl flex items-center justify-between group hover:border-primary transition-all">
+<div class="flex items-center space-x-4">
+<span class="material-symbols-outlined text-primary">sync</span>
+<span class="text-[11px] uppercase tracking-[0.2em] font-medium">Sync Device</span>
+</div>
+<span class="material-symbols-outlined text-[18px] text-slate-300 group-hover:text-primary">chevron_right</span>
+</button>
+<button class="w-full bg-primary text-white py-4 px-6 rounded-xl flex items-center justify-between group hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
+<div class="flex items-center space-x-4">
+<span class="material-symbols-outlined">add_circle</span>
+<span class="text-[11px] uppercase tracking-[0.2em] font-medium">Add New Metric</span>
+</div>
+<span class="material-symbols-outlined text-[18px] opacity-60">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<section class="relative h-[400px] rounded-2xl overflow-hidden group">
+<img alt="Soft hazy sunset" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGkkcE3sj-31K7PtzWRcj-OBiz0M2GplYCplHvGnmy912mlCkgzxnkpY1c6BOkgmMTd7SVyZA6Arlgzjb1eThLMQUQgXgGZGAvL10jGlsRrfMHc-Ybn5K8BKHOzcnnGSPi7WqxoABOz2N2pDE0GdUwHizg4t1VDDhl5Xrpf9XnlHv2bmsmycJh91W8pb-YDsawJZAyGDUA8Leh5dZHpeYLpO4OjmVi0Z7HzJibs3wktV4AZOKDeZRO_gKbzOT6HiNHuq6uEJCVqe8"/>
+<div class="absolute inset-0 bg-background-light/40 dark:bg-background-dark/40 blur-overlay"></div>
+<div class="absolute inset-0 flex flex-col justify-center items-center text-center p-12 space-y-10">
+<span class="text-[11px] tracking-[0.5em] uppercase text-slate-900 dark:text-slate-100 opacity-60">Long-term Health Synthesis</span>
+<div class="max-w-2xl border-y border-slate-900/10 py-14">
+<p class="text-3xl md:text-4xl font-light leading-snug text-slate-800 dark:text-slate-200">
+                            "The architecture of your family's collective health is shifting from seasonal maintenance to active longitudinal optimization."
+                        </p>
+</div>
+<button class="text-[10px] tracking-[0.3em] uppercase font-medium border border-slate-900/20 px-10 py-4 rounded-full hover:bg-slate-900 hover:text-white transition-all duration-500">Deep Analytics Portal</button>
+</div>
+</section>
+</main>
+</div>
+<div class="fixed top-0 right-0 -z-10 w-[50vw] h-screen opacity-30 pointer-events-none">
+<img alt="Background gradient" class="w-full h-full object-cover blur-[120px]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCR4msjwuDDafhibPVIddAOgx7XvUuqlNYxl_SlhiA9tqA34Ei8y2cNYmUomKB-HF30DBh99URxnLdo_nvXG5XnT8zRdt1PfLPau7MmrH6HmK2SeH8XHayWQuPCOUnNOBFBvqa8iVlRCexuYmPKJaRjRFRn7FuRRAJ7o7NQ-hUUHS68G-_SBv5Iwy59SfGPdlGsHG30ieyvflCet9MNvmURRtmZaP-jdMYD_DZDqIwzMFZXd5-CAaEsG0nmLGUutxL0VrhHtZZNHzE"/>
+</div>
+
+</body></html>

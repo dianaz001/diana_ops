@@ -29,7 +29,9 @@
       "WebFetch(domain:recharts.org)",
       "WebFetch(domain:diana.treedigits.ca)",
       "mcp__plugin_supabase_supabase__*",
-      "mcp__plugin_vercel_vercel__list_teams"
+      "mcp__plugin_vercel_vercel__list_teams",
+      "mcp__plugin_vercel_vercel__deploy_to_vercel",
+      "mcp__plugin_vercel_vercel__get_project"
     ],
     "deny": [
       "WebFetch(domain:*.ru)",
